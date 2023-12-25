@@ -11,8 +11,8 @@ config_version=5
 [application]
 
 config/name="Typo"
-config/features=PackedStringArray("4.2", "Forward Plus")
-config/icon="res://icon.svg"
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 
 [dotnet]
 
