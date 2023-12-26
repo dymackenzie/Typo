@@ -1,7 +1,8 @@
-[gd_scene load_steps=109 format=3 uid="uid://cycikbvsectqm"]
+[gd_scene load_steps=110 format=3 uid="uid://cycikbvsectqm"]
 
 [ext_resource type="Script" path="res://src/scripts/player.cs" id="1_4o2pt"]
 [ext_resource type="Texture2D" uid="uid://c0rr0a800dmra" path="res://assets/sprites/player_character.png" id="1_vivj0"]
+[ext_resource type="Texture2D" uid="uid://br8whaxucqp43" path="res://assets/sprites/position1.png" id="2_eydv0"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fd1gt"]
 atlas = ExtResource("1_vivj0")
@@ -830,11 +831,16 @@ radius = 5.0
 [node name="player" type="CharacterBody2D"]
 script = ExtResource("1_4o2pt")
 
+[node name="Position" type="Sprite2D" parent="."]
+texture = ExtResource("2_eydv0")
+
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_4ffhj")
 animation = &"idle"
 autoplay = "idle"
+frame = 5
+frame_progress = 0.278585
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 3)
