@@ -1,3 +1,12 @@
-[gd_scene format=3 uid="uid://824hp5yle0m0"]
+[gd_scene load_steps=2 format=3 uid="uid://824hp5yle0m0"]
+
+[ext_resource type="PackedScene" uid="uid://du1bqchipg3ki" path="res://scenes/game/blocks.tscn" id="1_idtf2"]
 
 [node name="Node2D" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(3, 3)
+limit_left = 0
+limit_top = 0
+
+[node name="TileMap" parent="." instance=ExtResource("1_idtf2")]
