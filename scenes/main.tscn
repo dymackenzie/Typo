@@ -1,8 +1,14 @@
-[gd_scene format=3 uid="uid://824hp5yle0m0"]
+[gd_scene load_steps=2 format=3 uid="uid://824hp5yle0m0"]
 
-[node name="Node2D" type="Node2D"]
+[ext_resource type="PackedScene" uid="uid://du1bqchipg3ki" path="res://scenes/game/map.tscn" id="1_idtf2"]
 
-[node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(3, 3)
+[node name="world" type="Node2D"]
+texture_filter = 1
+
+[node name="map" parent="." instance=ExtResource("1_idtf2")]
+
+[node name="camera" type="Camera2D" parent="."]
+texture_filter = 1
+zoom = Vector2(1.5, 1.5)
 limit_left = 0
 limit_top = 0
