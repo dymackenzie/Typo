@@ -831,10 +831,10 @@ radius = 5.0
 [node name="player" type="CharacterBody2D"]
 script = ExtResource("1_4o2pt")
 
-[node name="Position" type="Sprite2D" parent="."]
+[node name="true position" type="Sprite2D" parent="."]
 texture = ExtResource("2_eydv0")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="animated player" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_4ffhj")
 animation = &"idle"
@@ -842,9 +842,9 @@ autoplay = "idle"
 frame = 5
 frame_progress = 0.278585
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="animated player"]
+zoom = Vector2(2.6, 2.6)
+
+[node name="hitbox" type="CollisionShape2D" parent="."]
 position = Vector2(0, 3)
 shape = SubResource("CircleShape2D_k1g3e")
-
-[node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(2, 2)
