@@ -7,6 +7,7 @@ public partial class player : CharacterBody2D
 	public const float SPEED = 100.0f;
 	public const float FRICTION = 0.8f;
 	public const float ACCELERATION = 0.8f;
+	public const float JUMP_HEIGHT = 20f;
 
 
 	// animation variable
@@ -23,6 +24,8 @@ public partial class player : CharacterBody2D
     public override void _Ready()
     {
 		PLAYER_STATE = "idle";
+		isJumping = false;
+		isFalling = false;
 		sprite2D = GetNode<AnimatedSprite2D>("animated player");
 		hitbox = GetNode<CollisionShape2D>("hitbox");
     }
@@ -34,12 +37,9 @@ public partial class player : CharacterBody2D
 	{
 		Vector2 direction = Input.GetVector("a_left", "d_right", "w_up", "s_down");
 		direction = direction.Normalized();
+		// so isometric movement is same in all 8 directions
 		float x = direction.X;
 		float y = direction.Y / 2;
-
-		if (Input.IsActionJustPressed("jump_space")) {
-
-		}
 
 		PLAYER_STATE = "run";
 		if (x == 0 && y == 0) {
@@ -62,9 +62,31 @@ public partial class player : CharacterBody2D
 			y = Lerp(Velocity.Y, y * SPEED, ACCELERATION);
 		}
 
+		if (Input.IsActionJustPressed("jump_space") && !isJumping) {
+			Jump();
+		}
+
 		Velocity = new Vector2(x, y);
 		MoveAndSlide();
 		sprite2D.Play(PLAYER_STATE);
+	}
+
+	/*
+	Jump function.
+	*/
+	private void Jump() {
+		Tween tween = CreateTween();
+		tween.SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+		// jump
+		PLAYER_STATE = "jump";
+		isJumping = true;
+		tween.TweenProperty(sprite2D, "position", new Vector2(0, -JUMP_HEIGHT), 0.4);
+		//* disable hitboxes when jumping
+
+		// fall
+		PLAYER_STATE = "fall";
+		isJumping = false;
+		tween.TweenProperty(sprite2D, "position", Vector2.Zero, 0.3);
 	}
 
 	/*
