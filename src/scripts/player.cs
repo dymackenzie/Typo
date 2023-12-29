@@ -7,7 +7,7 @@ public partial class player : CharacterBody2D
 {
 	// movement variables
 	public const float SPEED = 100.0f;
-	public const float FRICTION = 0.8f;
+	public const float FRICTION = 0.7f;
 	public const float ACCELERATION = 0.8f;
 	public const float JUMP_HEIGHT = 20f;
 
@@ -62,7 +62,8 @@ public partial class player : CharacterBody2D
 			y = Lerp(Velocity.Y, y * SPEED, ACCELERATION);
 		}
 
-		if (Input.IsActionJustPressed("jump_space") && !isJumping) {
+		if (Input.IsActionPressed("jump_space") && !isJumping) {
+			hitbox.Disabled = true;
 			isJumping = true;
 			Jump();
 		}
@@ -88,7 +89,7 @@ public partial class player : CharacterBody2D
 		sprite2D.Play("fall");
 		tween.TweenProperty(sprite2D, "position", Vector2.Zero, 0.3);
 
-		tween.TweenCallback(Callable.From(() => { isJumping = false; } ));
+		tween.TweenCallback(Callable.From(() => { isJumping = false; hitbox.Disabled = false; } ));
 
 		//* disable hitboxes when jumping
 		
