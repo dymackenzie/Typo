@@ -1,5 +1,7 @@
 using Godot;
 using System;
+using System.Linq.Expressions;
+using System.Reflection.Metadata.Ecma335;
 
 public partial class player : CharacterBody2D
 {
@@ -8,7 +10,6 @@ public partial class player : CharacterBody2D
 	public const float FRICTION = 0.8f;
 	public const float ACCELERATION = 0.8f;
 	public const float JUMP_HEIGHT = 20f;
-
 
 	// animation variable
 	public string PLAYER_STATE;
@@ -21,23 +22,22 @@ public partial class player : CharacterBody2D
 	/*
 	Constructor
 	*/
-    public override void _Ready()
-    {
+	public override void _Ready()
+	{
 		PLAYER_STATE = "idle";
 		isJumping = false;
 		isFalling = false;
 		sprite2D = GetNode<AnimatedSprite2D>("animated player");
 		hitbox = GetNode<CollisionShape2D>("hitbox");
-    }
+	}
 
 	/*
 	Called every frame, "delta" is amount of time passed.
 	*/
-    public override void _PhysicsProcess(double delta)
-	{
+	public override void _PhysicsProcess(double delta) {
+
 		Vector2 direction = Input.GetVector("a_left", "d_right", "w_up", "s_down");
 		direction = direction.Normalized();
-		// so isometric movement is same in all 8 directions
 		float x = direction.X;
 		float y = direction.Y / 2;
 
@@ -63,6 +63,7 @@ public partial class player : CharacterBody2D
 		}
 
 		if (Input.IsActionJustPressed("jump_space") && !isJumping) {
+			isJumping = true;
 			Jump();
 		}
 
@@ -75,18 +76,22 @@ public partial class player : CharacterBody2D
 	Jump function.
 	*/
 	private void Jump() {
+
 		Tween tween = CreateTween();
 		tween.SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+
 		// jump
-		PLAYER_STATE = "jump";
-		isJumping = true;
+		sprite2D.Play("jump");
 		tween.TweenProperty(sprite2D, "position", new Vector2(0, -JUMP_HEIGHT), 0.4);
-		//* disable hitboxes when jumping
 
 		// fall
-		PLAYER_STATE = "fall";
-		isJumping = false;
+		sprite2D.Play("fall");
 		tween.TweenProperty(sprite2D, "position", Vector2.Zero, 0.3);
+
+		tween.TweenCallback(Callable.From(() => { isJumping = false; } ));
+
+		//* disable hitboxes when jumping
+		
 	}
 
 	/*
