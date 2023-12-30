@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://src/scripts/player.cs" id="1_4o2pt"]
 [ext_resource type="Texture2D" uid="uid://c0rr0a800dmra" path="res://assets/sprites/player_character.png" id="1_vivj0"]
 [ext_resource type="Texture2D" uid="uid://br8whaxucqp43" path="res://assets/sprites/position1.png" id="2_eydv0"]
-[ext_resource type="PackedScene" uid="uid://bc1s3uj7dntq7" path="res://scenes/game/dash.tscn" id="4_jx1nl"]
+[ext_resource type="PackedScene" uid="uid://bc1s3uj7dntq7" path="res://scenes/game/player/dash.tscn" id="4_jx1nl"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fd1gt"]
 atlas = ExtResource("1_vivj0")

@@ -12,7 +12,7 @@ public partial class dash : Node2D
 	public override void _Ready() {
 		timer = GetNode<Timer>("duration");
 		ghostTimer = GetNode<Timer>("ghost");
-		ghostScene = GD.Load<PackedScene>("res://scenes/game/dash_ghost.tscn");
+		ghostScene = GD.Load<PackedScene>("res://scenes/game/player/dash_ghost.tscn");
 	}
 
 	/*
