@@ -1,6 +1,11 @@
-[gd_scene load_steps=20 format=3 uid="uid://55pc43lgfq5g"]
+[gd_scene load_steps=34 format=3 uid="uid://55pc43lgfq5g"]
 
+[ext_resource type="Shader" path="res://assets/shaders/basic_enemy.gdshader" id="1_agxgd"]
 [ext_resource type="Texture2D" uid="uid://c0rr0a800dmra" path="res://assets/sprites/player_character.png" id="1_hjak1"]
+[ext_resource type="Script" path="res://scenes/game/enemies/enemy.cs" id="1_vec07"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_j8xjh"]
+shader = ExtResource("1_agxgd")
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6yblb"]
 atlas = ExtResource("1_hjak1")
@@ -21,6 +26,50 @@ region = Rect2(144, 240, 48, 48)
 [sub_resource type="AtlasTexture" id="AtlasTexture_227xg"]
 atlas = ExtResource("1_hjak1")
 region = Rect2(192, 240, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_42xdg"]
+atlas = ExtResource("1_hjak1")
+region = Rect2(0, 864, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lkepa"]
+atlas = ExtResource("1_hjak1")
+region = Rect2(48, 864, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v644y"]
+atlas = ExtResource("1_hjak1")
+region = Rect2(96, 864, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5uaah"]
+atlas = ExtResource("1_hjak1")
+region = Rect2(144, 864, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4rc06"]
+atlas = ExtResource("1_hjak1")
+region = Rect2(0, 912, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lx4iw"]
+atlas = ExtResource("1_hjak1")
+region = Rect2(48, 912, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7s8o7"]
+atlas = ExtResource("1_hjak1")
+region = Rect2(96, 912, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ynxto"]
+atlas = ExtResource("1_hjak1")
+region = Rect2(144, 912, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gv2lt"]
+atlas = ExtResource("1_hjak1")
+region = Rect2(192, 912, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xv7m3"]
+atlas = ExtResource("1_hjak1")
+region = Rect2(240, 912, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_17u0w"]
+atlas = ExtResource("1_hjak1")
+region = Rect2(288, 912, 48, 48)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hl2af"]
 atlas = ExtResource("1_hjak1")
@@ -94,6 +143,49 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_42xdg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lkepa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v644y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5uaah")
+}],
+"loop": true,
+"name": &"damage",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4rc06")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lx4iw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7s8o7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ynxto")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gv2lt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xv7m3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_17u0w")
+}],
+"loop": true,
+"name": &"death",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_hl2af")
 }, {
 "duration": 1.0,
@@ -140,10 +232,12 @@ animations = [{
 }]
 
 [node name="basic_enemy" type="CharacterBody2D"]
+script = ExtResource("1_vec07")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_j8xjh")
 sprite_frames = SubResource("SpriteFrames_7wvg4")
-animation = &"attack"
+animation = &"damage"
 autoplay = "idle"
-frame = 4
-frame_progress = 1.0
+frame = 3
+frame_progress = 0.99637

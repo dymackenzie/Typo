@@ -6,12 +6,12 @@ using System.Reflection.Metadata.Ecma335;
 public partial class player : CharacterBody2D
 {
 	// fields
-	public const float SPEED = 100.0f;
-	public const float DASH_SPEED = 200.0f;
-	public const float DASH_DURATION = 0.2f;
-	public const float FRICTION = 0.7f;
-	public const float ACCELERATION = 0.8f;
-	public const float JUMP_HEIGHT = 20f;
+	[Export] public float SPEED = 100.0f;
+	[Export] public float DASH_SPEED = 200.0f;
+	[Export] public float DASH_DURATION = 0.2f;
+	[Export] public float FRICTION = 0.7f;
+	[Export] public float ACCELERATION = 0.8f;
+	[Export] public float JUMP_HEIGHT = 20f;
 
 	// animation variable
 	private string playerState;
@@ -86,7 +86,7 @@ public partial class player : CharacterBody2D
 				// flips the sprite horizontally
 				sprite2D.FlipH = true;
 			}
-			
+
 			// accelerates when input
 			x = Lerp(Velocity.X, x * speed, ACCELERATION);
 			y = Lerp(Velocity.Y, y * speed, ACCELERATION);
