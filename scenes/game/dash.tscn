@@ -7,3 +7,9 @@ script = ExtResource("1_okjs8")
 
 [node name="duration" type="Timer" parent="."]
 one_shot = true
+
+[node name="ghost" type="Timer" parent="."]
+wait_time = 0.07
+
+[connection signal="timeout" from="duration" to="." method="_on_duration_timeout"]
+[connection signal="timeout" from="ghost" to="." method="_on_ghost_timeout"]

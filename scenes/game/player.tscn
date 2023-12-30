@@ -838,7 +838,7 @@ texture = ExtResource("2_eydv0")
 [node name="animated player" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_4ffhj")
-animation = &"walk"
+animation = &"idle"
 autoplay = "idle"
 
 [node name="Camera2D" type="Camera2D" parent="animated player"]

@@ -14,7 +14,7 @@ public partial class player : CharacterBody2D
 	public const float JUMP_HEIGHT = 20f;
 
 	// animation variable
-	private string PLAYER_STATE;
+	private string playerState;
 	private bool isJumping;
 	private bool isFalling;
 
@@ -27,7 +27,7 @@ public partial class player : CharacterBody2D
 	*/
 	public override void _Ready()
 	{
-		PLAYER_STATE = "run";
+		playerState = "idle";
 		isJumping = false;
 		isFalling = false;
 		sprite2D = GetNode<AnimatedSprite2D>("animated player");
@@ -40,12 +40,8 @@ public partial class player : CharacterBody2D
 	*/
 	public override void _PhysicsProcess(double delta) {
 
-		// dash
-		if (Input.IsActionJustPressed("dash") && !(bool)dash.Call("IsDashing")) {
-			dash.Call("StartDash", sprite2D, DASH_DURATION);
-		}
-
-		float speed = (bool)dash.Call("IsDashing") ? DASH_SPEED : SPEED;
+		// move
+		Move();
 
 		// jumping
 		if (Input.IsActionPressed("jump_space") && !isJumping) {
@@ -54,17 +50,14 @@ public partial class player : CharacterBody2D
 			Jump();
 		}
 
-		// move
-		Move(speed);
-		
-		sprite2D.Play(PLAYER_STATE);
+		sprite2D.Play(playerState);
 		
 	}
 
 	/*
 	Function to handle 8-directional movement.
 	*/
-	private void Move(float speed) {
+	private void Move() {
 
 		Vector2 direction = Input.GetVector("a_left", "d_right", "w_up", "s_down");
 		direction = direction.Normalized();
@@ -75,8 +68,15 @@ public partial class player : CharacterBody2D
 			// slowdown when no input
 			x = Lerp(Velocity.X, 0, FRICTION);
 			y = Lerp(Velocity.Y, 0, FRICTION);
-			PLAYER_STATE = "idle";
+			playerState = "idle";
 		} else if (direction != Vector2.Zero) {
+
+			// dash
+			if (Input.IsActionJustPressed("dash") && !(bool)dash.Call("IsDashing")) {
+				dash.Call("StartDash", sprite2D, DASH_DURATION);
+			}
+			float speed = (bool)dash.Call("IsDashing") ? DASH_SPEED : SPEED;
+
 			if (x > 0) {
 				// if player is going right
 				// flips the sprite horizontally
@@ -86,10 +86,11 @@ public partial class player : CharacterBody2D
 				// flips the sprite horizontally
 				sprite2D.FlipH = true;
 			}
+			
 			// accelerates when input
 			x = Lerp(Velocity.X, x * speed, ACCELERATION);
 			y = Lerp(Velocity.Y, y * speed, ACCELERATION);
-			PLAYER_STATE = "run";
+			playerState = "run";
 		}
 		
 		Velocity = new Vector2(x, y);
@@ -102,15 +103,10 @@ public partial class player : CharacterBody2D
 	*/
 	private void Jump() {
 		Tween tween = CreateTween().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
-
 		// jump
-		sprite2D.Play("jump");
 		tween.TweenProperty(sprite2D, "position", new Vector2(0, -JUMP_HEIGHT), 0.4);
-
 		// fall
-		sprite2D.Play("fall");
 		tween.TweenProperty(sprite2D, "position", Vector2.Zero, 0.3);
-
 		// after animations, allow jumping and enable hitboxes
 		tween.TweenCallback(Callable.From(() => { isJumping = false; hitbox.Disabled = false; } ));
 	}
