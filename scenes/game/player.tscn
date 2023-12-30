@@ -1,8 +1,9 @@
-[gd_scene load_steps=110 format=3 uid="uid://cycikbvsectqm"]
+[gd_scene load_steps=111 format=3 uid="uid://cycikbvsectqm"]
 
 [ext_resource type="Script" path="res://src/scripts/player.cs" id="1_4o2pt"]
 [ext_resource type="Texture2D" uid="uid://c0rr0a800dmra" path="res://assets/sprites/player_character.png" id="1_vivj0"]
 [ext_resource type="Texture2D" uid="uid://br8whaxucqp43" path="res://assets/sprites/position1.png" id="2_eydv0"]
+[ext_resource type="PackedScene" uid="uid://bc1s3uj7dntq7" path="res://scenes/game/dash.tscn" id="4_jx1nl"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fd1gt"]
 atlas = ExtResource("1_vivj0")
@@ -837,7 +838,7 @@ texture = ExtResource("2_eydv0")
 [node name="animated player" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_4ffhj")
-animation = &"jump"
+animation = &"walk"
 autoplay = "idle"
 
 [node name="Camera2D" type="Camera2D" parent="animated player"]
@@ -846,3 +847,5 @@ zoom = Vector2(2.6, 2.6)
 [node name="hitbox" type="CollisionShape2D" parent="."]
 position = Vector2(0, 3)
 shape = SubResource("CircleShape2D_k1g3e")
+
+[node name="dash" parent="." instance=ExtResource("4_jx1nl")]

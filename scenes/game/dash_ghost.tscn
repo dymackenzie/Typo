@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://d1brfl8pss8ix"]
+
+[ext_resource type="Script" path="res://src/scripts/dash_ghost.cs" id="1_640qa"]
+[ext_resource type="Texture2D" uid="uid://c0rr0a800dmra" path="res://assets/sprites/player_character.png" id="1_lc3qa"]
+
+[node name="dash_ghost" type="Sprite2D"]
+texture = ExtResource("1_lc3qa")
+region_enabled = true
+region_rect = Rect2(0, 240, 48, 48)
+script = ExtResource("1_640qa")
