@@ -9,6 +9,7 @@ script = ExtResource("1_5vlej")
 playerPath = NodePath("player")
 
 [node name="map_design_1" parent="." instance=ExtResource("1_6k8c1")]
+position = Vector2(164, 108)
 
 [node name="enemy_timer" type="Timer" parent="."]
 wait_time = 0.5

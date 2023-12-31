@@ -140,7 +140,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"attack",
-"speed": 6.0
+"speed": 9.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -233,17 +233,15 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_01ddn"]
-radius = 5.0
+radius = 6.67037
 
 [node name="basic_enemy" type="CharacterBody2D" groups=["enemy"]]
 z_index = -1
 y_sort_enabled = true
 scale = Vector2(0.9, 0.9)
 script = ExtResource("1_vec07")
-SPEED = 30.0
 
 [node name="position" type="Sprite2D" parent="."]
-scale = Vector2(1, 1)
 texture = ExtResource("2_tgyi8")
 
 [node name="animated_enemy" type="AnimatedSprite2D" parent="."]

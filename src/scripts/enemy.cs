@@ -4,10 +4,10 @@ using System;
 public partial class enemy : CharacterBody2D
 {
 
-	[Export] public float SPEED = 50.0f;
+	[Export] public float speed = 50.0f;
 	[Export] public float killRadius = 40.0f;
+	[Export] public float health = 100.0f;
 
-	
 	public CharacterBody2D player = null;
 	public Timer attackTimer;
 	public AnimatedSprite2D sprite2D;
@@ -51,7 +51,7 @@ public partial class enemy : CharacterBody2D
 		Vector2 direction = (target - GlobalPosition).Normalized();
 		float x = direction.X;
 		float y = direction.Y / 2;
-		Vector2 desiredVelocity = new Vector2(x, y) * SPEED;
+		Vector2 desiredVelocity = new Vector2(x, y) * speed;
 		Vector2 steering = (desiredVelocity - Velocity) * delta * 2.5f;
 
 		// flip enemy is needed
