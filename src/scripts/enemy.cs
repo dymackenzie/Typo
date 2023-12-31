@@ -1,15 +1,8 @@
 using Godot;
 using System;
-using System.Text.RegularExpressions;
 
 public partial class enemy : CharacterBody2D
 {
-
-	public enum Modes {
-		SURROUND,
-		ATTACK,
-		HIT
-	}
 
 	[Export] public float SPEED = 50.0f;
 	[Export] public CharacterBody2D player;
@@ -17,28 +10,29 @@ public partial class enemy : CharacterBody2D
 
 	public Vector2 velocity;
 	public Vector2 target;
-	public Modes state;
+	public Timer attackTimer;
+	public string state;
 	public float randomNum;
 
     public override void _Ready() {
         velocity = Vector2.Zero;
-		state = Modes.SURROUND;
+		state = "surround";
+		attackTimer = GetNode<Timer>("attack_timer");
 
 		RandomNumberGenerator random = new();
 		random.Randomize();
 		randomNum = random.Randf();
-
     }
 
     public override void _PhysicsProcess(double delta) {
 		switch(state) {
-			case Modes.SURROUND:
+			case "surround":
 				Move(GetCirclePosition(randomNum), delta);
 				break;
-			case Modes.ATTACK:
+			case "attack":
 				Move(player.GlobalPosition, delta);
 				break;
-			case Modes.HIT:
+			case "hit":
 				Move(player.GlobalPosition, delta);
 				break;
 		}
@@ -63,6 +57,24 @@ public partial class enemy : CharacterBody2D
 		float x = player.GlobalPosition.X + (float)Math.Cos(random * Math.PI * 2.0f) * killRadius;
 		float y = player.GlobalPosition.Y + (float)Math.Sin(random * Math.PI * 2.0f) * killRadius;
 		return new Vector2(x, y);
+	}
+
+	public void OnAttackTimerTimeout() {
+		this.state = "attack";
+	}
+
+	/*
+	Getter for timer.
+	*/
+	public Timer GetAttackTimer() {
+		return attackTimer;
+	}
+
+	/*
+	Getter for state.
+	*/
+	public void SetState(string state) {
+		this.state = state;
 	}
 
 }

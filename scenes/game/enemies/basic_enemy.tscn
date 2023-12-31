@@ -1,8 +1,8 @@
-[gd_scene load_steps=34 format=3 uid="uid://55pc43lgfq5g"]
+[gd_scene load_steps=35 format=3 uid="uid://55pc43lgfq5g"]
 
 [ext_resource type="Shader" path="res://assets/shaders/basic_enemy.gdshader" id="1_agxgd"]
 [ext_resource type="Texture2D" uid="uid://c0rr0a800dmra" path="res://assets/sprites/player_character.png" id="1_hjak1"]
-[ext_resource type="Script" path="res://scenes/game/enemies/enemy.cs" id="1_vec07"]
+[ext_resource type="Script" path="res://src/scripts/enemy.cs" id="1_vec07"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_j8xjh"]
 shader = ExtResource("1_agxgd")
@@ -231,13 +231,24 @@ animations = [{
 "speed": 6.0
 }]
 
-[node name="basic_enemy" type="CharacterBody2D"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_01ddn"]
+radius = 5.0
+
+[node name="basic_enemy" type="CharacterBody2D" groups=["enemy"]]
 script = ExtResource("1_vec07")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="animated_enemy" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_j8xjh")
 sprite_frames = SubResource("SpriteFrames_7wvg4")
 animation = &"damage"
 autoplay = "idle"
 frame = 3
 frame_progress = 0.99637
+
+[node name="enemy_hitbox" type="CollisionShape2D" parent="."]
+position = Vector2(0, 2)
+shape = SubResource("CircleShape2D_01ddn")
+
+[node name="attack_timer" type="Timer" parent="."]
+
+[connection signal="timeout" from="attack_timer" to="." method="OnAttackTimerTimeout"]

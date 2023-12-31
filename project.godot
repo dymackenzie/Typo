@@ -14,6 +14,11 @@ config/name="Typo"
 run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 
+[autoload]
+
+Globals="*res://src/autoload/Globals.cs"
+GlobalsManager="*res://src/autoload/globals.tscn"
+
 [display]
 
 window/per_pixel_transparency/allowed=true

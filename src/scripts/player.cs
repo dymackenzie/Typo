@@ -1,7 +1,4 @@
 using Godot;
-using System;
-using System.Linq.Expressions;
-using System.Reflection.Metadata.Ecma335;
 
 public partial class player : CharacterBody2D
 {
@@ -114,8 +111,35 @@ public partial class player : CharacterBody2D
 	/*
 	Linear interpolation function.
 	*/
-	private float Lerp(float first, float second, float by) {
+	private static float Lerp(float first, float second, float by) {
 		return first + ((second - first) * by);
+	}
+
+	public void OnHitBodyEntered(Node2D body) {
+		if (body.IsInGroup("enemy")) {
+			body.Call("SetState", "hit");
+		}
+	}
+
+	public void OnHitBodyExited(Node2D body) {
+		if (body.IsInGroup("enemy")) {
+			body.Call("SetState", "surround");
+		}
+	}
+
+	public void OnAttackBodyEntered(Node2D body) {
+		if (body.IsInGroup("enemy")) {
+			Timer timer = (Timer)body.Call("GetAttackTimer");
+			timer.Start();
+		}
+	}
+
+	public void OnAttackBodyExited(Node2D body) {
+		if (body.IsInGroup("enemy")) {
+			Timer timer = (Timer)body.Call("GetAttackTimer");
+			timer.Stop();
+			body.Call("SetState", "surround");
+		}
 	}
 
 }

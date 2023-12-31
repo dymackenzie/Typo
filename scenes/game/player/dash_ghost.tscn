@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://c0rr0a800dmra" path="res://assets/sprites/player_character.png" id="1_lc3qa"]
 
 [node name="dash_ghost" type="Sprite2D"]
+modulate = Color(1, 1, 1, 0.784314)
 texture = ExtResource("1_lc3qa")
 region_enabled = true
 region_rect = Rect2(96, 144, 48, 48)

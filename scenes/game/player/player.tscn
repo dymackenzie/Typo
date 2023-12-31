@@ -1,4 +1,4 @@
-[gd_scene load_steps=111 format=3 uid="uid://cycikbvsectqm"]
+[gd_scene load_steps=113 format=3 uid="uid://cycikbvsectqm"]
 
 [ext_resource type="Script" path="res://src/scripts/player.cs" id="1_4o2pt"]
 [ext_resource type="Texture2D" uid="uid://c0rr0a800dmra" path="res://assets/sprites/player_character.png" id="1_vivj0"]
@@ -829,7 +829,13 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_k1g3e"]
 radius = 5.0
 
-[node name="player" type="CharacterBody2D"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_1njop"]
+radius = 20.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_q3rjr"]
+radius = 50.0
+
+[node name="player" type="CharacterBody2D" groups=["player"]]
 script = ExtResource("1_4o2pt")
 
 [node name="true position" type="Sprite2D" parent="."]
@@ -838,8 +844,9 @@ texture = ExtResource("2_eydv0")
 [node name="animated player" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_4ffhj")
-animation = &"idle"
+animation = &"attack_slice"
 autoplay = "idle"
+frame = 2
 
 [node name="Camera2D" type="Camera2D" parent="animated player"]
 zoom = Vector2(2.6, 2.6)
@@ -849,3 +856,18 @@ position = Vector2(0, 3)
 shape = SubResource("CircleShape2D_k1g3e")
 
 [node name="dash" parent="." instance=ExtResource("4_jx1nl")]
+
+[node name="hit" type="Area2D" parent="."]
+
+[node name="hit_shape" type="CollisionShape2D" parent="hit"]
+shape = SubResource("CircleShape2D_1njop")
+
+[node name="attack" type="Area2D" parent="."]
+
+[node name="attack_shape" type="CollisionShape2D" parent="attack"]
+shape = SubResource("CircleShape2D_q3rjr")
+
+[connection signal="body_entered" from="hit" to="." method="OnHitBodyEntered"]
+[connection signal="body_exited" from="hit" to="." method="OnHitBodyExited"]
+[connection signal="body_entered" from="attack" to="." method="OnAttackBodyEntered"]
+[connection signal="body_exited" from="attack" to="." method="OnAttackBodyExited"]
