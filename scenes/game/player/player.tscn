@@ -1,4 +1,4 @@
-[gd_scene load_steps=113 format=3 uid="uid://cycikbvsectqm"]
+[gd_scene load_steps=114 format=3 uid="uid://cycikbvsectqm"]
 
 [ext_resource type="Script" path="res://src/scripts/player.cs" id="1_4o2pt"]
 [ext_resource type="Texture2D" uid="uid://c0rr0a800dmra" path="res://assets/sprites/player_character.png" id="1_vivj0"]
@@ -835,6 +835,12 @@ radius = 20.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_q3rjr"]
 radius = 50.0
 
+[sub_resource type="Curve2D" id="Curve2D_3tprg"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 256, -150, 0, 0, 0, 0, 256, 150, 0, 0, 0, 0, -256, 150, 0, 0, 0, 0, -256, -150, 0, 0, 0, 0, 256, -150)
+}
+point_count = 5
+
 [node name="player" type="CharacterBody2D" groups=["player"]]
 script = ExtResource("1_4o2pt")
 
@@ -866,6 +872,15 @@ shape = SubResource("CircleShape2D_1njop")
 
 [node name="attack_shape" type="CollisionShape2D" parent="attack"]
 shape = SubResource("CircleShape2D_q3rjr")
+
+[node name="enemy_spawning" type="Path2D" parent="."]
+curve = SubResource("Curve2D_3tprg")
+
+[node name="enemy_spawn_range" type="PathFollow2D" parent="enemy_spawning"]
+position = Vector2(255.917, -150)
+progress = 1623.84
+
+[node name="Marker2D" type="Marker2D" parent="enemy_spawning/enemy_spawn_range"]
 
 [connection signal="body_entered" from="hit" to="." method="OnHitBodyEntered"]
 [connection signal="body_exited" from="hit" to="." method="OnHitBodyExited"]

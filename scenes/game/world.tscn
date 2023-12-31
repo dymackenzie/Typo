@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://bpd2lksdfdn7b"]
+
+[ext_resource type="Script" path="res://src/scripts/world.cs" id="1_5vlej"]
+[ext_resource type="PackedScene" uid="uid://du1bqchipg3ki" path="res://scenes/game/map1.tscn" id="1_6k8c1"]
+[ext_resource type="PackedScene" uid="uid://cycikbvsectqm" path="res://scenes/game/player/player.tscn" id="2_r78ba"]
+
+[node name="world" type="Node2D"]
+script = ExtResource("1_5vlej")
+
+[node name="map_design_1" parent="." instance=ExtResource("1_6k8c1")]
+
+[node name="enemy_timer" type="Timer" parent="."]
+autostart = true
+
+[node name="player" parent="." instance=ExtResource("2_r78ba")]
+
+[connection signal="timeout" from="enemy_timer" to="." method="OnEnemyTimerTimeout"]
