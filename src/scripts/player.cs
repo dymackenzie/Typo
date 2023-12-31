@@ -40,12 +40,12 @@ public partial class player : CharacterBody2D
 		// move
 		Move((float)delta);
 
-		// jumping
-		if (Input.IsActionPressed("jump_space") && !isJumping) {
-			hitbox.Disabled = true;
-			isJumping = true;
-			Jump();
-		}
+		// // jumping
+		// if (Input.IsActionPressed("jump_space") && !isJumping) {
+		// 	hitbox.Disabled = true;
+		// 	isJumping = true;
+		// 	Jump();
+		// }
 
 		sprite2D.Play(playerState);
 		
@@ -120,6 +120,8 @@ public partial class player : CharacterBody2D
 	*/
 	public void OnHitBodyEntered(Node2D body) {
 		if (body.IsInGroup("enemy")) {
+			Timer timer = (Timer)body.Call("GetAttackTimer");
+			timer.Stop();
 			body.Call("SetState", "hit");
 		}
 	}
@@ -130,7 +132,7 @@ public partial class player : CharacterBody2D
 	public void OnHitBodyExited(Node2D body) {
 		if (body.IsInGroup("enemy")) {
 			Timer timer = (Timer)body.Call("GetAttackTimer");
-			timer.Stop();
+			timer.Start();
 			body.Call("SetState", "surround");
 		}
 	}

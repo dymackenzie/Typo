@@ -856,6 +856,7 @@ autoplay = "idle"
 [node name="Camera2D" type="Camera2D" parent="animated player"]
 zoom = Vector2(2.6, 2.6)
 position_smoothing_enabled = true
+position_smoothing_speed = 8.0
 
 [node name="hitbox" type="CollisionShape2D" parent="."]
 position = Vector2(0, 3)
@@ -864,11 +865,13 @@ shape = SubResource("CircleShape2D_k1g3e")
 [node name="dash" parent="." instance=ExtResource("4_jx1nl")]
 
 [node name="hit" type="Area2D" parent="."]
+visible = false
 
 [node name="hit_shape" type="CollisionShape2D" parent="hit"]
 shape = SubResource("CircleShape2D_1njop")
 
 [node name="attack" type="Area2D" parent="."]
+visible = false
 y_sort_enabled = true
 
 [node name="attack_shape" type="CollisionShape2D" parent="attack"]
