@@ -115,18 +115,27 @@ public partial class player : CharacterBody2D
 		return first + ((second - first) * by);
 	}
 
+	/*
+	If enemy enters hitting area, set state of enemy to hit.
+	*/
 	public void OnHitBodyEntered(Node2D body) {
 		if (body.IsInGroup("enemy")) {
 			body.Call("SetState", "hit");
 		}
 	}
 
+	/*
+	If enemy exits hitting area, set state of enemy to surround.
+	*/
 	public void OnHitBodyExited(Node2D body) {
 		if (body.IsInGroup("enemy")) {
 			body.Call("SetState", "surround");
 		}
 	}
 
+	/*
+	If enemy enters attacking area, start timer.
+	*/
 	public void OnAttackBodyEntered(Node2D body) {
 		if (body.IsInGroup("enemy")) {
 			Timer timer = (Timer)body.Call("GetAttackTimer");
@@ -134,6 +143,9 @@ public partial class player : CharacterBody2D
 		}
 	}
 
+	/*
+	If enemy exits attacking area, stop timer and set state to surround.
+	*/
 	public void OnAttackBodyExited(Node2D body) {
 		if (body.IsInGroup("enemy")) {
 			Timer timer = (Timer)body.Call("GetAttackTimer");

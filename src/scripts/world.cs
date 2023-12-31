@@ -4,12 +4,17 @@ using System;
 public partial class world : Node2D
 {
 
+	[Export] NodePath playerPath;
+
 	private Timer enemyTimer;
 	private PackedScene enemy;
+	private CharacterBody2D player;
 
 	public override void _Ready() {
 		enemyTimer = GetNode<Timer>("enemy_timer");
 		enemy = GD.Load<PackedScene>("res://scenes/game/enemies/basic_enemy.tscn");
+		// load player
+		player = GetNode<CharacterBody2D>(playerPath);
 	}
 
 	/*
@@ -24,9 +29,11 @@ public partial class world : Node2D
 		pathFollow2D.Progress = random.RandiRange(0, 1623);
 
 		// instantiate enemy at random point
-		CharacterBody2D instance = (CharacterBody2D)enemy.Instantiate();
+		CharacterBody2D enemyInstance = (CharacterBody2D)enemy.Instantiate();
 		Marker2D position = GetNode<Marker2D>("player/enemy_spawning/enemy_spawn_range/Marker2D");
-		instance.GlobalPosition = position.GlobalPosition;
-		AddChild(instance);
+		enemyInstance.GlobalPosition = position.GlobalPosition;
+		// sets player that enemy should attack
+		enemyInstance.Call("SetPlayer", player);
+		AddChild(enemyInstance);
 	}
 }
