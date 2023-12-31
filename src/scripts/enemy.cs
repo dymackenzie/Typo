@@ -7,15 +7,19 @@ public partial class enemy : CharacterBody2D
 	[Export] public float SPEED = 50.0f;
 	[Export] public float killRadius = 40.0f;
 
-	public Vector2 target;
+	
 	public CharacterBody2D player = null;
 	public Timer attackTimer;
+	public AnimatedSprite2D sprite2D;
+
 	public string state;
 	public float randomNum;
+	public Vector2 target;
 
     public override void _Ready() {
 		state = "surround";
 		attackTimer = GetNode<Timer>("attack_timer");
+		sprite2D = GetNode<AnimatedSprite2D>("animated_enemy");
 
 		RandomNumberGenerator random = new();
 		random.Randomize();
@@ -26,12 +30,15 @@ public partial class enemy : CharacterBody2D
 		switch(state) {
 			case "surround":
 				Move(GetCirclePosition(randomNum), (float)delta);
+				sprite2D.Play("walk");
 				break;
 			case "attack":
 				Move(player.GlobalPosition, (float)delta);
+				sprite2D.Play("walk");
 				break;
 			case "hit":
 				Move(player.GlobalPosition, (float)delta);
+				sprite2D.Play("attack");
 				break;
 		}
 	}
@@ -42,10 +49,20 @@ public partial class enemy : CharacterBody2D
 	*/
 	public void Move(Vector2 target, float delta) {
 		Vector2 direction = (target - GlobalPosition).Normalized();
-		Vector2 desiredVelocity = direction * SPEED;
+		float x = direction.X;
+		float y = direction.Y / 2;
+		Vector2 desiredVelocity = new Vector2(x, y) * SPEED;
 		Vector2 steering = (desiredVelocity - Velocity) * delta * 2.5f;
+
+		// flip enemy is needed
+		if (player.GlobalPosition.X < GlobalPosition.X) {
+			sprite2D.FlipH = true;
+		} else {
+			sprite2D.FlipH = false;
+		}
+
 		Velocity += steering;
-		MoveAndSlide();
+		MoveAndCollide(Velocity * delta);
 	}
 
 	/*

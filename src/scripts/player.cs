@@ -38,7 +38,7 @@ public partial class player : CharacterBody2D
 	public override void _PhysicsProcess(double delta) {
 
 		// move
-		Move();
+		Move((float)delta);
 
 		// jumping
 		if (Input.IsActionPressed("jump_space") && !isJumping) {
@@ -54,7 +54,7 @@ public partial class player : CharacterBody2D
 	/*
 	Function to handle 8-directional movement.
 	*/
-	private void Move() {
+	private void Move(float delta) {
 
 		Vector2 direction = Input.GetVector("a_left", "d_right", "w_up", "s_down");
 		direction = direction.Normalized();
@@ -91,7 +91,7 @@ public partial class player : CharacterBody2D
 		}
 		
 		Velocity = new Vector2(x, y);
-		MoveAndSlide();
+		MoveAndCollide(Velocity * delta);
 
 	}
 
@@ -129,6 +129,8 @@ public partial class player : CharacterBody2D
 	*/
 	public void OnHitBodyExited(Node2D body) {
 		if (body.IsInGroup("enemy")) {
+			Timer timer = (Timer)body.Call("GetAttackTimer");
+			timer.Stop();
 			body.Call("SetState", "surround");
 		}
 	}

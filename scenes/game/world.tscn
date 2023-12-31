@@ -11,6 +11,8 @@ playerPath = NodePath("player")
 [node name="map_design_1" parent="." instance=ExtResource("1_6k8c1")]
 
 [node name="enemy_timer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
 autostart = true
 
 [node name="player" parent="." instance=ExtResource("2_r78ba")]

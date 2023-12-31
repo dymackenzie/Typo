@@ -20,9 +20,8 @@ public partial class world : Node2D
 	/*
 	Controls enemy spawn timing.
 	*/
-	public void OnEnemyTimerTimeout() {
+	public void RandomEnemySpawn() {
 		// generate random number on path follow to spawn enemy at
-		GD.Print("CALLED");
 		RandomNumberGenerator random = new();
 		random.Randomize();
 		PathFollow2D pathFollow2D = GetNode<PathFollow2D>("player/enemy_spawning/enemy_spawn_range");
@@ -35,5 +34,10 @@ public partial class world : Node2D
 		// sets player that enemy should attack
 		enemyInstance.Call("SetPlayer", player);
 		AddChild(enemyInstance);
+	}
+
+	
+	public void OnEnemyTimerTimeout() {
+		RandomEnemySpawn();
 	}
 }
