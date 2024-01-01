@@ -23,8 +23,11 @@ public partial class player : CharacterBody2D
 	private CollisionShape2D hitbox;
 	private Node2D dash;
 
-	// enemies to attack
+	// kill mode
 	public ArrayList enemies = new();
+	private int pointer = 0;
+	private CharacterBody2D currentEnemy;
+	private bool withinEnemyReach = false;
 
 	public override void _Ready()
 	{
@@ -38,15 +41,18 @@ public partial class player : CharacterBody2D
 	*/
 	public override void _PhysicsProcess(double delta) {
 
+		
+		// attack 
+		// if enemies list is not empty
+		if (Input.IsActionJustPressed("enter_attack") && enemies.Count != 0) {
+			inKillMode = true;
+		}
+
 		// move
 		if (!inKillMode) {
 			Move((float)delta);
-		}
-
-		// attack
-		if (Input.IsActionJustPressed("enter_attack")) {
-			inKillMode = true;
-			KillMode();
+		} else {
+			KillMode((float)delta);
 		}
 
 		// // jumping
@@ -60,12 +66,41 @@ public partial class player : CharacterBody2D
 		
 	}
 
-	private void KillMode() {
+	/*
+	Kill mode to handle fighting mechanics
+	*/
+	private void KillMode(float delta) {
+
+		// CameraZoom(true);
+
+		currentEnemy = (CharacterBody2D)enemies[pointer];
+		
+		// first, dash to enemy
+		if (!withinEnemyReach) {
+			dash.Call("StartDash", sprite2D, dash_duration); // dash
+			Vector2 direction = (currentEnemy.GlobalPosition - GlobalPosition).Normalized();
+			float x = direction.X;
+			float y = direction.Y / 2;
+			Vector2 desiredVelocity = new Vector2(x, y) * dash_speed;
+			OnWithinBodyEntered(currentEnemy);
+			MoveAndCollide(desiredVelocity * delta);
+		} else {
+			// if already at enemy, initiate attack
+			
+		}
+	}
+
+	/*
+	Zomm in camera and zoom out
+	*/
+	private void CameraZoom(bool zoomIn) {
 		Camera2D camera2D = GetNode<Camera2D>("animated_player/Camera2D");
 		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.Out);
-		tween.TweenProperty(camera2D, "zoom", camera2D.Zoom + new Vector2(zoom, zoom), zoomDuration);
-		foreach (CharacterBody2D enemy in enemies) {
-			
+		if (zoomIn) {
+			// zoom in to player
+			tween.TweenProperty(camera2D, "zoom", camera2D.Zoom + new Vector2(zoom, zoom), zoomDuration);
+		} else {
+			tween.TweenProperty(camera2D, "zoom", camera2D.Zoom - new Vector2(zoom, zoom), zoomDuration);
 		}
 	}
 
@@ -73,7 +108,6 @@ public partial class player : CharacterBody2D
 	Function to handle 8-directional movement.
 	*/
 	private void Move(float delta) {
-
 		Vector2 direction = Input.GetVector("a_left", "d_right", "w_up", "s_down");
 		direction = direction.Normalized();
 		float x = direction.X;
@@ -110,7 +144,6 @@ public partial class player : CharacterBody2D
 		
 		Velocity = new Vector2(x, y);
 		MoveAndCollide(Velocity * delta);
-
 	}
 
 	/*
@@ -132,6 +165,7 @@ public partial class player : CharacterBody2D
 			Timer timer = (Timer)body.Call("GetAttackTimer");
 			timer.Start();
 			body.Call("SetState", "surround");
+			withinEnemyReach = false;
 		}
 	}
 
@@ -167,6 +201,14 @@ public partial class player : CharacterBody2D
 			spritePos.Modulate = new Color(1, 1, 1); // white
 
 			enemies.Remove((CharacterBody2D)body);
+		}
+	}
+
+	public void OnWithinBodyEntered(Node2D body) {
+		if (body.IsInGroup("enemy")) {
+			if ((CharacterBody2D)body == currentEnemy) {
+				withinEnemyReach = true;
+			}
 		}
 	}
 

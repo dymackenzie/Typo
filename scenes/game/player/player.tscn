@@ -1,4 +1,4 @@
-[gd_scene load_steps=115 format=3 uid="uid://cycikbvsectqm"]
+[gd_scene load_steps=116 format=3 uid="uid://cycikbvsectqm"]
 
 [ext_resource type="Script" path="res://src/scripts/player.cs" id="1_4o2pt"]
 [ext_resource type="Texture2D" uid="uid://c0rr0a800dmra" path="res://assets/sprites/player_character.png" id="1_vivj0"]
@@ -842,6 +842,9 @@ _data = {
 }
 point_count = 5
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_iwvb5"]
+radius = 16.0
+
 [node name="player" type="CharacterBody2D" groups=["player"]]
 script = ExtResource("1_4o2pt")
 
@@ -852,8 +855,9 @@ texture = ExtResource("2_eydv0")
 y_sort_enabled = true
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_4ffhj")
-animation = &"idle"
+animation = &"attack_slice"
 autoplay = "idle"
+frame = 2
 
 [node name="Camera2D" type="Camera2D" parent="animated_player"]
 zoom = Vector2(2.6, 2.6)
@@ -862,18 +866,17 @@ position_smoothing_speed = 8.0
 
 [node name="hitbox" type="CollisionShape2D" parent="."]
 position = Vector2(0, 4)
+scale = Vector2(2.6, 2.6)
 shape = SubResource("CircleShape2D_k1g3e")
 
 [node name="dash" parent="." instance=ExtResource("4_jx1nl")]
 
 [node name="hit" type="Area2D" parent="."]
-visible = false
 
 [node name="hit_shape" type="CollisionShape2D" parent="hit"]
 shape = SubResource("CircleShape2D_1njop")
 
 [node name="attack" type="Area2D" parent="."]
-visible = false
 
 [node name="attack_shape" type="CollisionShape2D" parent="attack"]
 shape = SubResource("CircleShape2D_q3rjr")
@@ -890,7 +893,13 @@ progress = 1623.84
 [node name="enable_attack" type="Node2D" parent="."]
 script = ExtResource("5_6wcmp")
 
+[node name="within" type="Area2D" parent="."]
+
+[node name="within_shape" type="CollisionShape2D" parent="within"]
+shape = SubResource("CircleShape2D_iwvb5")
+
 [connection signal="body_entered" from="hit" to="." method="OnHitBodyEntered"]
 [connection signal="body_exited" from="hit" to="." method="OnHitBodyExited"]
 [connection signal="body_entered" from="attack" to="." method="OnAttackBodyEntered"]
 [connection signal="body_exited" from="attack" to="." method="OnAttackBodyExited"]
+[connection signal="body_entered" from="within" to="." method="OnWithinBodyEntered"]

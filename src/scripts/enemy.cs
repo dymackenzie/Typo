@@ -4,6 +4,12 @@ using System;
 public partial class enemy : CharacterBody2D
 {
 
+	public enum EnemyState {
+		SURROUND,
+		ATTACK,
+		HIT
+	}
+
 	[Export] public float speed = 50.0f;
 	[Export] public float killRadius = 40.0f;
 	[Export] public float health = 100.0f;
@@ -11,32 +17,27 @@ public partial class enemy : CharacterBody2D
 	public CharacterBody2D player = null;
 	public Timer attackTimer;
 	public AnimatedSprite2D sprite2D;
+	public EnemyState state = EnemyState.SURROUND;
 
-	public string state;
-	public float randomNum;
-	public Vector2 target;
+	public RandomNumberGenerator random = new();
 
     public override void _Ready() {
-		state = "surround";
 		attackTimer = GetNode<Timer>("attack_timer");
 		sprite2D = GetNode<AnimatedSprite2D>("animated_enemy");
-
-		RandomNumberGenerator random = new();
 		random.Randomize();
-		randomNum = random.Randf();
     }
 
     public override void _PhysicsProcess(double delta) {
 		switch(state) {
-			case "surround":
-				Move(GetCirclePosition(randomNum), (float)delta);
+			case EnemyState.SURROUND:
+				Move(GetCirclePosition(random.Randf()), (float)delta);
 				sprite2D.Play("walk");
 				break;
-			case "attack":
+			case EnemyState.ATTACK:
 				Move(player.GlobalPosition, (float)delta);
 				sprite2D.Play("walk");
 				break;
-			case "hit":
+			case EnemyState.HIT:
 				Move(player.GlobalPosition, (float)delta);
 				sprite2D.Play("attack");
 				break;
@@ -78,8 +79,11 @@ public partial class enemy : CharacterBody2D
 		}
 	}
 
+	/*
+	When the attack timer runs out, have enemies attack 
+	*/
 	public void OnAttackTimerTimeout() {
-		state = "attack";
+		state = EnemyState.ATTACK;
 	}
 
 	public Timer GetAttackTimer() {
@@ -87,7 +91,13 @@ public partial class enemy : CharacterBody2D
 	}
 
 	public void SetState(string state) {
-		this.state = state;
+		if (state == "surround") {
+			this.state = EnemyState.SURROUND;
+		} else if (state == "attack") {
+			this.state = EnemyState.ATTACK;
+		} else if (state == "hit") {
+			this.state = EnemyState.HIT;
+		}
 	}
 
 	public void SetPlayer(CharacterBody2D player) {
