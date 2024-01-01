@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Collections;
 using Godot;
 
@@ -18,15 +19,16 @@ public partial class player : CharacterBody2D
 	// private bool isJumping = false;
 	// private bool isFalling = false;
 	private bool inKillMode = false;
+	private bool isTyping = false;
 
 	private AnimatedSprite2D sprite2D;
+	private CharacterBody2D currentEnemy;
 	private CollisionShape2D hitbox;
 	private Node2D dash;
 
 	// kill mode
 	public ArrayList enemies = new();
 	private int pointer = 0;
-	private CharacterBody2D currentEnemy;
 	private bool withinEnemyReach = false;
 
 	public override void _Ready()
@@ -45,6 +47,7 @@ public partial class player : CharacterBody2D
 		// attack 
 		// if enemies list is not empty
 		if (Input.IsActionJustPressed("enter_attack") && enemies.Count != 0) {
+			CameraZoom(true);
 			inKillMode = true;
 		}
 
@@ -69,9 +72,7 @@ public partial class player : CharacterBody2D
 	/*
 	Kill mode to handle fighting mechanics
 	*/
-	private void KillMode(float delta) {
-
-		// CameraZoom(true);
+	public void KillMode(float delta) {
 
 		currentEnemy = (CharacterBody2D)enemies[pointer];
 		
@@ -86,9 +87,19 @@ public partial class player : CharacterBody2D
 			MoveAndCollide(desiredVelocity * delta);
 		} else {
 			// if already at enemy, initiate attack
-			
+			isTyping = true;
 		}
 	}
+
+    public override void _Input(InputEvent @event)
+    {
+        if (isTyping) {
+			if (@event is InputEventKey key && !@event.IsPressed()) {
+				InputEventKey typedEvent = key;
+				string keyTyped = typedEvent.AsTextKeycode();
+			}
+		}
+    }
 
 	/*
 	Zomm in camera and zoom out
@@ -107,7 +118,7 @@ public partial class player : CharacterBody2D
 	/*
 	Function to handle 8-directional movement.
 	*/
-	private void Move(float delta) {
+	public void Move(float delta) {
 		Vector2 direction = Input.GetVector("a_left", "d_right", "w_up", "s_down");
 		direction = direction.Normalized();
 		float x = direction.X;
