@@ -18,6 +18,7 @@ config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 
 Globals="*res://src/autoload/Globals.cs"
 GlobalsManager="*res://src/autoload/globals.tscn"
+Words="*res://src/autoload/Words.cs"
 
 [display]
 
