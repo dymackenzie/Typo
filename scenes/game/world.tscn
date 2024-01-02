@@ -12,7 +12,6 @@ playerPath = NodePath("player")
 position = Vector2(164, 108)
 
 [node name="enemy_timer" type="Timer" parent="."]
-wait_time = 0.5
 one_shot = true
 autostart = true
 

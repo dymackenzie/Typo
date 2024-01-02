@@ -22,13 +22,14 @@ public partial class player : CharacterBody2D
 	private bool isTyping = false;
 
 	private AnimatedSprite2D sprite2D;
-	private CharacterBody2D currentEnemy;
+	private CharacterBody2D currentEnemy = null;
 	private CollisionShape2D hitbox;
 	private Node2D dash;
 
 	// kill mode
 	public ArrayList enemies = new();
-	private int pointer = 0;
+	private int enemyPointer = 0;
+	private int currentLetterIndex = 0;
 	private bool withinEnemyReach = false;
 
 	public override void _Ready()
@@ -46,7 +47,7 @@ public partial class player : CharacterBody2D
 		
 		// attack 
 		// if enemies list is not empty
-		if (Input.IsActionJustPressed("enter_attack") && enemies.Count != 0) {
+		if (Input.IsActionJustPressed("enter_attack") && enemies.Count != 0 && !inKillMode) {
 			CameraZoom(true);
 			inKillMode = true;
 		}
@@ -74,32 +75,69 @@ public partial class player : CharacterBody2D
 	*/
 	public void KillMode(float delta) {
 
-		currentEnemy = (CharacterBody2D)enemies[pointer];
-		
-		// first, dash to enemy
+		currentEnemy = (CharacterBody2D)enemies[enemyPointer];
 		if (!withinEnemyReach) {
+			// first, dash to enemy
 			dash.Call("StartDash", sprite2D, dash_duration); // dash
 			Vector2 direction = (currentEnemy.GlobalPosition - GlobalPosition).Normalized();
-			float x = direction.X;
-			float y = direction.Y / 2;
-			Vector2 desiredVelocity = new Vector2(x, y) * dash_speed;
+			Vector2 desiredVelocity = new Vector2(direction.X, direction.Y / 2) * dash_speed;
 			OnWithinBodyEntered(currentEnemy);
-			MoveAndCollide(desiredVelocity * delta);
+			MoveAndCollide(desiredVelocity * delta * 2.5f);
 		} else {
 			// if already at enemy, initiate attack
 			isTyping = true;
 		}
 	}
 
-    public override void _Input(InputEvent @event)
+    public override void _UnhandledInput(InputEvent @event)
     {
         if (isTyping) {
 			if (@event is InputEventKey key && !@event.IsPressed()) {
 				InputEventKey typedEvent = key;
 				string keyTyped = typedEvent.AsTextKeycode();
+				
+				// handle enter case
+				if (keyTyped == "Enter")
+					return;
+
+				if (currentEnemy != null) {
+					string prompt = (string)currentEnemy.Call("GetPrompt");
+					string nextChar = prompt.Substr(currentLetterIndex, 1);
+					// if word matches
+					if (keyTyped == nextChar) {
+						currentLetterIndex += 1;
+						// change string to match progress
+						currentEnemy.Call("SetNextCharacter", currentLetterIndex, false);
+						// when word is finished
+						if (currentLetterIndex == prompt.Length) {
+							ResetPrompt();
+						}
+					} else {
+						// change string to match wrong letter
+						currentEnemy.Call("SetNextCharacter", currentLetterIndex, true);
+					}
+				}
 			}
 		}
     }
+
+	/*
+	Is player finished typing the prompt? 
+	*/
+	private void ResetPrompt() {
+		currentLetterIndex = 0;
+		isTyping = withinEnemyReach = false;
+		currentEnemy.QueueFree();
+		// check if player has gone through all enemies
+		if (enemyPointer == enemies.Count - 1) {
+			// all enemies have been wiped
+			inKillMode = false;
+			CameraZoom(false);
+		} else {
+			// onwards to next foe
+			enemyPointer += 1;
+		}
+	}
 
 	/*
 	Zomm in camera and zoom out
@@ -172,11 +210,8 @@ public partial class player : CharacterBody2D
 	If enemy exits hitting area, set state of enemy to surround.
 	*/
 	public void OnHitBodyExited(Node2D body) {
-		if (body.IsInGroup("enemy")) {
-			Timer timer = (Timer)body.Call("GetAttackTimer");
-			timer.Start();
+		if (body.IsInGroup("enemy") ) {
 			body.Call("SetState", "surround");
-			withinEnemyReach = false;
 		}
 	}
 
@@ -190,7 +225,7 @@ public partial class player : CharacterBody2D
 
 			// CharacterBody2D enemy = (CharacterBody2D)body;
 			Sprite2D spritePos = body.GetNode<Sprite2D>("position");
-			// change sprite color
+			// change position color
 			spritePos.Modulate = new Color(0.29f, 0.02f, 0.02f); // dark red
 
 			enemies.Add((CharacterBody2D)body);
@@ -208,7 +243,7 @@ public partial class player : CharacterBody2D
 
 			// CharacterBody2D enemy = (CharacterBody2D)body;
 			Sprite2D spritePos = body.GetNode<Sprite2D>("position");
-			// change sprite color
+			// change position color
 			spritePos.Modulate = new Color(1, 1, 1); // white
 
 			enemies.Remove((CharacterBody2D)body);

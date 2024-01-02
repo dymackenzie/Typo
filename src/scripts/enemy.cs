@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Reflection.Metadata.Ecma335;
 
 public partial class enemy : CharacterBody2D
 {
@@ -13,17 +14,23 @@ public partial class enemy : CharacterBody2D
 	[Export] public float speed = 50.0f;
 	[Export] public float killRadius = 40.0f;
 	[Export] public float health = 100.0f;
+	[Export] public Color textCorrect = new Color("#00FF00");
+	[Export] public Color textWrong = new Color("#FF0000");
 
 	public CharacterBody2D player = null;
 	public Timer attackTimer;
 	public AnimatedSprite2D sprite2D;
 	public EnemyState state = EnemyState.SURROUND;
-
 	public RandomNumberGenerator random = new();
 
+	private RichTextLabel prompt;
+	private string promptText;
+
     public override void _Ready() {
+		prompt = GetNode<RichTextLabel>("typing_text");
 		attackTimer = GetNode<Timer>("attack_timer");
 		sprite2D = GetNode<AnimatedSprite2D>("animated_enemy");
+		promptText = prompt.Text;
 		random.Randomize();
     }
 
@@ -104,5 +111,42 @@ public partial class enemy : CharacterBody2D
 		this.player = player;
 	}
 
+
+	/*
+	Gets prompt with a parsed bb-code removed string
+	*/
+	public string GetPrompt() {
+		var regex = new RegEx();
+		regex.Compile("\\[.+?\\]");
+		return regex.Sub(promptText, "", true);
+	}
+
+	/*
+	Colors the text according to user input
+	*/
+	public void SetNextCharacter(int nextChar, bool wrong) {
+		string correctText = string.Concat(GetBBCodeColorTag(textCorrect), GetPrompt().AsSpan(0, nextChar), "[/color]");
+		string wrongText = "";
+		string remainingText = "";
+		if (nextChar < GetPrompt().Length) {
+			wrongText = !wrong ? GetPrompt().Substring(nextChar, 1) : string.Concat(GetBBCodeColorTag(textWrong), GetPrompt().AsSpan(nextChar, 1), "[/color]");
+			remainingText = GetPrompt()[(nextChar + 1)..];
+		}
+		prompt.Text = SetCenterTags(correctText + wrongText + remainingText);
+	}
+
+	/*
+	Formats color into a BBCode tag
+	*/
+	private string GetBBCodeColorTag(Color color) {
+		return "[color=#" + color.ToHtml(false) + "]";
+	}
+
+	/*
+	Sets center tags
+	*/
+	private string SetCenterTags(string toCenter) {
+		return "[center]" + toCenter + "[/center]";
+	}
 
 }
