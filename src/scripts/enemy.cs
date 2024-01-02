@@ -14,6 +14,7 @@ public partial class enemy : CharacterBody2D
 	[Export] public float speed = 50.0f;
 	[Export] public float killRadius = 40.0f;
 	[Export] public float health = 100.0f;
+	[Export] public int difficulty = 0;
 	[Export] public Color textCorrect = new Color("#00FF00");
 	[Export] public Color textWrong = new Color("#FF0000");
 
@@ -30,8 +31,12 @@ public partial class enemy : CharacterBody2D
 		prompt = GetNode<RichTextLabel>("typing_text");
 		attackTimer = GetNode<Timer>("attack_timer");
 		sprite2D = GetNode<AnimatedSprite2D>("animated_enemy");
-		promptText = prompt.Text;
 		random.Randomize();
+
+		// word prompt
+		Words words = new();
+		promptText = (string)words.Call("GetRandomPrompt", difficulty);
+		prompt.Text = SetCenterTags(promptText);
     }
 
     public override void _PhysicsProcess(double delta) {

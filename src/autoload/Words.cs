@@ -1,10 +1,11 @@
 using Godot;
 using System;
+using System.Linq;
 
 public partial class Words : Node
 {
 
-	public string[] FOUR_LETTERS = new string[] {"aged", "arab", "atom", "bold", "bush", "buzz", "cafe", "call", "cart", "city", "clay", "club", 
+	private static readonly string[] FOUR_LETTERS = new string[] {"aged", "arab", "atom", "bold", "bush", "buzz", "cafe", "call", "cart", "city", "clay", "club", 
 	"coat", "cuba", "cuts", "dame", "deal", "deck", "dell", "deny", "drug", "east", "exec", "expo", "face", "feed", "feet",
 	"film", "fish", "flag", "foam", "fork", "gain", "gave", "gene", "grad", "hard", "heat", "hits", "hold", "home", "hull", 
 	"jean", "judy", "kept", "king", "kits", "knit", "lamp", "leon", "lips", "lord", "love", "luck", "mail", "make", "male", "mine", "misc", "navy", "odds", 
@@ -12,7 +13,7 @@ public partial class Words : Node
 	"sake", "sans", "seal", "seen", "semi", "shaw", "song", "sort", "soup", "stem", "sync", "tear", "that", "took", "trio", "twin", "type", 
 	"wage", "want", "warm", "ways", "wide", "wire", "wrap", "xbox", "zone"};
 	
-	public string[] FIVE_LETTERS = new string[] {"acute", "agent", "aimed", "alien", "alloy", "anime", "asked", "banks", "berry", "billy", "black", "blank", "blood", 
+	private static readonly string[] FIVE_LETTERS = new string[] {"acute", "agent", "aimed", "alien", "alloy", "anime", "asked", "banks", "berry", "billy", "black", "blank", "blood", 
 	"booth", "boxed", "cabin", "calls", "cards", "cents", "chain", "charm", "chips", "chose", "cisco", "cohen", "colon", "coral", "costs", "court", "crest", "crown", 
 	"dance", "dates", "death", "dodge", "doors", "drive", "ellen", "euros", "evans", "exams", "fails", "fancy", "fatal", "feels", "filed", "first", "flesh", "flood", 
 	"flour", "frank", "fresh", "front", "gauge", "genre", "given", "glenn", "grant", "guard", "guide", "honey", "icons", "indie", "items", "jerry", "karen", "knows", 
@@ -22,7 +23,7 @@ public partial class Words : Node
 	"texas", "third", "those", "tiles", "tough", "tower", "tribe", "trunk", "tulsa", "uncle", "venue", "video", "volvo", "wages", "wayne", "wheel", "witch", "worse", 
 	"yahoo", "yield"};
 
-	public string[] SIX_LETTERS = new string[] {"active", "actual", "advice", "africa", "albert", "amanda", "annual", "appeal", "arrest", "assume", "asthma", "awards", 
+	private static readonly string[] SIX_LETTERS = new string[] {"active", "actual", "advice", "africa", "albert", "amanda", "annual", "appeal", "arrest", "assume", "asthma", "awards", 
 	"backed", "baking", "became", "behind", "bikini", "boards", "boston", "branch", "brunei", "candle", "caring", "carpet", "cement", "checks", "cialis", "coffee", 
 	"cooler", "corner", "cowboy", "credit", "crisis", "custom", "danish", "decade", "degree", "denial", "detail", "diesel", "disney", "divine", "donald", "driven", 
 	"eleven", "ending", "entity", "erotic", "expert", "factor", "fallen", "faster", "finals", "fitted", "forums", "freeze", "friday", "funded", "garage", "geneva", 
@@ -35,7 +36,7 @@ public partial class Words : Node
 	"temple", "tennis", "thomas", "though", "timely", "topics", "trains", "treaty", "valves", "vendor", "verbal", "viewer", "warren", "watson", "willow", "wishes", 
 	"womens", "writes", "yellow", "zambia"};
 
-	public string[] SEVEN_LETTERS = new string[] {"achieve", "acrobat", "adapter", "affects", "alleged", "allowed", "ambient", "animals", "antique", "arising", "artwork", 
+	private static readonly string[] SEVEN_LETTERS = new string[] {"achieve", "acrobat", "adapter", "affects", "alleged", "allowed", "ambient", "animals", "antique", "arising", "artwork", 
 	"aspects", "attempt", "authors", "bangkok", "baptist", "beaches", "believe", "belongs", "bernard", "binding", "breasts", "britney", "brother", "buffalo", "capture", 
 	"casting", "centres", "charges", "cheaper", "chicago", "claimed", "classes", "closest", "college", "columns", "company", "confirm", "console", "consult", "contact", 
 	"correct", "counter", "coupled", "creates", "cruises", "cumshot", "deleted", "depends", "diploma", "doctors", "drawing", "earning", "effects", "enables", "engines", 
@@ -47,7 +48,7 @@ public partial class Words : Node
 	"solomon", "staying", "stevens", "stopped", "sucking", "suicide", "terrace", "thereof", "tickets", "tobacco", "tracked", "tribute", "trouble", "tsunami", "tuition", 
 	"uniform", "unusual", "upgrade", "upskirt", "uruguay", "version", "veteran", "village", "violent", "visitor", "wearing", "weights", "worship"};
 
-	public string[] EIGHT_LETTERS = new string[] {"actively", "aluminum", "analysis", "answered", "antibody", "assigned", "athletes", "attorney", "auckland", "bathroom", 
+	private static readonly string[] EIGHT_LETTERS = new string[] {"actively", "aluminum", "analysis", "answered", "antibody", "assigned", "athletes", "attorney", "auckland", "bathroom", 
 	"becoming", "behavior", "bookings", "brunette", "bulgaria", "cartoons", "catalogs", "chambers", "chapters", "classics", "cleaning", "clicking", "collapse", 
 	"columbus", "combines", "concepts", "consists", "contrary", "creation", "cultures", "darkness", "defining", "delivers", "detector", "develops", "directly", 
 	"dispatch", "dramatic", "earliest", "electric", "elements", "entering", "everyday", "expenses", "explicit", "focusing", "football", "function", "gangbang", 
@@ -57,7 +58,7 @@ public partial class Words : Node
 	"sandwich", "segments", "shopping", "solution", "staffing", "subjects", "supplier", "supposed", "surround", "symantec", "syndrome", "taxation", "tomorrow", 
 	"trainers", "treasury", "uploaded", "vacation", "warnings", "wireless"};
 
-	public string[] NINE_LETTERS = new string[] {"academics", "addressed", "admission", "adventure", "afternoon", "alexander", "announced", "apartment", "appointed", 
+	private static readonly string[] NINE_LETTERS = new string[] {"academics", "addressed", "admission", "adventure", "afternoon", "alexander", "announced", "apartment", "appointed", 
 	"arguments", "assembled", "attempted", "bluetooth", "boulevard", "breakdown", "brochures", "communist", "competent", "complaint", "composite", "conflicts", 
 	"continues", "convicted", "correctly", "criticism", "democracy", "discovery", "ecommerce", "employees", "essential", "exclusion", "expansion", "expertise", 
 	"financing", "following", "forecasts", "freelance", "galleries", "genealogy", "graduated", "hardcover", "hepatitis", "hopefully", "induction", "initially", 
@@ -67,14 +68,24 @@ public partial class Words : Node
 	"sacrifice", "sensitive", "separated", "sheffield", "singapore", "sociology", "southeast", "specifics", "spotlight", "standards", "strategic", "traveling", 
 	"undertake", "universal"};
 
-	public string[] TEN_LETTERS = new string[] {"adjustable", "affiliated", "agreements", "ambassador", "appliances", "associates", "automobile", 
+	private static readonly string[] TEN_LETTERS = new string[] {"adjustable", "affiliated", "agreements", "ambassador", "appliances", "associates", "automobile", 
 	"background", "beneficial", "britannica", "citysearch", "collection", "commercial", "committees", "compliance", "conclusion", "constitute", 
 	"contacting", "controlled", "counseling", "currencies", "department", "dictionary", "disclaimer", "editorials", "encryption", "equivalent", 
 	"forwarding", "fragrances", "generators", "geological", "impression", "infections", "interested", "irrigation", "meaningful", "mozambique", 
 	"phenomenon", "physicians", "publishers", "qualifying", "recognised", "recreation", "referenced", "regression", "relocation", "respondent", 
 	"signatures", "statements", "structural", "sufficient", "terrorists", "throughout", "traditions", "transition", "ultimately"};
 
-	public string[] FIFTEEN_LETTERS = new string[] {"characteristics", "confidentiality", "congratulations", "instrumentation", "internationally", 
+	private static readonly string[] FIFTEEN_LETTERS = new string[] {"characteristics", "confidentiality", "congratulations", "instrumentation", "internationally", 
 	"pharmaceuticals", "recommendations", "representations", "representatives", "troubleshooting"};
+
+	public string[][] WORD_BANK = new string[][] {FOUR_LETTERS, FIVE_LETTERS, SIX_LETTERS, SEVEN_LETTERS, EIGHT_LETTERS, NINE_LETTERS, TEN_LETTERS, FIFTEEN_LETTERS};
+
+	public string GetRandomPrompt(int index) {
+		string[] words = WORD_BANK[index];
+		// randomize
+		RandomNumberGenerator random = new();
+		random.Randomize();
+		return words[random.Randi() % words.Length].ToUpper();
+	}
 	
 }
