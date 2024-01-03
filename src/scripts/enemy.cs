@@ -22,24 +22,22 @@ public partial class Enemy : CharacterBody2D
 
 	public float health = 0;
 
-	private Globals 				globals;
-	private Words					words = new();
-	private CharacterBody2D 		player = null;
-	private Timer 					attackTimer;
-	private AnimatedSprite2D 		sprite2D;
-	private EnemyState 				state = EnemyState.SURROUND;
-	private RandomNumberGenerator 	random = new();
-	private PackedScene				floatingText;
+	public Words					words = new();
+	public Player 					player = null;
+	public Timer 					attackTimer;
+	public AnimatedSprite2D 		sprite2D;
+	public EnemyState 				state = EnemyState.SURROUND;
+	public RandomNumberGenerator 	random = new();
+	public PackedScene				floatingText;
 
-	private RichTextLabel 			prompt;
-	private bool					isDying;
-	private string 					promptText;
-	private int 					currentLetterIndex;	
+	public RichTextLabel 			prompt;
+	public bool						inSlowdown;
+	public bool						isDying;
+	public string 					promptText;
+	public int 						currentLetterIndex;	
 
     public override void _Ready() {
-		// globals
 		floatingText = GD.Load<PackedScene>("res://scenes/game/enemies/FloatingText.tscn");
-		globals = GetNode<Globals>("/root/Globals");
 		prompt = GetNode<RichTextLabel>("typing_text");
 		attackTimer = GetNode<Timer>("attack_timer");
 		sprite2D = GetNode<AnimatedSprite2D>("animated_enemy");
@@ -50,12 +48,13 @@ public partial class Enemy : CharacterBody2D
 		prompt.Text = SetCenterTags(promptText);
 		// health based on difficulty
 		health = difficulty * healthUnit;
+		ConnectSignals();
     }
 
     public override void _PhysicsProcess(double delta) {
 		// deal with slowdown
-		sprite2D.SpeedScale = globals.isInSlowdown ? slowdownRate : 1;
-		delta *= globals.isInSlowdown ? slowdownRate : 1;
+		sprite2D.SpeedScale = inSlowdown ? slowdownRate : 1;
+		delta *= inSlowdown ? slowdownRate : 1;
 		if (!isDying) {
 			switch(state) {
 				case EnemyState.SURROUND:
@@ -76,8 +75,8 @@ public partial class Enemy : CharacterBody2D
 
 	public void OnHit() {
 		health -= healthUnit;
-		var text = floatingText.Instantiate();
-		text.Call("SetAmount", healthUnit);
+		FloatingText text = (FloatingText) floatingText.Instantiate();
+		text.SetAmount(healthUnit);
 		AddChild(text);
 		if (health <= 0) {
 			OnDeath();
@@ -130,6 +129,14 @@ public partial class Enemy : CharacterBody2D
 		}
 	}
 
+	public void Slowdown() {
+		inSlowdown = !inSlowdown;
+	}
+
+	public void ConnectSignals() {
+		player.InSlowdown += Slowdown;
+	}
+
 	/*
 	When the attack timer runs out, have enemies attack 
 	*/
@@ -137,24 +144,8 @@ public partial class Enemy : CharacterBody2D
 		state = EnemyState.ATTACK;
 	}
 
-	public Timer GetAttackTimer() {
-		return attackTimer;
-	}
-
-	public void SetPlayer(CharacterBody2D player) {
-		this.player = player;
-	}
-
-	public int GetCurrentLetterIndex() {
-		return currentLetterIndex;
-	}
-
-	public void SetCurrentLetterIndex(int currentLetterIndex) {
-		this.currentLetterIndex = currentLetterIndex;
-	}
-
 	public void SetPromptVisibility(bool isVisible) {
-		this.prompt.Visible = isVisible;
+		prompt.Visible = isVisible;
 	}
 
 	/*

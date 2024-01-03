@@ -3,13 +3,13 @@ using Godot;
 public partial class ShakingCamera : Camera2D
 {
 
-    [Export] public float duration      = 0.8f;
-    [Export] public float amplitude     = 6.0f;
-    [Export] public float damping       = 0.4f;
-    [Export] public bool shake          = false; 
-    [Export] public float zoomScale     = 1.0f;
-    [Export] public float zoomDuration 	= 0.4f;
-    [Export] public bool shakeEnable   = false;
+    [Export] public float duration         = 0.8f;
+    [Export] public float amplitude        = 6.0f;
+    [Export] public float damping          = 0.4f;
+    [Export] public bool shake             = false; 
+    [Export] public float zoomScale        = 1.0f;
+    [Export] public float zoomDuration     = 0.4f;
+    [Export] public bool shakeEnable       = false;
 
     private Tween tween;
     private Globals globals;
@@ -57,7 +57,7 @@ public partial class ShakingCamera : Camera2D
     /*
 	Zomm in camera and zoom out
 	*/
-	private void CameraZoom(bool zoomIn) {
+	public void CameraZoom(bool zoomIn) {
 		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.Out);
 		globals.isInSlowdown = !globals.isInSlowdown; // emit slowdown signal
 		if (zoomIn) 

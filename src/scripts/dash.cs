@@ -37,7 +37,7 @@ public partial class Dash : Node2D
 	*/
 	public void InstanceGhost() {
 		// add ghost to scene
-		Sprite2D ghost = (Sprite2D)ghostScene.Instantiate();
+		Sprite2D ghost = (Sprite2D) ghostScene.Instantiate();
 		GetParent().GetParent().AddChild(ghost);
 
 		// set ghost's attributes to match dashing spritegit 

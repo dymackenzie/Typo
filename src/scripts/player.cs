@@ -7,6 +7,8 @@ public partial class Player : CharacterBody2D
 {
 
 	[Signal] public delegate void CameraShakeRequestedEventHandler();
+	[Signal] public delegate void HealthChangedEventHandler();
+	[Signal] public delegate void InSlowdownEventHandler();
 
 	// fields
 	[Export] public float speed 		= 100.0f;
@@ -15,6 +17,7 @@ public partial class Player : CharacterBody2D
 	[Export] public float friction 		= 0.7f;
 	[Export] public float acceleration 	= 0.8f;
 	[Export] public Color killZone		= new(0.29f, 0.02f, 0.02f);
+	[Export] public int health			= 6;
 
 	// animation variable
 	private bool 				inKillMode = false;
@@ -25,9 +28,9 @@ public partial class Player : CharacterBody2D
 	private Globals 			globals;
 	private Sprite2D 			playerSprite;
 	private AnimationPlayer 	anim;
-	private Camera2D			camera;
-	private CharacterBody2D 	currentEnemy = null;
-	private Node2D 				dash = null;
+	private ShakingCamera		camera;
+	private Enemy 				currentEnemy = null;
+	private Dash 				dash = null;
 
 	// kill mode
 	private readonly ArrayList 	enemies = new();
@@ -37,9 +40,9 @@ public partial class Player : CharacterBody2D
 		// globals
 		globals = GetNode<Globals>("/root/Globals");
 		playerSprite = GetNode<Sprite2D>("animated_player");
-		camera = GetNode<Camera2D>("animated_player/ShakingCamera");
+		camera = GetNode<ShakingCamera>("animated_player/ShakingCamera");
 		anim = GetNode<AnimationPlayer>("animation_player");
-		dash = GetNode<Node2D>("Dash");
+		dash = GetNode<Dash>("Dash");
 	}
 
 	/*
@@ -48,10 +51,9 @@ public partial class Player : CharacterBody2D
 	public override void _PhysicsProcess(double delta) {
 		// attack 
 		if (Input.IsActionJustPressed("enter_attack") && enemies.Count != 0) {
-			currentEnemy = (CharacterBody2D)enemies[0];
+			currentEnemy = (Enemy)enemies[0];
 			isTyping = withinEnemyReach = false;
-			inKillMode = !inKillMode;
-			camera.Call("CameraZoom", inKillMode);
+			camera.CameraZoom(!inKillMode);
 		}
 		// move
 		if (!inKillMode) {
@@ -66,11 +68,11 @@ public partial class Player : CharacterBody2D
 	Kill mode to handle fighting mechanics
 	*/
 	public void KillMode(float delta) {
-		currentEnemy = (CharacterBody2D)enemies[0];
-		currentEnemy.Call("SetPromptVisibility", true);
+		currentEnemy = (Enemy)enemies[0];
+		currentEnemy.SetPromptVisibility(true);
 		if ((currentEnemy.GlobalPosition - GlobalPosition).Length() > 20.0f) {
 			// first, dash to enemy
-			dash.Call("InstanceGhost");
+			dash.InstanceGhost();
 			Vector2 direction = (currentEnemy.GlobalPosition - GlobalPosition).Normalized();
 			Vector2 desiredVelocity = new Vector2(direction.X, direction.Y / 2) * dash_speed;
 			MoveAndCollide(desiredVelocity * delta);
@@ -79,49 +81,54 @@ public partial class Player : CharacterBody2D
 		}
 	}
 
-    public override void _UnhandledInput(InputEvent @event)
-    {
+    public override void _UnhandledInput(InputEvent @event) {
         if (isTyping) {
 			if (@event is InputEventKey key && !@event.IsPressed()) {
 				InputEventKey typedEvent = key;
 				string keyTyped = typedEvent.AsTextKeycode();
-				// start typing
 				if (currentEnemy != null) {
-					int currentLetterIndex = (int) currentEnemy.Call("GetCurrentLetterIndex");
-					string prompt = (string) currentEnemy.Call("GetPrompt");
-					string nextChar = prompt.Substr(currentLetterIndex, 1);
-					// IF STRING MATCHES, DEAL DAMAGE AND ALL THAT STUFF
-					if (keyTyped == nextChar) {
-						currentLetterIndex += 1;
-						isAttacking = true;
-						currentEnemy.Call("SetCurrentLetterIndex", currentLetterIndex);
-						currentEnemy.Call("OnHit");
-						currentEnemy.Call("SetNextCharacter", false); // change string to match progress
-						EmitSignal(nameof(CameraShakeRequested));
-						if (currentLetterIndex == prompt.Length) {
-							ResetPrompt(); // when player has gone through word
-						}
-					} else {
-						isAttacking = false;
-						currentEnemy.Call("SetNextCharacter", true); // change string to match wrong letter
-					}
+					Typing(keyTyped);
 				}
 			}
 		}
     }
 
 	/*
+	Handling all typing and wrong letters
+	*/
+	private void Typing(string keyTyped) {
+		int currentLetterIndex = currentEnemy.currentLetterIndex;
+		string prompt = currentEnemy.GetPrompt();
+		string nextChar = prompt.Substr(currentLetterIndex, 1);
+		// IF STRING MATCHES, DEAL DAMAGE AND ALL THAT STUFF
+		if (keyTyped == nextChar) {
+			currentLetterIndex += 1;
+			isAttacking = true;
+			currentEnemy.currentLetterIndex = currentLetterIndex;
+			currentEnemy.OnHit();
+			currentEnemy.SetNextCharacter(false);
+			EmitSignal(nameof(CameraShakeRequested));
+			if (currentLetterIndex == prompt.Length) {
+				ResetPrompt(); // when player has gone through word
+			}
+		} else {
+			isAttacking = false;
+			currentEnemy.SetNextCharacter(true);
+		}
+	}
+
+	/*
 	Is player finished typing the prompt?
 	*/
 	private void ResetPrompt() {
 		// reset letter index, is typing, and withinEnemyReach after prompt
-		currentEnemy.Call("SetCurrentLetterIndex", 0);
+		currentEnemy.currentLetterIndex = 0;
 		isTyping = withinEnemyReach = isAttacking = false;
 		enemies.Remove(currentEnemy);
 		// check if player has gone through all enemies
 		if (enemies.Count == 0) {
 			// all enemies have been wiped
-			camera.Call("CameraZoom", inKillMode = false);
+			camera.CameraZoom(inKillMode = false);
 		}
 	}
 	
@@ -131,7 +138,7 @@ public partial class Player : CharacterBody2D
 	*/
 	private void HandleAnimations() {
 		if (!inKillMode) {
-			if ((bool)dash.Call("IsDashing")) {
+			if (dash.IsDashing()) {
 				anim.Play("dash");
 			} else if (isRunning) {
 				anim.Play("run");
@@ -162,9 +169,9 @@ public partial class Player : CharacterBody2D
 		} else if (direction != Vector2.Zero) {
 			// dash
 			if (Input.IsActionJustPressed("dash") && !(bool)dash.Call("IsDashing")) {
-				dash.Call("StartDash", playerSprite, dash_duration);
+				dash.StartDash(playerSprite, dash_duration);
 			}
-			float speed = (bool)dash.Call("IsDashing") ? dash_speed : this.speed;
+			float speed = dash.IsDashing() ? dash_speed : this.speed;
 			if (x > 0) {
 				// if player is going right
 				// flips the sprite horizontally
@@ -188,9 +195,9 @@ public partial class Player : CharacterBody2D
 	*/
 	public void OnHitBodyEntered(Node2D body) {
 		if (body.IsInGroup("enemy")) {
-			Timer timer = (Timer)body.Call("GetAttackTimer");
-			timer.Stop();
-			body.Call("SetState", "hit");
+			Enemy enemy = (Enemy) body;
+			enemy.attackTimer.Stop();
+			enemy.SetState("hit");
 		}
 	}
 
@@ -199,7 +206,8 @@ public partial class Player : CharacterBody2D
 	*/
 	public void OnHitBodyExited(Node2D body) {
 		if (body.IsInGroup("enemy") ) {
-			body.Call("SetState", "surround");
+			Enemy enemy = (Enemy) body;
+			enemy.SetState("surround");
 		}
 	}
 
@@ -208,10 +216,10 @@ public partial class Player : CharacterBody2D
 	*/
 	public void OnAttackBodyEntered(Node2D body) {
 		if (body.IsInGroup("enemy")) {
-			Timer timer = (Timer)body.Call("GetAttackTimer");
-			body.Call("SetPositionColor", killZone);
-			enemies.Add((CharacterBody2D)body);
-			timer.Start();
+			Enemy enemy = (Enemy) body;
+			enemy.attackTimer.Start();
+			enemy.SetPositionColor(killZone);
+			enemies.Add(enemy);
 		}
 	}
 
@@ -220,11 +228,11 @@ public partial class Player : CharacterBody2D
 	*/
 	public void OnAttackBodyExited(Node2D body) {
 		if (body.IsInGroup("enemy")) {
-			Timer timer = (Timer)body.Call("GetAttackTimer");
-			body.Call("SetPositionColor", new Color(1, 1, 1));
-			body.Call("SetState", "surround");
-			enemies.Remove((CharacterBody2D)body);
-			timer.Stop();
+			Enemy enemy = (Enemy) body;
+			enemy.attackTimer.Stop();
+			enemy.SetPositionColor(Colors.White);
+			enemy.SetState("surround");
+			enemies.Remove(enemy);
 		}
 	}
 
