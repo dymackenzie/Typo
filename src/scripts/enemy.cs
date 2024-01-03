@@ -34,6 +34,7 @@ public partial class Enemy : CharacterBody2D
 	private RichTextLabel 			prompt;
 	private bool					isDying;
 	private string 					promptText;
+	private int 					currentLetterIndex;	
 
     public override void _Ready() {
 		// globals
@@ -44,6 +45,7 @@ public partial class Enemy : CharacterBody2D
 		sprite2D = GetNode<AnimatedSprite2D>("animated_enemy");
 		random.Randomize();
 		// word prompt
+		prompt.Visible = false;
 		promptText = (string)words.Call("GetRandomPrompt", difficulty);
 		prompt.Text = SetCenterTags(promptText);
 		// health based on difficulty
@@ -143,6 +145,18 @@ public partial class Enemy : CharacterBody2D
 		this.player = player;
 	}
 
+	public int GetCurrentLetterIndex() {
+		return currentLetterIndex;
+	}
+
+	public void SetCurrentLetterIndex(int currentLetterIndex) {
+		this.currentLetterIndex = currentLetterIndex;
+	}
+
+	public void SetPromptVisibility(bool isVisible) {
+		this.prompt.Visible = isVisible;
+	}
+
 	/*
 	Changes state through provided string
 	*/
@@ -176,13 +190,13 @@ public partial class Enemy : CharacterBody2D
 	/*
 	Colors the text according to user input
 	*/
-	public void SetNextCharacter(int nextChar, bool wrong) {
-		string correctText = string.Concat(GetBBCodeColorTag(textCorrect), GetPrompt().AsSpan(0, nextChar), GetEndColorTag());
+	public void SetNextCharacter(bool wrong) {
+		string correctText = string.Concat(GetBBCodeColorTag(textCorrect), GetPrompt().AsSpan(0, currentLetterIndex), GetEndColorTag());
 		string wrongText = "";
 		string remainingText = "";
-		if (nextChar < GetPrompt().Length) {
-			wrongText = !wrong ? GetPrompt().Substring(nextChar, 1) : string.Concat(GetBBCodeColorTag(textWrong), GetPrompt().AsSpan(nextChar, 1), GetEndColorTag());
-			remainingText = GetPrompt()[(nextChar + 1)..];
+		if (currentLetterIndex < GetPrompt().Length) {
+			wrongText = !wrong ? GetPrompt().Substring(currentLetterIndex, 1) : string.Concat(GetBBCodeColorTag(textWrong), GetPrompt().AsSpan(currentLetterIndex, 1), GetEndColorTag());
+			remainingText = GetPrompt()[(currentLetterIndex + 1)..];
 		}
 		prompt.Text = SetCenterTags(correctText + wrongText + remainingText);
 	}

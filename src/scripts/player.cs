@@ -30,7 +30,6 @@ public partial class Player : CharacterBody2D
 
 	// kill mode
 	private readonly ArrayList 	enemies = new();
-	private int 				currentLetterIndex = 0;
 	private bool 				withinEnemyReach = false;
 
 	public override void _Ready() {
@@ -46,10 +45,11 @@ public partial class Player : CharacterBody2D
 	Called every frame, delta is amount of time passed.
 	*/
 	public override void _PhysicsProcess(double delta) {
-
+		
 		// attack 
 		if (Input.IsActionJustPressed("enter_attack") && enemies.Count != 0) {
-			ResetTypingVariables();
+			currentEnemy = (CharacterBody2D)enemies[0];
+			isTyping = withinEnemyReach = false;
 			inKillMode = !inKillMode;
 			CameraZoom(inKillMode);
 		}
@@ -59,6 +59,7 @@ public partial class Player : CharacterBody2D
 		} else {
 			KillMode((float)delta);
 		}
+		
 		HandleAnimations();
 
 	}
@@ -68,6 +69,7 @@ public partial class Player : CharacterBody2D
 	*/
 	public void KillMode(float delta) {
 		currentEnemy = (CharacterBody2D)enemies[0];
+		currentEnemy.Call("SetPromptVisibility", true);
 		if ((currentEnemy.GlobalPosition - GlobalPosition).Length() > 20.0f) {
 			// first, dash to enemy
 			dash.Call("InstanceGhost");
@@ -85,27 +87,26 @@ public partial class Player : CharacterBody2D
 			if (@event is InputEventKey key && !@event.IsPressed()) {
 				InputEventKey typedEvent = key;
 				string keyTyped = typedEvent.AsTextKeycode();
-				// // handle enter case
-				// if (keyTyped == "Enter")
-				// 	return;
 				// start typing
 				if (currentEnemy != null) {
-					string prompt = (string)currentEnemy.Call("GetPrompt");
+					int currentLetterIndex = (int) currentEnemy.Call("GetCurrentLetterIndex");
+					string prompt = (string) currentEnemy.Call("GetPrompt");
 					string nextChar = prompt.Substr(currentLetterIndex, 1);
 					// if word matches
 					if (keyTyped == nextChar) {
 						currentLetterIndex += 1;
+						currentEnemy.Call("SetCurrentLetterIndex", currentLetterIndex);
 						isAttacking = true;
 						anim.Play("attack_sweep");
 						currentEnemy.Call("OnHit");
-						currentEnemy.Call("SetNextCharacter", currentLetterIndex, false); // change string to match progress
+						currentEnemy.Call("SetNextCharacter", false); // change string to match progress
 						// when word is finished
 						if (currentLetterIndex == prompt.Length) {
 							ResetPrompt();
 						}
 					} else {
 						isAttacking = false;
-						currentEnemy.Call("SetNextCharacter", currentLetterIndex, true); // change string to match wrong letter
+						currentEnemy.Call("SetNextCharacter", true); // change string to match wrong letter
 					}
 				}
 			}
@@ -117,7 +118,8 @@ public partial class Player : CharacterBody2D
 	*/
 	private void ResetPrompt() {
 		// reset letter index, is typing, and withinEnemyReach after prompt
-		ResetTypingVariables();
+		currentEnemy.Call("SetCurrentLetterIndex", 0);
+		isTyping = withinEnemyReach = false;
 		enemies.Remove(currentEnemy);
 		isAttacking = false;
 		// check if player has gone through all enemies
@@ -126,15 +128,6 @@ public partial class Player : CharacterBody2D
 			CameraZoom(inKillMode = false);
 		}
 	}
-
-	/*
-	Reset typing variables
-	*/
-	private void ResetTypingVariables() {
-		currentLetterIndex = 0;
-		isTyping = withinEnemyReach = false;
-	}
-
 	/*
 	Zomm in camera and zoom out
 	*/
