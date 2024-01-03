@@ -1,9 +1,10 @@
-[gd_scene load_steps=20 format=3 uid="uid://cycikbvsectqm"]
+[gd_scene load_steps=21 format=3 uid="uid://cycikbvsectqm"]
 
 [ext_resource type="Script" path="res://src/scripts/Player.cs" id="1_0srf6"]
 [ext_resource type="Texture2D" uid="uid://c0rr0a800dmra" path="res://assets/sprites/player_character.png" id="1_vivj0"]
 [ext_resource type="Texture2D" uid="uid://br8whaxucqp43" path="res://assets/sprites/position1.png" id="2_eydv0"]
 [ext_resource type="PackedScene" uid="uid://bc1s3uj7dntq7" path="res://scenes/game/player/Dash.tscn" id="4_jx1nl"]
+[ext_resource type="PackedScene" uid="uid://c1cuqbs71jmei" path="res://scenes/game/ShakingCamera.tscn" id="4_l30nw"]
 [ext_resource type="Script" path="res://src/scripts/EnableAttack.cs" id="5_islc4"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_k1g3e"]
@@ -193,16 +194,13 @@ hframes = 8
 vframes = 20
 frame = 64
 
-[node name="Camera2D" type="Camera2D" parent="animated_player"]
-zoom = Vector2(2.6, 2.6)
-position_smoothing_enabled = true
-position_smoothing_speed = 8.0
+[node name="ShakingCamera" parent="animated_player" instance=ExtResource("4_l30nw")]
 
 [node name="hitbox" type="CollisionShape2D" parent="."]
 position = Vector2(0, 4)
 shape = SubResource("CircleShape2D_k1g3e")
 
-[node name="dash" parent="." instance=ExtResource("4_jx1nl")]
+[node name="Dash" parent="." instance=ExtResource("4_jx1nl")]
 
 [node name="hit" type="Area2D" parent="."]
 visible = false
@@ -235,6 +233,7 @@ libraries = {
 }
 autoplay = "idle"
 
+[connection signal="CameraShakeRequested" from="." to="animated_player/ShakingCamera" method="OnCameraShakeRequested"]
 [connection signal="body_entered" from="hit" to="." method="OnHitBodyEntered"]
 [connection signal="body_exited" from="hit" to="." method="OnHitBodyExited"]
 [connection signal="body_entered" from="attack" to="." method="OnAttackBodyEntered"]

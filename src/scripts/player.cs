@@ -5,14 +5,15 @@ using Godot;
 
 public partial class Player : CharacterBody2D
 {
+
+	[Signal] public delegate void CameraShakeRequestedEventHandler();
+
 	// fields
 	[Export] public float speed 		= 100.0f;
 	[Export] public float dash_speed 	= 200.0f;
 	[Export] public float dash_duration = 0.2f;
 	[Export] public float friction 		= 0.7f;
 	[Export] public float acceleration 	= 0.8f;
-	[Export] public float zoom 			= 1.0f;
-	[Export] public float zoomDuration 	= 0.4f;
 	[Export] public Color killZone		= new(0.29f, 0.02f, 0.02f);
 
 	// animation variable
@@ -24,8 +25,8 @@ public partial class Player : CharacterBody2D
 	private Globals 			globals;
 	private Sprite2D 			playerSprite;
 	private AnimationPlayer 	anim;
+	private Camera2D			camera;
 	private CharacterBody2D 	currentEnemy = null;
-	private CollisionShape2D 	hitbox;
 	private Node2D 				dash = null;
 
 	// kill mode
@@ -36,22 +37,21 @@ public partial class Player : CharacterBody2D
 		// globals
 		globals = GetNode<Globals>("/root/Globals");
 		playerSprite = GetNode<Sprite2D>("animated_player");
+		camera = GetNode<Camera2D>("animated_player/ShakingCamera");
 		anim = GetNode<AnimationPlayer>("animation_player");
-		hitbox = GetNode<CollisionShape2D>("hitbox");
-		dash = GetNode<Node2D>("dash");
+		dash = GetNode<Node2D>("Dash");
 	}
 
 	/*
 	Called every frame, delta is amount of time passed.
 	*/
 	public override void _PhysicsProcess(double delta) {
-		
 		// attack 
 		if (Input.IsActionJustPressed("enter_attack") && enemies.Count != 0) {
 			currentEnemy = (CharacterBody2D)enemies[0];
 			isTyping = withinEnemyReach = false;
 			inKillMode = !inKillMode;
-			CameraZoom(inKillMode);
+			camera.Call("CameraZoom", inKillMode);
 		}
 		// move
 		if (!inKillMode) {
@@ -59,9 +59,7 @@ public partial class Player : CharacterBody2D
 		} else {
 			KillMode((float)delta);
 		}
-		
 		HandleAnimations();
-
 	}
 
 	/*
@@ -75,7 +73,7 @@ public partial class Player : CharacterBody2D
 			dash.Call("InstanceGhost");
 			Vector2 direction = (currentEnemy.GlobalPosition - GlobalPosition).Normalized();
 			Vector2 desiredVelocity = new Vector2(direction.X, direction.Y / 2) * dash_speed;
-			MoveAndCollide(desiredVelocity * delta * 3f);
+			MoveAndCollide(desiredVelocity * delta);
 		} else {
 			isTyping = true;
 		}
@@ -92,17 +90,16 @@ public partial class Player : CharacterBody2D
 					int currentLetterIndex = (int) currentEnemy.Call("GetCurrentLetterIndex");
 					string prompt = (string) currentEnemy.Call("GetPrompt");
 					string nextChar = prompt.Substr(currentLetterIndex, 1);
-					// if word matches
+					// IF STRING MATCHES, DEAL DAMAGE AND ALL THAT STUFF
 					if (keyTyped == nextChar) {
 						currentLetterIndex += 1;
-						currentEnemy.Call("SetCurrentLetterIndex", currentLetterIndex);
 						isAttacking = true;
-						anim.Play("attack_sweep");
+						currentEnemy.Call("SetCurrentLetterIndex", currentLetterIndex);
 						currentEnemy.Call("OnHit");
 						currentEnemy.Call("SetNextCharacter", false); // change string to match progress
-						// when word is finished
+						EmitSignal(nameof(CameraShakeRequested));
 						if (currentLetterIndex == prompt.Length) {
-							ResetPrompt();
+							ResetPrompt(); // when player has gone through word
 						}
 					} else {
 						isAttacking = false;
@@ -119,30 +116,15 @@ public partial class Player : CharacterBody2D
 	private void ResetPrompt() {
 		// reset letter index, is typing, and withinEnemyReach after prompt
 		currentEnemy.Call("SetCurrentLetterIndex", 0);
-		isTyping = withinEnemyReach = false;
+		isTyping = withinEnemyReach = isAttacking = false;
 		enemies.Remove(currentEnemy);
-		isAttacking = false;
 		// check if player has gone through all enemies
 		if (enemies.Count == 0) {
 			// all enemies have been wiped
-			CameraZoom(inKillMode = false);
+			camera.Call("CameraZoom", inKillMode = false);
 		}
 	}
-	/*
-	Zomm in camera and zoom out
-	*/
-	private void CameraZoom(bool zoomIn) {
-		Camera2D camera2D = GetNode<Camera2D>("animated_player/Camera2D");
-		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.Out);
-		// emit slowdown signal
-		globals.isInSlowdown = !globals.isInSlowdown;
-		if (zoomIn) {
-			// zoom in to player
-			tween.TweenProperty(camera2D, "zoom", camera2D.Zoom + new Vector2(zoom, zoom), zoomDuration);
-		} else {
-			tween.TweenProperty(camera2D, "zoom", camera2D.Zoom - new Vector2(zoom, zoom), zoomDuration);
-		}
-	}
+	
 
 	/*
 	Handles all animations
@@ -172,7 +154,6 @@ public partial class Player : CharacterBody2D
 		direction = direction.Normalized();
 		float x = direction.X;
 		float y = direction.Y / 2;
-
 		if (direction == Vector2.Zero) {
 			// slowdown when no input
 			x = Lerp(Velocity.X, 0, friction);
@@ -184,7 +165,6 @@ public partial class Player : CharacterBody2D
 				dash.Call("StartDash", playerSprite, dash_duration);
 			}
 			float speed = (bool)dash.Call("IsDashing") ? dash_speed : this.speed;
-
 			if (x > 0) {
 				// if player is going right
 				// flips the sprite horizontally
@@ -194,13 +174,11 @@ public partial class Player : CharacterBody2D
 				// flips the sprite horizontally
 				playerSprite.FlipH = true;
 			}
-
 			// accelerates when input
 			x = Lerp(Velocity.X, x * speed, acceleration);
 			y = Lerp(Velocity.Y, y * speed, acceleration);
 			isRunning = true;
 		}
-		
 		Velocity = new Vector2(x, y);
 		MoveAndCollide(Velocity * delta);
 	}
