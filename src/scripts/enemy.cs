@@ -83,7 +83,8 @@ public partial class Enemy : CharacterBody2D
 	}
 
 	public void OnDeath() {
-		isDying = true;
+		CollisionShape2D hitbox = GetNode<CollisionShape2D>("enemy_hitbox");
+		hitbox.Disabled = isDying = true; // disable hitbox
 		sprite2D.Play("death");
 	}
 

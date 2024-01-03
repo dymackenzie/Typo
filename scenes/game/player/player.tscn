@@ -182,7 +182,6 @@ _data = {
 }
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
-y_sort_enabled = true
 script = ExtResource("1_0srf6")
 
 [node name="true_position" type="Sprite2D" parent="."]
@@ -192,7 +191,7 @@ texture = ExtResource("2_eydv0")
 texture = ExtResource("1_vivj0")
 hframes = 8
 vframes = 20
-frame = 24
+frame = 64
 
 [node name="Camera2D" type="Camera2D" parent="animated_player"]
 zoom = Vector2(2.6, 2.6)

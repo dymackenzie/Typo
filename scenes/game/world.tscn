@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://cycikbvsectqm" path="res://scenes/game/player/Player.tscn" id="3_npmoh"]
 
 [node name="World" type="Node2D"]
+y_sort_enabled = true
 script = ExtResource("1_gpoq8")
 playerPath = NodePath("player")
 

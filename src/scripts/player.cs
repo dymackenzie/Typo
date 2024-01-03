@@ -19,6 +19,7 @@ public partial class Player : CharacterBody2D
 	private bool 				inKillMode = false;
 	private bool 				isTyping = false;
 	private bool 				isRunning = false;
+	private bool				isAttacking = false;
 
 	private Globals 			globals;
 	private Sprite2D 			playerSprite;
@@ -55,11 +56,10 @@ public partial class Player : CharacterBody2D
 		// move
 		if (!inKillMode) {
 			Move((float)delta);
-			HandleAnimations();
 		} else {
-			anim.Stop();
 			KillMode((float)delta);
 		}
+		HandleAnimations();
 
 	}
 
@@ -95,16 +95,17 @@ public partial class Player : CharacterBody2D
 					// if word matches
 					if (keyTyped == nextChar) {
 						currentLetterIndex += 1;
+						isAttacking = true;
+						anim.Play("attack_sweep");
 						currentEnemy.Call("OnHit");
-						// change string to match progress
-						currentEnemy.Call("SetNextCharacter", currentLetterIndex, false);
+						currentEnemy.Call("SetNextCharacter", currentLetterIndex, false); // change string to match progress
 						// when word is finished
 						if (currentLetterIndex == prompt.Length) {
 							ResetPrompt();
 						}
 					} else {
-						// change string to match wrong letter
-						currentEnemy.Call("SetNextCharacter", currentLetterIndex, true);
+						isAttacking = false;
+						currentEnemy.Call("SetNextCharacter", currentLetterIndex, true); // change string to match wrong letter
 					}
 				}
 			}
@@ -118,6 +119,7 @@ public partial class Player : CharacterBody2D
 		// reset letter index, is typing, and withinEnemyReach after prompt
 		ResetTypingVariables();
 		enemies.Remove(currentEnemy);
+		isAttacking = false;
 		// check if player has gone through all enemies
 		if (enemies.Count == 0) {
 			// all enemies have been wiped
@@ -153,12 +155,18 @@ public partial class Player : CharacterBody2D
 	Handles all animations
 	*/
 	private void HandleAnimations() {
-		if ((bool)dash.Call("IsDashing")) {
-			anim.Play("dash");
-		} else if (isRunning) {
-			anim.Play("run");
+		if (!inKillMode) {
+			if ((bool)dash.Call("IsDashing")) {
+				anim.Play("dash");
+			} else if (isRunning) {
+				anim.Play("run");
+			} else {
+				anim.Play("idle");
+			}
 		} else {
-			anim.Play("idle");
+			if (isAttacking) {
+				anim.Play("attack_sweep");
+			}
 		}
 	}
 
