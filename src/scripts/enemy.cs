@@ -1,8 +1,9 @@
 using Godot;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata.Ecma335;
 
-public partial class enemy : CharacterBody2D
+public partial class Enemy : CharacterBody2D
 {
 
 	public enum EnemyState {
@@ -11,48 +12,84 @@ public partial class enemy : CharacterBody2D
 		HIT
 	}
 
-	[Export] public float speed = 50.0f;
-	[Export] public float killRadius = 40.0f;
-	[Export] public float health = 100.0f;
-	[Export] public int difficulty = 0;
-	[Export] public Color textCorrect = new Color("#00FF00");
-	[Export] public Color textWrong = new Color("#FF0000");
+	[Export] public float speed 		= 50.0f;
+	[Export] public float killRadius 	= 40.0f;
+	[Export] public float healthUnit	= 20;
+	[Export] public int difficulty	 	= 6;
+	[Export] public float slowdownRate  = 0.05f;
+	[Export] public Color textCorrect 	= new("#00FF00");
+	[Export] public Color textWrong 	= new("#FF0000");
 
-	public CharacterBody2D player = null;
-	public Timer attackTimer;
-	public AnimatedSprite2D sprite2D;
-	public EnemyState state = EnemyState.SURROUND;
-	public RandomNumberGenerator random = new();
+	public float health = 0;
 
-	private RichTextLabel prompt;
-	private string promptText;
+	private Globals 				globals;
+	private Words					words = new();
+	private CharacterBody2D 		player = null;
+	private Timer 					attackTimer;
+	private AnimatedSprite2D 		sprite2D;
+	private EnemyState 				state = EnemyState.SURROUND;
+	private RandomNumberGenerator 	random = new();
+	private PackedScene				floatingText;
+
+	private RichTextLabel 			prompt;
+	private bool					isDying;
+	private string 					promptText;
 
     public override void _Ready() {
+		// globals
+		floatingText = GD.Load<PackedScene>("res://scenes/game/enemies/FloatingText.tscn");
+		globals = GetNode<Globals>("/root/Globals");
 		prompt = GetNode<RichTextLabel>("typing_text");
 		attackTimer = GetNode<Timer>("attack_timer");
 		sprite2D = GetNode<AnimatedSprite2D>("animated_enemy");
 		random.Randomize();
-
 		// word prompt
-		Words words = new();
 		promptText = (string)words.Call("GetRandomPrompt", difficulty);
 		prompt.Text = SetCenterTags(promptText);
+		// health based on difficulty
+		health = difficulty * healthUnit;
     }
 
     public override void _PhysicsProcess(double delta) {
-		switch(state) {
-			case EnemyState.SURROUND:
-				Move(GetCirclePosition(random.Randf()), (float)delta);
-				sprite2D.Play("walk");
-				break;
-			case EnemyState.ATTACK:
-				Move(player.GlobalPosition, (float)delta);
-				sprite2D.Play("walk");
-				break;
-			case EnemyState.HIT:
-				Move(player.GlobalPosition, (float)delta);
-				sprite2D.Play("attack");
-				break;
+		// deal with slowdown
+		sprite2D.SpeedScale = globals.isInSlowdown ? slowdownRate : 1;
+		delta *= globals.isInSlowdown ? slowdownRate : 1;
+		if (!isDying) {
+			switch(state) {
+				case EnemyState.SURROUND:
+					Move(GetCirclePosition(random.Randf()), (float)delta);
+					sprite2D.Play("walk");
+					break;
+				case EnemyState.ATTACK:
+					Move(player.GlobalPosition, (float)delta);
+					sprite2D.Play("walk");
+					break;
+				case EnemyState.HIT:
+					Move(player.GlobalPosition, (float)delta);
+					sprite2D.Play("attack");
+					break;
+			}
+		}
+	}
+
+	public void OnHit() {
+		health -= healthUnit;
+		var text = floatingText.Instantiate();
+		text.Call("SetAmount", healthUnit);
+		AddChild(text);
+		if (health <= 0) {
+			OnDeath();
+		}	
+	}
+
+	public void OnDeath() {
+		isDying = true;
+		sprite2D.Play("death");
+	}
+
+	public void OnAnimatedEnemyAnimationFinished() {
+		if (isDying) {
+			QueueFree();
 		}
 	}
 
@@ -61,19 +98,18 @@ public partial class enemy : CharacterBody2D
 	smooth motion.
 	*/
 	public void Move(Vector2 target, float delta) {
+		// get directional vector
 		Vector2 direction = (target - GlobalPosition).Normalized();
 		float x = direction.X;
 		float y = direction.Y / 2;
 		Vector2 desiredVelocity = new Vector2(x, y) * speed;
-		Vector2 steering = (desiredVelocity - Velocity) * delta * 2.5f;
-
+		Vector2 steering = (desiredVelocity - Velocity) * delta * 2.5f; // for smoother movement
 		// flip enemy is needed
 		if (player.GlobalPosition.X < GlobalPosition.X) {
 			sprite2D.FlipH = true;
 		} else {
 			sprite2D.FlipH = false;
 		}
-
 		Velocity += steering;
 		MoveAndCollide(Velocity * delta);
 	}
@@ -102,6 +138,13 @@ public partial class enemy : CharacterBody2D
 		return attackTimer;
 	}
 
+	public void SetPlayer(CharacterBody2D player) {
+		this.player = player;
+	}
+
+	/*
+	Changes state through provided string
+	*/
 	public void SetState(string state) {
 		if (state == "surround") {
 			this.state = EnemyState.SURROUND;
@@ -112,16 +155,19 @@ public partial class enemy : CharacterBody2D
 		}
 	}
 
-	public void SetPlayer(CharacterBody2D player) {
-		this.player = player;
+	/*
+	Changes position color
+	*/
+	public void SetPositionColor(Color color) {
+		Sprite2D spritePos = GetNode<Sprite2D>("position");
+		spritePos.Modulate = color;
 	}
-
 
 	/*
 	Gets prompt with a parsed bb-code removed string
 	*/
 	public string GetPrompt() {
-		var regex = new RegEx();
+		RegEx regex = new();
 		regex.Compile("\\[.+?\\]");
 		return regex.Sub(promptText, "", true);
 	}
@@ -130,11 +176,11 @@ public partial class enemy : CharacterBody2D
 	Colors the text according to user input
 	*/
 	public void SetNextCharacter(int nextChar, bool wrong) {
-		string correctText = string.Concat(GetBBCodeColorTag(textCorrect), GetPrompt().AsSpan(0, nextChar), "[/color]");
+		string correctText = string.Concat(GetBBCodeColorTag(textCorrect), GetPrompt().AsSpan(0, nextChar), GetEndColorTag());
 		string wrongText = "";
 		string remainingText = "";
 		if (nextChar < GetPrompt().Length) {
-			wrongText = !wrong ? GetPrompt().Substring(nextChar, 1) : string.Concat(GetBBCodeColorTag(textWrong), GetPrompt().AsSpan(nextChar, 1), "[/color]");
+			wrongText = !wrong ? GetPrompt().Substring(nextChar, 1) : string.Concat(GetBBCodeColorTag(textWrong), GetPrompt().AsSpan(nextChar, 1), GetEndColorTag());
 			remainingText = GetPrompt()[(nextChar + 1)..];
 		}
 		prompt.Text = SetCenterTags(correctText + wrongText + remainingText);
@@ -145,6 +191,13 @@ public partial class enemy : CharacterBody2D
 	*/
 	private string GetBBCodeColorTag(Color color) {
 		return "[color=#" + color.ToHtml(false) + "]";
+	}
+
+	/*
+	Formats color into a BBCode tag
+	*/
+	private string GetEndColorTag() {
+		return "[/color]";
 	}
 
 	/*

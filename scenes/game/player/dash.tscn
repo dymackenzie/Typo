@@ -1,9 +1,9 @@
 [gd_scene load_steps=2 format=3 uid="uid://bc1s3uj7dntq7"]
 
-[ext_resource type="Script" path="res://src/scripts/dash.cs" id="1_okjs8"]
+[ext_resource type="Script" path="res://src/scripts/Dash.cs" id="1_vfg3g"]
 
-[node name="dash" type="Node2D"]
-script = ExtResource("1_okjs8")
+[node name="Dash" type="Node2D"]
+script = ExtResource("1_vfg3g")
 
 [node name="duration" type="Timer" parent="."]
 one_shot = true

@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class enable_attack : Node2D
+public partial class EnableAttack : Node2D
 {
 
 	[Export] public int radius = 50;

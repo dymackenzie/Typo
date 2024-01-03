@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class world : Node2D
+public partial class World : Node2D
 {
 
 	[Export] NodePath playerPath;
@@ -12,7 +12,7 @@ public partial class world : Node2D
 
 	public override void _Ready() {
 		enemyTimer = GetNode<Timer>("enemy_timer");
-		enemy = GD.Load<PackedScene>("res://scenes/game/enemies/basic_enemy.tscn");
+		enemy = GD.Load<PackedScene>("res://scenes/game/enemies/BasicEnemy.tscn");
 		// load player
 		player = GetNode<CharacterBody2D>(playerPath);
 	}
@@ -26,7 +26,6 @@ public partial class world : Node2D
 		random.Randomize();
 		PathFollow2D pathFollow2D = GetNode<PathFollow2D>("player/enemy_spawning/enemy_spawn_range");
 		pathFollow2D.Progress = random.RandiRange(0, 1623);
-
 		// instantiate enemy at random point
 		CharacterBody2D enemyInstance = (CharacterBody2D)enemy.Instantiate();
 		Marker2D position = GetNode<Marker2D>("player/enemy_spawning/enemy_spawn_range/Marker2D");

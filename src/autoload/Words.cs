@@ -81,7 +81,7 @@ public partial class Words : Node
 	public string[][] WORD_BANK = new string[][] {FOUR_LETTERS, FIVE_LETTERS, SIX_LETTERS, SEVEN_LETTERS, EIGHT_LETTERS, NINE_LETTERS, TEN_LETTERS, FIFTEEN_LETTERS};
 
 	public string GetRandomPrompt(int index) {
-		string[] words = WORD_BANK[index];
+		string[] words = WORD_BANK[index - 4];
 		// randomize
 		RandomNumberGenerator random = new();
 		random.Randomize();

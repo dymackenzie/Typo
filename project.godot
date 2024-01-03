@@ -11,13 +11,12 @@ config_version=5
 [application]
 
 config/name="Typo"
-run/main_scene="res://scenes/main.tscn"
+run/main_scene="res://scenes/Main.tscn"
 config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 
 [autoload]
 
 Globals="*res://src/autoload/Globals.cs"
-GlobalsManager="*res://src/autoload/globals.tscn"
 Words="*res://src/autoload/Words.cs"
 
 [display]

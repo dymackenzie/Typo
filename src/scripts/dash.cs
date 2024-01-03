@@ -1,30 +1,30 @@
 using Godot;
 using System;
 
-public partial class dash : Node2D
+public partial class Dash : Node2D
 {
 
 	private Timer timer;
 	private Timer ghostTimer;
 	private PackedScene ghostScene;
-	private AnimatedSprite2D sprite;
+	private Sprite2D sprite;
 
 	public override void _Ready() {
 		timer = GetNode<Timer>("duration");
 		ghostTimer = GetNode<Timer>("ghost");
-		ghostScene = GD.Load<PackedScene>("res://scenes/game/player/dash_ghost.tscn");
+		ghostScene = GD.Load<PackedScene>("res://scenes/game/player/DashGhost.tscn");
 	}
 
 	/*
 	Starts dash timer and instantiates ghosts
 	*/
-	public void StartDash(AnimatedSprite2D sprite, float duration) {
+	public void StartDash(Sprite2D sprite, float duration) {
+		// begin timer for dash duration
 		this.sprite = sprite;
-
 		timer.WaitTime = duration;
 		timer.Start();
 		ghostTimer.Start();
-		
+		// instantiate ghost behind sprite
 		InstanceGhost();
 	}
 
@@ -35,7 +35,7 @@ public partial class dash : Node2D
 	/*
 	Adds ghost sprite to scene.
 	*/
-	private void InstanceGhost() {
+	public void InstanceGhost() {
 		// add ghost to scene
 		Sprite2D ghost = (Sprite2D)ghostScene.Instantiate();
 		GetParent().GetParent().AddChild(ghost);
@@ -44,8 +44,6 @@ public partial class dash : Node2D
 		ghost.GlobalPosition = GlobalPosition;
 		ghost.FlipH = sprite.FlipH;
 	}
-
-
 
 	/*
 	When ghost timer ends, instantiate another ghost sprite.

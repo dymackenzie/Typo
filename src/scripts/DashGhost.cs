@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class dash_ghost : Sprite2D
+public partial class DashGhost : Sprite2D
 {
 
 	public override void _Ready() {

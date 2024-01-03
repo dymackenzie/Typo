@@ -126,7 +126,7 @@ tile_shape = 1
 tile_size = Vector2i(32, 16)
 sources/0 = SubResource("TileSetAtlasSource_po8fi")
 
-[node name="map_design_1" type="TileMap"]
+[node name="Map1" type="TileMap"]
 y_sort_enabled = true
 texture_filter = 1
 tile_set = SubResource("TileSet_flwx0")

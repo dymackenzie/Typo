@@ -1,8 +1,8 @@
 [gd_scene load_steps=2 format=3 uid="uid://824hp5yle0m0"]
 
-[ext_resource type="PackedScene" uid="uid://cycikbvsectqm" path="res://scenes/game/player/player.tscn" id="2_0gxj6"]
+[ext_resource type="PackedScene" uid="uid://cycikbvsectqm" path="res://scenes/game/player/Player.tscn" id="1_swynq"]
 
 [node name="world" type="Node2D"]
 texture_filter = 1
 
-[node name="player" parent="." instance=ExtResource("2_0gxj6")]
+[node name="player" parent="." instance=ExtResource("1_swynq")]
