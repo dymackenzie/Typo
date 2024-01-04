@@ -10,11 +10,12 @@ public partial class HealthBar : TextureProgressBar
 
     public override void _Ready() {
         player = GetNode<Player>(playerPath);
+        Value = player.health * 16.67f;
         player.HealthChanged += Update;
     }
 
     public void Update() {
-        Value = player.health * 16.7f;
+        Value = player.health * 16.67f;
     }
 
 }

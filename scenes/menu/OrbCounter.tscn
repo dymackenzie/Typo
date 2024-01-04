@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://cvdp3m6yklvpd"]
+
+[ext_resource type="Script" path="res://src/scripts/OrbCounter.cs" id="1_76guy"]
+[ext_resource type="FontFile" uid="uid://dffeg3yeiqp5" path="res://assets/misc/m5x7.ttf" id="3_frat0"]
+
+[node name="OrbCounter" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 132.0
+offset_bottom = 64.0
+script = ExtResource("1_76guy")
+
+[node name="Label" type="Label" parent="."]
+modulate = Color(0.290196, 0.0352941, 0.52549, 1)
+layout_mode = 0
+offset_left = 9.0
+offset_top = 2.0
+offset_right = 84.0
+offset_bottom = 28.0
+theme_override_fonts/font = ExtResource("3_frat0")
+theme_override_font_sizes/font_size = 32
+text = "0"
+vertical_alignment = 1

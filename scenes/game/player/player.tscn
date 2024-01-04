@@ -8,7 +8,7 @@
 [ext_resource type="Script" path="res://src/scripts/EnableAttack.cs" id="5_islc4"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_k1g3e"]
-radius = 6.0
+radius = 5.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1njop"]
 radius = 20.0
@@ -192,12 +192,11 @@ texture = ExtResource("2_eydv0")
 texture = ExtResource("1_vivj0")
 hframes = 8
 vframes = 20
-frame = 64
 
 [node name="ShakingCamera" parent="Sprite" instance=ExtResource("4_l30nw")]
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]
-position = Vector2(0, 4)
+position = Vector2(0, 3)
 shape = SubResource("CircleShape2D_k1g3e")
 
 [node name="Dash" parent="." instance=ExtResource("4_jx1nl")]
@@ -235,8 +234,14 @@ libraries = {
 }
 autoplay = "idle"
 
+[node name="ShieldDelay" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+autostart = true
+
 [connection signal="CameraShakeRequested" from="." to="Sprite/ShakingCamera" method="OnCameraShakeRequested"]
 [connection signal="body_entered" from="Hit" to="." method="OnHitBodyEntered"]
 [connection signal="body_exited" from="Hit" to="." method="OnHitBodyExited"]
 [connection signal="body_entered" from="Attack" to="." method="OnAttackBodyEntered"]
 [connection signal="body_exited" from="Attack" to="." method="OnAttackBodyExited"]
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="OnAnimationFinished"]

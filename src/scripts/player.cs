@@ -1,6 +1,8 @@
 using System;
 using System.Buffers;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 public partial class Player : CharacterBody2D
@@ -20,23 +22,28 @@ public partial class Player : CharacterBody2D
 	[Export] public int health			= 6;
 
 	// animation variable
-	private bool 				inKillMode = false;
-	private bool 				isTyping = false;
-	private bool 				isRunning = false;
-	private bool				isAttacking = false;
+	public bool 				inKillMode = false;
+	public bool 				isTyping = false;
+	public bool 				isRunning = false;
+	public bool					isDamage = false;
+	public bool					isAttacking = false;
 
-	private Sprite2D 			playerSprite;
-	private AnimationPlayer 	anim;
-	private ShakingCamera		camera;
-	private Enemy 				currentEnemy = null;
-	private Dash 				dash = null;
+	public Sprite2D 			playerSprite;
+	public CollisionShape2D		hitbox;
+	public AnimationPlayer 		anim;
+	public ShakingCamera		camera;
+	public Enemy 				currentEnemy = null;
+	public Dash 				dash = null;
+	public Timer				shield;
 
 	// kill mode
-	private readonly ArrayList 	enemies = new();
-	private bool 				withinEnemyReach = false;
+	public List<Enemy> 			enemies = new();
+	public bool 				withinEnemyReach = false;
 
 	public override void _Ready() {
 		playerSprite = GetNode<Sprite2D>("Sprite");
+		hitbox = GetNode<CollisionShape2D>("Hitbox");
+		shield = GetNode<Timer>("ShieldDelay");
 		camera = GetNode<ShakingCamera>("Sprite/ShakingCamera");
 		anim = GetNode<AnimationPlayer>("AnimationPlayer");
 		dash = GetNode<Dash>("Dash");
@@ -48,8 +55,10 @@ public partial class Player : CharacterBody2D
 	public override void _PhysicsProcess(double delta) {
 		// attack 
 		if (Input.IsActionJustPressed("enter_attack") && enemies.Count != 0) {
-			currentEnemy = (Enemy)enemies[0];
+			anim.Stop();
+			currentEnemy = enemies[0];
 			isTyping = withinEnemyReach = false;
+			hitbox.Disabled = true;
 			EmitSignal(nameof(InSlowdown), true);
 			camera.CameraZoom(inKillMode = !inKillMode);
 		}
@@ -66,15 +75,15 @@ public partial class Player : CharacterBody2D
 	Kill mode to handle fighting mechanics
 	*/
 	public void KillMode(float delta) {
-		currentEnemy = (Enemy)enemies[0];
 		currentEnemy.prompt.Visible = true;
-		if ((currentEnemy.GlobalPosition - GlobalPosition).Length() > 20.0f) {
+		if ((currentEnemy.GlobalPosition - GlobalPosition).Length() > 15.0f) {
 			// first, dash to enemy
 			dash.InstanceGhost();
 			Vector2 direction = (currentEnemy.GlobalPosition - GlobalPosition).Normalized();
 			Vector2 desiredVelocity = new Vector2(direction.X, direction.Y / 2) * dash_speed;
 			MoveAndCollide(desiredVelocity * delta);
 		} else {
+			playerSprite.Frame = 40;
 			isTyping = true;
 		}
 	}
@@ -101,7 +110,6 @@ public partial class Player : CharacterBody2D
 		// IF STRING MATCHES, DEAL DAMAGE AND ALL THAT STUFF
 		if (keyTyped == nextChar) {
 			currentLetterIndex += 1;
-			isAttacking = true;
 			currentEnemy.currentLetterIndex = currentLetterIndex;
 			currentEnemy.OnHit(nextChar);
 			currentEnemy.SetNextCharacter(false);
@@ -110,7 +118,6 @@ public partial class Player : CharacterBody2D
 				ResetPrompt(); // when player has gone through word
 			}
 		} else {
-			isAttacking = false;
 			currentEnemy.SetNextCharacter(true);
 		}
 	}
@@ -121,13 +128,40 @@ public partial class Player : CharacterBody2D
 	private void ResetPrompt() {
 		// reset letter index, is typing, and withinEnemyReach after prompt
 		currentEnemy.currentLetterIndex = 0;
-		isTyping = withinEnemyReach = isAttacking = false;
-		enemies.Remove(currentEnemy);
-		// check if player has gone through all enemies
-		if (enemies.Count == 0) {
-			// all enemies have been wiped
-			EmitSignal(nameof(InSlowdown), false);
-			camera.CameraZoom(inKillMode = false);
+		isTyping = withinEnemyReach = false;
+		AttackAnimation();
+	}
+
+	public void OnDamage() {
+		health -= 1;
+		EmitSignal(nameof(HealthChanged));
+		isDamage = true;
+	}
+
+	/*
+	Handles attack animation
+	*/
+	private void AttackAnimation() {
+		string[] animations = new string[] {"attack_sweep", "attack_swoop", "attack_up", "attack_down"};
+		RandomNumberGenerator random = new();
+		anim.Play(animations[random.RandiRange(0, 3)]);
+		currentEnemy.EmitText((currentEnemy.difficulty * currentEnemy.healthUnit).ToString());
+	}
+
+	public void OnAnimationFinished(StringName animName) {
+		string[] animations = new string[] {"attack_sweep", "attack_swoop", "attack_up", "attack_down"};
+		if (animations.Contains<string>((string) animName)) {
+			// check if player has gone through all enemies
+			enemies.Remove(currentEnemy);
+			if (enemies.Count == 0) {
+				// all enemies have been wiped
+				hitbox.Disabled = false;
+				currentEnemy = null;
+				EmitSignal(nameof(InSlowdown), false);
+				camera.CameraZoom(inKillMode = false);
+			} else {
+				currentEnemy = enemies[0];
+			}	
 		}
 	}
 
@@ -140,12 +174,11 @@ public partial class Player : CharacterBody2D
 				anim.Play("dash");
 			} else if (isRunning) {
 				anim.Play("run");
+			} else if (isDamage) {
+				isDamage = false;
+				anim.Play("damage");
 			} else {
 				anim.Play("idle");
-			}
-		} else {
-			if (isAttacking) {
-				anim.Play("attack_sweep");
 			}
 		}
 	}
@@ -196,6 +229,11 @@ public partial class Player : CharacterBody2D
 			Enemy enemy = (Enemy) body;
 			enemy.attackTimer.Stop();
 			enemy.SetState("hit");
+
+			if (shield.IsStopped() && !inKillMode) {
+				OnDamage();
+				shield.Start();
+			}
 		}
 	}
 

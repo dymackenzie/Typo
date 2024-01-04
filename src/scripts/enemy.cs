@@ -17,6 +17,7 @@ public partial class Enemy : CharacterBody2D
 	[Export] public float healthUnit	= 20;
 	[Export] public int difficulty	 	= 6;
 	[Export] public float slowdownRate  = 0.05f;
+	[Export] public int orbNumber 		= 3;
 	[Export] public Color textCorrect 	= new("#00FF00");
 	[Export] public Color textWrong 	= new("#FF0000");
 
@@ -50,6 +51,8 @@ public partial class Enemy : CharacterBody2D
 		prompt.Text = SetCenterTags(promptText);
 		// health based on difficulty
 		health = difficulty * healthUnit;
+		// orb number
+		orbs.orbNumber = orbNumber;
 		ConnectSignals();
     }
 
@@ -77,19 +80,24 @@ public partial class Enemy : CharacterBody2D
 
 	public void OnHit(string s) {
 		health -= healthUnit;
-		FloatingText text = (FloatingText) floatingText.Instantiate();
-		text.SetText(s);
-		AddChild(text);
+		EmitText(s);
 		if (health <= 0) {
 			OnDeath();
 		}	
 	}
 
+	public void EmitText(string s) {
+		FloatingText text = (FloatingText) floatingText.Instantiate();
+		text.SetText(s);
+		AddChild(text);
+	}
+
 	public void OnDeath() {
 		CollisionShape2D hitbox = GetNode<CollisionShape2D>("Hitbox");
+		hitbox.Disabled = true;
 		Sprite2D spritePos = GetNode<Sprite2D>("TruePosition");
 		spritePos.Visible = false;
-		hitbox.Disabled = isDying = true; // disable hitbox
+		isDying = true; // disable hitbox
 		sprite2D.Play("death");
 	}
 

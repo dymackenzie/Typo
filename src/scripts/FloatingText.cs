@@ -23,8 +23,8 @@ public partial class FloatingText : Marker2D
 	*/
 	private void RandomizeVelocity() {
 		random.Randomize();
-		int horizontalVelocity = (int) random.Randi() % 61 - 30;
-		velocity = new(horizontalVelocity, 30);
+		int horizontalVelocity = (int) random.Randi() % 21 - 10;
+		velocity = new(horizontalVelocity, 20);
 	}
 
 	/*
@@ -33,7 +33,7 @@ public partial class FloatingText : Marker2D
 	private void AnimatedText() {
 		Tween tween = CreateTween();
 		tween.SetTrans(Tween.TransitionType.Linear).SetEase(Tween.EaseType.Out);
-		tween.TweenProperty(this, "scale", new Vector2(0.2f, 0.2f), 0.3);
+		tween.TweenProperty(this, "scale", new Vector2(0.6f, 0.6f), 0.1);
 		tween.TweenInterval(0.2);
 		tween.TweenProperty(this, "scale", new Vector2(0.1f, 0.1f), 0.1);
 		tween.TweenCallback(Callable.From(QueueFree));

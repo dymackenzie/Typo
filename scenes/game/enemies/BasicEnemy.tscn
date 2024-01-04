@@ -235,7 +235,7 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_01ddn"]
-radius = 6.67037
+radius = 4.53246
 
 [node name="BasicEnemy" type="CharacterBody2D" groups=["enemy"]]
 scale = Vector2(0.9, 0.9)
@@ -247,11 +247,11 @@ texture = ExtResource("2_tw7ra")
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_j8xjh")
 sprite_frames = SubResource("SpriteFrames_7wvg4")
-animation = &"damage"
+animation = &"idle"
 autoplay = "idle"
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]
-position = Vector2(0, 2)
+position = Vector2(0, 3.33333)
 shape = SubResource("CircleShape2D_01ddn")
 
 [node name="AttackTimer" type="Timer" parent="."]
@@ -278,8 +278,6 @@ text = "[center]TYPING[/center]"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0
-
-[node name="AttackDelay" type="Timer" parent="."]
 
 [node name="OrbGenerator" parent="." instance=ExtResource("6_301ay")]
 
