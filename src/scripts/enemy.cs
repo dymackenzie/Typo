@@ -13,7 +13,7 @@ public partial class Enemy : CharacterBody2D
 	}
 
 	[Export] public float speed 		= 50.0f;
-	[Export] public float killRadius 	= 40.0f;
+	[Export] public float killRadius 	= 50.0f;
 	[Export] public float healthUnit	= 20;
 	[Export] public int difficulty	 	= 6;
 	[Export] public float slowdownRate  = 0.05f;
@@ -103,8 +103,12 @@ public partial class Enemy : CharacterBody2D
 	public void OnDeath() {
 		CollisionShape2D hitbox = GetNode<CollisionShape2D>("Hitbox");
 		CollisionShape2D damageArea = GetNode<CollisionShape2D>("Damage/CollisionShape2D");
-		hitbox.Disabled = damageArea.Disabled = true;
 		Sprite2D spritePos = GetNode<Sprite2D>("TruePosition");
+
+		Tween tween = CreateTween();
+		tween.TweenProperty(prompt, "modulate:a", 0.3, 0.2);
+
+		hitbox.Disabled = damageArea.Disabled = true;
 		spritePos.Visible = false;
 		isDying = true; // disable hitbox
 		sprite2D.Play("death");

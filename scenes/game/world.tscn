@@ -15,6 +15,7 @@ autostart = true
 [node name="player" parent="." instance=ExtResource("3_npmoh")]
 
 [node name="EnemyGenerator" parent="." instance=ExtResource("3_lkvyb")]
+cooldownDuration = 2.0
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

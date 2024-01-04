@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Linq;
 using Godot;
 
@@ -13,6 +14,7 @@ public partial class Player : CharacterBody2D
 	[Signal] public delegate void HealthChangedEventHandler();
 	[Signal] public delegate void InSlowdownEventHandler(bool slowdown);
 	[Signal] public delegate void WPMChangedEventHandler(double WPM);
+	[Signal] public delegate void KeySuccessEventHandler();
 
 	// fields
 	[Export] public float speed 		= 100.0f;
@@ -27,9 +29,7 @@ public partial class Player : CharacterBody2D
 	public bool 				inKillMode = false;
 	public bool 				isTyping = false;
 	public bool 				isRunning = false;
-	public bool					isDamage = false;
 	public bool					isAttacking = false;
-	public bool					isBeingDamaged = false;
 
 	public Sprite2D 			playerSprite;
 	public CollisionShape2D		hitbox;
@@ -62,13 +62,7 @@ public partial class Player : CharacterBody2D
 	public override void _PhysicsProcess(double delta) {
 		// attack 
 		if (Input.IsActionJustPressed("enter_attack") && enemies.Count != 0) {
-			anim.Stop();
-			currentEnemy = enemies[0];
-			isTyping = withinEnemyReach = false;
-			playerSprite.Frame = 40;
-			hitbox.Disabled = true;
-			EmitSignal(nameof(InSlowdown), true);
-			camera.CameraZoom(inKillMode = !inKillMode);
+			SwitchKillMode();
 		}
 		// move
 		if (!inKillMode) {
@@ -108,6 +102,19 @@ public partial class Player : CharacterBody2D
     }
 
 	/*
+	Handles all the variables meant for switching from kill and not kill mode
+	*/
+	public void SwitchKillMode() {
+		anim.Stop();
+		currentEnemy = enemies[0];
+		isTyping = withinEnemyReach = false;
+		playerSprite.Frame = 40;
+		camera.CameraZoom(inKillMode = !inKillMode);
+		hitbox.Disabled = inKillMode;
+		EmitSignal(nameof(InSlowdown), inKillMode);
+	}
+
+	/*
 	Handling all typing and wrong letters
 	*/
 	private void Typing(string keyTyped) {
@@ -122,6 +129,7 @@ public partial class Player : CharacterBody2D
 			currentEnemy.currentLetterIndex = currentLetterIndex;
 			currentEnemy.OnHit(nextChar);
 			currentEnemy.SetNextCharacter(false);
+			EmitSignal(nameof(KeySuccess));
 			EmitSignal(nameof(CameraShakeRequested));
 			if (currentLetterIndex == prompt.Length) {
 				ResetPrompt(); // when player has gone through word
@@ -151,17 +159,29 @@ public partial class Player : CharacterBody2D
 		double seconds = timePassed / 60000.0;
 		double words = currentEnemy.difficulty / 5.0;
 		if (WPM == 0)
-			WPM = words / seconds;
+			WPM = words / seconds; // deal with starting value
 		else
 			WPM = (WPM + words / seconds) / 2;
 		EmitSignal(nameof(WPMChanged), WPM);
 	}
 
+	/*
+	Damage player
+	*/ 
 	public void OnDamage() {
+		// modulate attack
+		DamageVisuals();
 		health -= 1;
 		EmitSignal(nameof(HealthChanged));
-		isDamage = true;
 		shield.Start();
+	}
+
+	public void DamageVisuals() {
+		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Linear).SetEase(Tween.EaseType.Out);
+		Color color = Modulate;
+		tween.TweenProperty(this, "modulate", new Color("E83B3B"), 0.2);
+		tween.TweenProperty(this, "modulate", color, 0.2);
+		EmitSignal(nameof(CameraShakeRequested));
 	}
 
 	/*
@@ -182,8 +202,8 @@ public partial class Player : CharacterBody2D
 			if (enemies.Count == 0) {
 				// all enemies have been wiped
 				hitbox.Disabled = false;
-				EmitSignal(nameof(InSlowdown), false);
 				camera.CameraZoom(inKillMode = false);
+				EmitSignal(nameof(InSlowdown), false);
 			} else {
 				playerSprite.Frame = 40;
 				currentEnemy = enemies[0];
@@ -200,9 +220,6 @@ public partial class Player : CharacterBody2D
 				anim.Play("dash");
 			} else if (isRunning) {
 				anim.Play("run");
-			} else if (isDamage) {
-				isDamage = false;
-				anim.Play("damage");
 			} else {
 				anim.Play("idle");
 			}
