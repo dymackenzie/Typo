@@ -1,29 +1,26 @@
 using System;
-using System.Buffers;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.Linq;
 using Godot;
 
 public partial class Player : CharacterBody2D
 {
 
-	[Signal] public delegate void CameraShakeRequestedEventHandler();
+	[Signal] public delegate void CameraShakeRequestedEventHandler(float shakeScale);
 	[Signal] public delegate void HealthChangedEventHandler();
 	[Signal] public delegate void InSlowdownEventHandler(bool slowdown);
 	[Signal] public delegate void WPMChangedEventHandler(double WPM);
 	[Signal] public delegate void KeySuccessEventHandler();
+	[Signal] public delegate void SwitchEnemyEventHandler();
 
 	// fields
+	[Export] public int health			= 6;
 	[Export] public float speed 		= 100.0f;
 	[Export] public float dash_speed 	= 200.0f;
 	[Export] public float dash_duration = 0.2f;
 	[Export] public float friction 		= 0.7f;
 	[Export] public float acceleration 	= 0.8f;
 	[Export] public Color killZone		= new(0.29f, 0.02f, 0.02f);
-	[Export] public int health			= 6;
 
 	// animation variable
 	public bool 				inKillMode = false;
@@ -31,6 +28,7 @@ public partial class Player : CharacterBody2D
 	public bool 				isRunning = false;
 	public bool					isAttacking = false;
 
+	public Globals				Globals;
 	public Sprite2D 			playerSprite;
 	public CollisionShape2D		hitbox;
 	public AnimationPlayer 		anim;
@@ -48,6 +46,7 @@ public partial class Player : CharacterBody2D
 	public double				WPM = 0;
 
 	public override void _Ready() {
+		Globals = GetNode<Globals>("/root/Globals");
 		playerSprite = GetNode<Sprite2D>("Sprite");
 		hitbox = GetNode<CollisionShape2D>("Hitbox");
 		shield = GetNode<Timer>("ShieldDelay");
@@ -62,6 +61,9 @@ public partial class Player : CharacterBody2D
 	public override void _PhysicsProcess(double delta) {
 		// attack 
 		if (Input.IsActionJustPressed("enter_attack") && enemies.Count != 0) {
+			anim.Stop();
+			currentEnemy = enemies[0];
+			playerSprite.Frame = 40;
 			SwitchKillMode();
 		}
 		// move
@@ -80,7 +82,7 @@ public partial class Player : CharacterBody2D
 		currentEnemy.prompt.Visible = true;
 		if ((currentEnemy.GlobalPosition - GlobalPosition).Length() > 15.0f) {
 			// first, dash to enemy
-			dash.InstanceGhost();
+			if (!dash.IsDashing()) dash.StartDash(dash_duration);
 			Vector2 direction = (currentEnemy.GlobalPosition - GlobalPosition).Normalized();
 			Vector2 desiredVelocity = new Vector2(direction.X, direction.Y / 2) * dash_speed;
 			MoveAndCollide(desiredVelocity * delta);
@@ -105,12 +107,10 @@ public partial class Player : CharacterBody2D
 	Handles all the variables meant for switching from kill and not kill mode
 	*/
 	public void SwitchKillMode() {
-		anim.Stop();
-		currentEnemy = enemies[0];
 		isTyping = withinEnemyReach = false;
-		playerSprite.Frame = 40;
 		camera.CameraZoom(inKillMode = !inKillMode);
 		hitbox.Disabled = inKillMode;
+		Globals.inSlowdown = inKillMode;
 		EmitSignal(nameof(InSlowdown), inKillMode);
 	}
 
@@ -130,7 +130,7 @@ public partial class Player : CharacterBody2D
 			currentEnemy.OnHit(nextChar);
 			currentEnemy.SetNextCharacter(false);
 			EmitSignal(nameof(KeySuccess));
-			EmitSignal(nameof(CameraShakeRequested));
+			EmitSignal(nameof(CameraShakeRequested), 0);
 			if (currentLetterIndex == prompt.Length) {
 				ResetPrompt(); // when player has gone through word
 			}
@@ -177,11 +177,13 @@ public partial class Player : CharacterBody2D
 	}
 
 	public void DamageVisuals() {
-		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Linear).SetEase(Tween.EaseType.Out);
 		Color color = Modulate;
-		tween.TweenProperty(this, "modulate", new Color("E83B3B"), 0.2);
-		tween.TweenProperty(this, "modulate", color, 0.2);
-		EmitSignal(nameof(CameraShakeRequested));
+		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Linear).SetEase(Tween.EaseType.Out);
+		float delay = 0.2f;
+		tween.TweenProperty(this, "modulate", new Color("E83B3B"), delay);
+		tween.TweenInterval(delay);
+		tween.TweenProperty(this, "modulate", color, shield.WaitTime - delay * 2);
+		EmitSignal(nameof(CameraShakeRequested), 5);
 	}
 
 	/*
@@ -203,10 +205,12 @@ public partial class Player : CharacterBody2D
 				// all enemies have been wiped
 				hitbox.Disabled = false;
 				camera.CameraZoom(inKillMode = false);
+				Globals.inSlowdown = inKillMode;
 				EmitSignal(nameof(InSlowdown), false);
 			} else {
 				playerSprite.Frame = 40;
 				currentEnemy = enemies[0];
+				EmitSignal(nameof(SwitchEnemy));
 			}	
 		}
 	}

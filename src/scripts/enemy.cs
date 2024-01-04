@@ -23,7 +23,8 @@ public partial class Enemy : CharacterBody2D
 
 	public float health = 0;
 
-	public Words					words = new();
+	public Globals					Globals;
+	public Words					Words = new();
 	public Player 					player = null;
 	public Timer 					attackTimer;
 	public AnimatedSprite2D 		sprite2D;
@@ -33,13 +34,13 @@ public partial class Enemy : CharacterBody2D
 	public PackedScene				floatingText;
 
 	public RichTextLabel 			prompt;
-	public bool						inSlowdown;
 	public bool						isAttacking;
 	public bool						isDying;
 	public string 					promptText;
 	public int 						currentLetterIndex;	
 
     public override void _Ready() {
+		Globals = GetNode<Globals>("/root/Globals");
 		floatingText = GD.Load<PackedScene>("res://scenes/game/enemies/FloatingText.tscn");
 		prompt = GetNode<RichTextLabel>("TypingText");
 		attackTimer = GetNode<Timer>("AttackTimer");
@@ -48,20 +49,19 @@ public partial class Enemy : CharacterBody2D
 		random.Randomize();
 		// word prompt
 		prompt.Visible = false;
-		promptText = (string)words.Call("GetRandomPrompt", difficulty);
+		promptText = (string)Words.Call("GetRandomPrompt", difficulty);
 		prompt.Text = SetCenterTags(promptText);
 		// health based on difficulty
 		health = difficulty * healthUnit;
 		// orb number
 		orbs.orbNumber = orbNumber;
-		ConnectSignals();
     }
 
     public override void _PhysicsProcess(double delta) {
 		// deal with slowdown
 		IsAttacking();
-		sprite2D.SpeedScale = inSlowdown ? slowdownRate : 1;
-		delta *= inSlowdown ? slowdownRate : 1;
+		sprite2D.SpeedScale = Globals.inSlowdown ? slowdownRate : 1;
+		delta *= Globals.inSlowdown ? slowdownRate : 1;
 		if (!isDying) {
 			switch(state) {
 				case EnemyState.SURROUND:
@@ -104,9 +104,11 @@ public partial class Enemy : CharacterBody2D
 		CollisionShape2D hitbox = GetNode<CollisionShape2D>("Hitbox");
 		CollisionShape2D damageArea = GetNode<CollisionShape2D>("Damage/CollisionShape2D");
 		Sprite2D spritePos = GetNode<Sprite2D>("TruePosition");
+		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Linear).SetEase(Tween.EaseType.Out);
 
-		Tween tween = CreateTween();
-		tween.TweenProperty(prompt, "modulate:a", 0.3, 0.2);
+		var direction = (player.GlobalPosition - GlobalPosition).Normalized();
+		tween.TweenProperty(prompt, "modulate:a", 0.4, 0.3);
+		tween.Parallel().TweenProperty(this, "global_position", direction * 1, 0.5);
 
 		hitbox.Disabled = damageArea.Disabled = true;
 		spritePos.Visible = false;
@@ -153,14 +155,6 @@ public partial class Enemy : CharacterBody2D
 		} else {
 			return Vector2.Zero;
 		}
-	}
-
-	public void Slowdown(bool slowdown) {
-		inSlowdown = slowdown;
-	}
-
-	public void ConnectSignals() {
-		player.InSlowdown += Slowdown;
 	}
 
 	/*

@@ -11,14 +11,18 @@ public partial class ShakingCamera : Camera2D
     [Export] public float zoomDuration     = 0.4f;
     [Export] public bool shakeEnable       = false;
 
+    private float shakeScale;
     private Tween tween;
-    private Globals globals;
+    private Player player;
     private Timer timer;
     private RandomNumberGenerator random = new();
 
     public override void _Ready() {
-        globals = GetNode<Globals>("/root/Globals");
+        foreach (Node node in GetTree().GetNodesInGroup("player")) {
+            player = (Player) node;
+        }
         timer = GetNode<Timer>("Timer");
+        player.CameraShakeRequested += OnCameraShakeRequested;
         random.Randomize();
         SetDuration(duration);
         SetProcess(false);
@@ -30,15 +34,16 @@ public partial class ShakingCamera : Camera2D
 
     public override void _Process(double delta) {
         Offset = new Vector2(
-            random.RandfRange(amplitude, -amplitude) * damping,
-            random.RandfRange(amplitude, -amplitude) * damping
+            random.RandfRange(amplitude + shakeScale, -amplitude - shakeScale) * damping,
+            random.RandfRange(amplitude + shakeScale, -amplitude - shakeScale) * damping
         );
 
     }
 
-    public void OnCameraShakeRequested() {
+    public void OnCameraShakeRequested(float scale) {
         if (!shakeEnable)
             return;
+        shakeScale = scale;
         SetShake(true);
     }
 

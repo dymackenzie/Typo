@@ -244,7 +244,6 @@ wait_time = 3.0
 one_shot = true
 autostart = true
 
-[connection signal="CameraShakeRequested" from="." to="Sprite/ShakingCamera" method="OnCameraShakeRequested"]
 [connection signal="body_entered" from="Hit" to="." method="OnHitBodyEntered"]
 [connection signal="body_exited" from="Hit" to="." method="OnHitBodyExited"]
 [connection signal="body_entered" from="Attack" to="." method="OnAttackBodyEntered"]

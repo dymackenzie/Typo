@@ -20,6 +20,7 @@ public partial class EnableAttack : Node2D
         timer = GetNode<Timer>("InKillMode");
         originalWait = timer.WaitTime;
         player.InSlowdown += BeginCountdown;
+        player.SwitchEnemy += OnEnemySwitch;
         player.KeySuccess += AddTime;
     }
 
@@ -28,12 +29,10 @@ public partial class EnableAttack : Node2D
     }
 
     public override void _Draw() {
+        DrawArc(Vector2.Zero, radius, 0, (float) Math.Tau, pointCount, new Color(1, 1, 1, 0.2f), 1, false);
         if (killMode) {
             DrawArc(Vector2.Zero, radius, 0, (float) Math.Tau * (float) (timer.TimeLeft / timer.WaitTime), pointCount, new Color(0.29f, 0.02f, 0.02f), 1, false);
-        } else {
-            DrawArc(Vector2.Zero, radius, 0, (float) Math.Tau, pointCount, new Color(1, 1, 1, 0.2f), 1, false);
         }
-        
     }
 
     public void AddTime() {
@@ -41,14 +40,19 @@ public partial class EnableAttack : Node2D
         timer.WaitTime = currentTime + 0.5;
     }
 
+    public void OnEnemySwitch() {
+        timer.Stop();
+        timer.WaitTime = originalWait;
+        timer.Start();
+    }
+
     public void BeginCountdown(bool value) {
         killMode = value;
         timer.WaitTime = originalWait;
-        if (value) {
+        if (value)
             timer.Start();
-        } else {
+        else
             timer.Stop();
-        }
     }
 
     /*
