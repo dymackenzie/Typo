@@ -27,6 +27,7 @@ public partial class Player : CharacterBody2D
 	public bool 				isRunning = false;
 	public bool					isDamage = false;
 	public bool					isAttacking = false;
+	public bool					isBeingDamaged = false;
 
 	public Sprite2D 			playerSprite;
 	public CollisionShape2D		hitbox;
@@ -58,6 +59,7 @@ public partial class Player : CharacterBody2D
 			anim.Stop();
 			currentEnemy = enemies[0];
 			isTyping = withinEnemyReach = false;
+			playerSprite.Frame = 40;
 			hitbox.Disabled = true;
 			EmitSignal(nameof(InSlowdown), true);
 			camera.CameraZoom(inKillMode = !inKillMode);
@@ -65,7 +67,7 @@ public partial class Player : CharacterBody2D
 		// move
 		if (!inKillMode) {
 			Move((float)delta);
-		} else {
+		} else if (currentEnemy != null) {
 			KillMode((float)delta);
 		}
 		HandleAnimations();
@@ -83,7 +85,6 @@ public partial class Player : CharacterBody2D
 			Vector2 desiredVelocity = new Vector2(direction.X, direction.Y / 2) * dash_speed;
 			MoveAndCollide(desiredVelocity * delta);
 		} else {
-			playerSprite.Frame = 40;
 			isTyping = true;
 		}
 	}
@@ -130,12 +131,14 @@ public partial class Player : CharacterBody2D
 		currentEnemy.currentLetterIndex = 0;
 		isTyping = withinEnemyReach = false;
 		AttackAnimation();
+		currentEnemy = null;
 	}
 
 	public void OnDamage() {
 		health -= 1;
 		EmitSignal(nameof(HealthChanged));
 		isDamage = true;
+		shield.Start();
 	}
 
 	/*
@@ -156,10 +159,10 @@ public partial class Player : CharacterBody2D
 			if (enemies.Count == 0) {
 				// all enemies have been wiped
 				hitbox.Disabled = false;
-				currentEnemy = null;
 				EmitSignal(nameof(InSlowdown), false);
 				camera.CameraZoom(inKillMode = false);
 			} else {
+				playerSprite.Frame = 40;
 				currentEnemy = enemies[0];
 			}	
 		}
@@ -229,11 +232,6 @@ public partial class Player : CharacterBody2D
 			Enemy enemy = (Enemy) body;
 			enemy.attackTimer.Stop();
 			enemy.SetState("hit");
-
-			if (shield.IsStopped() && !inKillMode) {
-				OnDamage();
-				shield.Start();
-			}
 		}
 	}
 

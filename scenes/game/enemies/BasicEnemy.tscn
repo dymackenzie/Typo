@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://55pc43lgfq5g"]
+[gd_scene load_steps=39 format=3 uid="uid://55pc43lgfq5g"]
 
 [ext_resource type="Script" path="res://src/scripts/Enemy.cs" id="1_ocb5q"]
 [ext_resource type="Texture2D" uid="uid://urgqga3v6f54" path="res://assets/sprites/position2.png" id="2_tw7ra"]
@@ -237,6 +237,9 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_01ddn"]
 radius = 4.53246
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_jokxl"]
+radius = 15.5952
+
 [node name="BasicEnemy" type="CharacterBody2D" groups=["enemy"]]
 scale = Vector2(0.9, 0.9)
 script = ExtResource("1_ocb5q")
@@ -247,8 +250,9 @@ texture = ExtResource("2_tw7ra")
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_j8xjh")
 sprite_frames = SubResource("SpriteFrames_7wvg4")
-animation = &"idle"
+animation = &"attack"
 autoplay = "idle"
+frame = 2
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]
 position = Vector2(0, 3.33333)
@@ -281,5 +285,12 @@ autowrap_mode = 0
 
 [node name="OrbGenerator" parent="." instance=ExtResource("6_301ay")]
 
+[node name="Damage" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Damage"]
+shape = SubResource("CircleShape2D_jokxl")
+
 [connection signal="animation_finished" from="Sprite" to="." method="OnAnimatedEnemyAnimationFinished" flags=6]
 [connection signal="timeout" from="AttackTimer" to="." method="OnAttackTimerTimeout"]
+[connection signal="body_entered" from="Damage" to="." method="OnDamageBodyEntered"]
+[connection signal="body_exited" from="Damage" to="." method="OnDamageBodyExited"]

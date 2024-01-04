@@ -192,6 +192,7 @@ texture = ExtResource("2_eydv0")
 texture = ExtResource("1_vivj0")
 hframes = 8
 vframes = 20
+frame = 64
 
 [node name="ShakingCamera" parent="Sprite" instance=ExtResource("4_l30nw")]
 

@@ -34,6 +34,7 @@ public partial class Enemy : CharacterBody2D
 
 	public RichTextLabel 			prompt;
 	public bool						inSlowdown;
+	public bool						isAttacking;
 	public bool						isDying;
 	public string 					promptText;
 	public int 						currentLetterIndex;	
@@ -58,6 +59,7 @@ public partial class Enemy : CharacterBody2D
 
     public override void _PhysicsProcess(double delta) {
 		// deal with slowdown
+		IsAttacking();
 		sprite2D.SpeedScale = inSlowdown ? slowdownRate : 1;
 		delta *= inSlowdown ? slowdownRate : 1;
 		if (!isDying) {
@@ -78,6 +80,12 @@ public partial class Enemy : CharacterBody2D
 		}
 	}
 
+	public void IsAttacking() {
+		if (player.shield.IsStopped() && isAttacking) {
+			player.OnDamage();
+		}
+	}
+
 	public void OnHit(string s) {
 		health -= healthUnit;
 		EmitText(s);
@@ -94,7 +102,8 @@ public partial class Enemy : CharacterBody2D
 
 	public void OnDeath() {
 		CollisionShape2D hitbox = GetNode<CollisionShape2D>("Hitbox");
-		hitbox.Disabled = true;
+		CollisionShape2D damageArea = GetNode<CollisionShape2D>("Damage/CollisionShape2D");
+		hitbox.Disabled = damageArea.Disabled = true;
 		Sprite2D spritePos = GetNode<Sprite2D>("TruePosition");
 		spritePos.Visible = false;
 		isDying = true; // disable hitbox
@@ -148,6 +157,21 @@ public partial class Enemy : CharacterBody2D
 
 	public void ConnectSignals() {
 		player.InSlowdown += Slowdown;
+	}
+
+	/*
+	When player enters damage area
+	*/
+	public void OnDamageBodyEntered(Node2D body) {
+		if (body.IsInGroup("player")) {
+			isAttacking = true;
+		}
+	}
+
+	public void OnDamageBodyExited(Node2D body) {
+		if (body.IsInGroup("player")) {
+			isAttacking = false;
+		}
 	}
 
 	/*
