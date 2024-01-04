@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3 uid="uid://7begipv8pick"]
+
+[ext_resource type="Script" path="res://src/scripts/Orbs.cs" id="1_tyevb"]
+[ext_resource type="Texture2D" uid="uid://bs5p4ml53g1ex" path="res://assets/sprites/orb.png" id="2_ungun"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0dgt2"]
+radius = 1.0
+
+[node name="Orb" type="RigidBody2D"]
+gravity_scale = 0.0
+script = ExtResource("1_tyevb")
+cooldownPeriod = 1.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.290196, 0.0352941, 0.52549, 1)
+scale = Vector2(0.04, 0.04)
+texture = ExtResource("2_ungun")
+
+[node name="Shape" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_0dgt2")
+disabled = true
+one_way_collision_margin = 2.0
+
+[node name="Hitbox" type="Area2D" parent="."]
+
+[node name="Hitbox" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("CircleShape2D_0dgt2")
+
+[node name="Cooldown" type="Timer" parent="."]
+
+[connection signal="timeout" from="Cooldown" to="." method="OnCooldownTimeout"]

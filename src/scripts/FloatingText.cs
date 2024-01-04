@@ -13,9 +13,9 @@ public partial class FloatingText : Marker2D
 		AnimatedText();
 	}
 
-	public void SetAmount(float amount) {
+	public void SetText(string s) {
 		label = GetNode<Label>("Label");
-		label.Text = amount.ToString();
+		label.Text = s;
 	}
 
 	/*

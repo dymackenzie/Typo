@@ -1,10 +1,11 @@
-[gd_scene load_steps=37 format=3 uid="uid://55pc43lgfq5g"]
+[gd_scene load_steps=38 format=3 uid="uid://55pc43lgfq5g"]
 
 [ext_resource type="Script" path="res://src/scripts/Enemy.cs" id="1_ocb5q"]
 [ext_resource type="Texture2D" uid="uid://urgqga3v6f54" path="res://assets/sprites/position2.png" id="2_tw7ra"]
 [ext_resource type="Shader" path="res://assets/misc/basic_enemy.gdshader" id="3_2n2fo"]
 [ext_resource type="Texture2D" uid="uid://c0rr0a800dmra" path="res://assets/sprites/player_character.png" id="4_t8g56"]
 [ext_resource type="FontFile" uid="uid://dffeg3yeiqp5" path="res://assets/misc/m5x7.ttf" id="5_o78i8"]
+[ext_resource type="PackedScene" uid="uid://clsooicctrbmo" path="res://scenes/game/OrbGenerator.tscn" id="6_301ay"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_j8xjh"]
 shader = ExtResource("3_2n2fo")
@@ -240,22 +241,22 @@ radius = 6.67037
 scale = Vector2(0.9, 0.9)
 script = ExtResource("1_ocb5q")
 
-[node name="position" type="Sprite2D" parent="."]
+[node name="TruePosition" type="Sprite2D" parent="."]
 texture = ExtResource("2_tw7ra")
 
-[node name="animated_enemy" type="AnimatedSprite2D" parent="."]
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_j8xjh")
 sprite_frames = SubResource("SpriteFrames_7wvg4")
 animation = &"damage"
 autoplay = "idle"
 
-[node name="enemy_hitbox" type="CollisionShape2D" parent="."]
+[node name="Hitbox" type="CollisionShape2D" parent="."]
 position = Vector2(0, 2)
 shape = SubResource("CircleShape2D_01ddn")
 
-[node name="attack_timer" type="Timer" parent="."]
+[node name="AttackTimer" type="Timer" parent="."]
 
-[node name="typing_text" type="RichTextLabel" parent="."]
+[node name="TypingText" type="RichTextLabel" parent="."]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -278,5 +279,9 @@ fit_content = true
 scroll_active = false
 autowrap_mode = 0
 
-[connection signal="animation_finished" from="animated_enemy" to="." method="OnAnimatedEnemyAnimationFinished" flags=6]
-[connection signal="timeout" from="attack_timer" to="." method="OnAttackTimerTimeout"]
+[node name="AttackDelay" type="Timer" parent="."]
+
+[node name="OrbGenerator" parent="." instance=ExtResource("6_301ay")]
+
+[connection signal="animation_finished" from="Sprite" to="." method="OnAnimatedEnemyAnimationFinished" flags=6]
+[connection signal="timeout" from="AttackTimer" to="." method="OnAttackTimerTimeout"]

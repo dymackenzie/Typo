@@ -26,6 +26,7 @@ public partial class Enemy : CharacterBody2D
 	public Player 					player = null;
 	public Timer 					attackTimer;
 	public AnimatedSprite2D 		sprite2D;
+	public OrbGenerator				orbs;
 	public EnemyState 				state = EnemyState.SURROUND;
 	public RandomNumberGenerator 	random = new();
 	public PackedScene				floatingText;
@@ -38,9 +39,10 @@ public partial class Enemy : CharacterBody2D
 
     public override void _Ready() {
 		floatingText = GD.Load<PackedScene>("res://scenes/game/enemies/FloatingText.tscn");
-		prompt = GetNode<RichTextLabel>("typing_text");
-		attackTimer = GetNode<Timer>("attack_timer");
-		sprite2D = GetNode<AnimatedSprite2D>("animated_enemy");
+		prompt = GetNode<RichTextLabel>("TypingText");
+		attackTimer = GetNode<Timer>("AttackTimer");
+		sprite2D = GetNode<AnimatedSprite2D>("Sprite");
+		orbs = GetNode<OrbGenerator>("OrbGenerator");
 		random.Randomize();
 		// word prompt
 		prompt.Visible = false;
@@ -73,10 +75,10 @@ public partial class Enemy : CharacterBody2D
 		}
 	}
 
-	public void OnHit() {
+	public void OnHit(string s) {
 		health -= healthUnit;
 		FloatingText text = (FloatingText) floatingText.Instantiate();
-		text.SetAmount(healthUnit);
+		text.SetText(s);
 		AddChild(text);
 		if (health <= 0) {
 			OnDeath();
@@ -84,7 +86,9 @@ public partial class Enemy : CharacterBody2D
 	}
 
 	public void OnDeath() {
-		CollisionShape2D hitbox = GetNode<CollisionShape2D>("enemy_hitbox");
+		CollisionShape2D hitbox = GetNode<CollisionShape2D>("Hitbox");
+		Sprite2D spritePos = GetNode<Sprite2D>("TruePosition");
+		spritePos.Visible = false;
 		hitbox.Disabled = isDying = true; // disable hitbox
 		sprite2D.Play("death");
 	}
@@ -92,6 +96,7 @@ public partial class Enemy : CharacterBody2D
 	public void OnAnimatedEnemyAnimationFinished() {
 		if (isDying) {
 			QueueFree();
+			orbs.GenerateOrbs();
 		}
 	}
 
@@ -129,8 +134,8 @@ public partial class Enemy : CharacterBody2D
 		}
 	}
 
-	public void Slowdown() {
-		inSlowdown = !inSlowdown;
+	public void Slowdown(bool slowdown) {
+		inSlowdown = slowdown;
 	}
 
 	public void ConnectSignals() {
@@ -142,10 +147,6 @@ public partial class Enemy : CharacterBody2D
 	*/
 	public void OnAttackTimerTimeout() {
 		state = EnemyState.ATTACK;
-	}
-
-	public void SetPromptVisibility(bool isVisible) {
-		prompt.Visible = isVisible;
 	}
 
 	/*
@@ -165,7 +166,7 @@ public partial class Enemy : CharacterBody2D
 	Changes position color
 	*/
 	public void SetPositionColor(Color color) {
-		Sprite2D spritePos = GetNode<Sprite2D>("position");
+		Sprite2D spritePos = GetNode<Sprite2D>("TruePosition");
 		spritePos.Modulate = color;
 	}
 

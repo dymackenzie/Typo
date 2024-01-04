@@ -17,5 +17,4 @@ public partial class HealthBar : TextureProgressBar
         Value = player.health * 16.7f;
     }
 
-
 }

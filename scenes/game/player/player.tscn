@@ -185,33 +185,35 @@ _data = {
 [node name="Player" type="CharacterBody2D" groups=["player"]]
 script = ExtResource("1_0srf6")
 
-[node name="true_position" type="Sprite2D" parent="."]
+[node name="TruePosition" type="Sprite2D" parent="."]
 texture = ExtResource("2_eydv0")
 
-[node name="animated_player" type="Sprite2D" parent="."]
+[node name="Sprite" type="Sprite2D" parent="."]
 texture = ExtResource("1_vivj0")
 hframes = 8
 vframes = 20
 frame = 64
 
-[node name="ShakingCamera" parent="animated_player" instance=ExtResource("4_l30nw")]
+[node name="ShakingCamera" parent="Sprite" instance=ExtResource("4_l30nw")]
 
-[node name="hitbox" type="CollisionShape2D" parent="."]
+[node name="Hitbox" type="CollisionShape2D" parent="."]
 position = Vector2(0, 4)
 shape = SubResource("CircleShape2D_k1g3e")
 
 [node name="Dash" parent="." instance=ExtResource("4_jx1nl")]
+position = Vector2(115.788, -54.8593)
+playerSprite = NodePath("../Sprite")
 
-[node name="hit" type="Area2D" parent="."]
+[node name="Hit" type="Area2D" parent="."]
 visible = false
 
-[node name="hit_shape" type="CollisionShape2D" parent="hit"]
+[node name="hit_shape" type="CollisionShape2D" parent="Hit"]
 shape = SubResource("CircleShape2D_1njop")
 
-[node name="attack" type="Area2D" parent="."]
+[node name="Attack" type="Area2D" parent="."]
 visible = false
 
-[node name="attack_shape" type="CollisionShape2D" parent="attack"]
+[node name="attack_shape" type="CollisionShape2D" parent="Attack"]
 shape = SubResource("CircleShape2D_q3rjr")
 
 [node name="enemy_spawning" type="Path2D" parent="."]
@@ -223,18 +225,18 @@ progress = 1623.84
 
 [node name="Marker2D" type="Marker2D" parent="enemy_spawning/enemy_spawn_range"]
 
-[node name="enable_attack" type="Node2D" parent="."]
+[node name="EnableAttack" type="Node2D" parent="."]
 script = ExtResource("5_islc4")
 
-[node name="animation_player" type="AnimationPlayer" parent="."]
-root_node = NodePath("../animated_player")
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../Sprite")
 libraries = {
 "": SubResource("AnimationLibrary_s658l")
 }
 autoplay = "idle"
 
-[connection signal="CameraShakeRequested" from="." to="animated_player/ShakingCamera" method="OnCameraShakeRequested"]
-[connection signal="body_entered" from="hit" to="." method="OnHitBodyEntered"]
-[connection signal="body_exited" from="hit" to="." method="OnHitBodyExited"]
-[connection signal="body_entered" from="attack" to="." method="OnAttackBodyEntered"]
-[connection signal="body_exited" from="attack" to="." method="OnAttackBodyExited"]
+[connection signal="CameraShakeRequested" from="." to="Sprite/ShakingCamera" method="OnCameraShakeRequested"]
+[connection signal="body_entered" from="Hit" to="." method="OnHitBodyEntered"]
+[connection signal="body_exited" from="Hit" to="." method="OnHitBodyExited"]
+[connection signal="body_entered" from="Attack" to="." method="OnAttackBodyEntered"]
+[connection signal="body_exited" from="Attack" to="." method="OnAttackBodyExited"]

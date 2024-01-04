@@ -8,7 +8,7 @@ public partial class Player : CharacterBody2D
 
 	[Signal] public delegate void CameraShakeRequestedEventHandler();
 	[Signal] public delegate void HealthChangedEventHandler();
-	[Signal] public delegate void InSlowdownEventHandler();
+	[Signal] public delegate void InSlowdownEventHandler(bool slowdown);
 
 	// fields
 	[Export] public float speed 		= 100.0f;
@@ -25,7 +25,6 @@ public partial class Player : CharacterBody2D
 	private bool 				isRunning = false;
 	private bool				isAttacking = false;
 
-	private Globals 			globals;
 	private Sprite2D 			playerSprite;
 	private AnimationPlayer 	anim;
 	private ShakingCamera		camera;
@@ -37,11 +36,9 @@ public partial class Player : CharacterBody2D
 	private bool 				withinEnemyReach = false;
 
 	public override void _Ready() {
-		// globals
-		globals = GetNode<Globals>("/root/Globals");
-		playerSprite = GetNode<Sprite2D>("animated_player");
-		camera = GetNode<ShakingCamera>("animated_player/ShakingCamera");
-		anim = GetNode<AnimationPlayer>("animation_player");
+		playerSprite = GetNode<Sprite2D>("Sprite");
+		camera = GetNode<ShakingCamera>("Sprite/ShakingCamera");
+		anim = GetNode<AnimationPlayer>("AnimationPlayer");
 		dash = GetNode<Dash>("Dash");
 	}
 
@@ -53,7 +50,8 @@ public partial class Player : CharacterBody2D
 		if (Input.IsActionJustPressed("enter_attack") && enemies.Count != 0) {
 			currentEnemy = (Enemy)enemies[0];
 			isTyping = withinEnemyReach = false;
-			camera.CameraZoom(!inKillMode);
+			EmitSignal(nameof(InSlowdown), true);
+			camera.CameraZoom(inKillMode = !inKillMode);
 		}
 		// move
 		if (!inKillMode) {
@@ -69,7 +67,7 @@ public partial class Player : CharacterBody2D
 	*/
 	public void KillMode(float delta) {
 		currentEnemy = (Enemy)enemies[0];
-		currentEnemy.SetPromptVisibility(true);
+		currentEnemy.prompt.Visible = true;
 		if ((currentEnemy.GlobalPosition - GlobalPosition).Length() > 20.0f) {
 			// first, dash to enemy
 			dash.InstanceGhost();
@@ -105,7 +103,7 @@ public partial class Player : CharacterBody2D
 			currentLetterIndex += 1;
 			isAttacking = true;
 			currentEnemy.currentLetterIndex = currentLetterIndex;
-			currentEnemy.OnHit();
+			currentEnemy.OnHit(nextChar);
 			currentEnemy.SetNextCharacter(false);
 			EmitSignal(nameof(CameraShakeRequested));
 			if (currentLetterIndex == prompt.Length) {
@@ -128,10 +126,10 @@ public partial class Player : CharacterBody2D
 		// check if player has gone through all enemies
 		if (enemies.Count == 0) {
 			// all enemies have been wiped
+			EmitSignal(nameof(InSlowdown), false);
 			camera.CameraZoom(inKillMode = false);
 		}
 	}
-	
 
 	/*
 	Handles all animations
@@ -168,8 +166,8 @@ public partial class Player : CharacterBody2D
 			isRunning = false;
 		} else if (direction != Vector2.Zero) {
 			// dash
-			if (Input.IsActionJustPressed("dash") && !(bool)dash.Call("IsDashing")) {
-				dash.StartDash(playerSprite, dash_duration);
+			if (Input.IsActionJustPressed("dash") && !dash.IsDashing()) {
+				dash.StartDash(dash_duration);
 			}
 			float speed = dash.IsDashing() ? dash_speed : this.speed;
 			if (x > 0) {

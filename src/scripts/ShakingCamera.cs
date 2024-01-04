@@ -33,6 +33,7 @@ public partial class ShakingCamera : Camera2D
             random.RandfRange(amplitude, -amplitude) * damping,
             random.RandfRange(amplitude, -amplitude) * damping
         );
+
     }
 
     public void OnCameraShakeRequested() {
@@ -48,7 +49,7 @@ public partial class ShakingCamera : Camera2D
     public void SetShake(bool value) {
         shake = value;
         SetProcess(shake);
-        Offset = new Vector2();
+        Offset = Vector2.Zero;
         if (shake) {
             timer.Start();
         }
@@ -59,11 +60,10 @@ public partial class ShakingCamera : Camera2D
 	*/
 	public void CameraZoom(bool zoomIn) {
 		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.Out);
-		globals.isInSlowdown = !globals.isInSlowdown; // emit slowdown signal
 		if (zoomIn) 
             tween.TweenProperty(this, "zoom", Zoom + new Vector2(zoomScale, zoomScale), zoomDuration);
         else 
             tween.TweenProperty(this, "zoom", Zoom - new Vector2(zoomScale, zoomScale), zoomDuration);
-	}
+	} 
 
 }

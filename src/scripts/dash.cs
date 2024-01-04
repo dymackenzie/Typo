@@ -4,6 +4,8 @@ using System;
 public partial class Dash : Node2D
 {
 
+	[Export] NodePath playerSprite;
+
 	private Timer timer;
 	private Timer ghostTimer;
 	private PackedScene ghostScene;
@@ -13,14 +15,14 @@ public partial class Dash : Node2D
 		timer = GetNode<Timer>("duration");
 		ghostTimer = GetNode<Timer>("ghost");
 		ghostScene = GD.Load<PackedScene>("res://scenes/game/player/DashGhost.tscn");
+		sprite = GetNode<Sprite2D>(playerSprite);
 	}
 
 	/*
 	Starts dash timer and instantiates ghosts
 	*/
-	public void StartDash(Sprite2D sprite, float duration) {
+	public void StartDash(float duration) {
 		// begin timer for dash duration
-		this.sprite = sprite;
 		timer.WaitTime = duration;
 		timer.Start();
 		ghostTimer.Start();
@@ -39,9 +41,8 @@ public partial class Dash : Node2D
 		// add ghost to scene
 		Sprite2D ghost = (Sprite2D) ghostScene.Instantiate();
 		GetParent().GetParent().AddChild(ghost);
-
-		// set ghost's attributes to match dashing spritegit 
-		ghost.GlobalPosition = GlobalPosition;
+		// set ghost's attributes to match dashing sprite 
+		ghost.GlobalPosition = sprite.GlobalPosition;
 		ghost.FlipH = sprite.FlipH;
 	}
 
