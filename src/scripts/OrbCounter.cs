@@ -9,7 +9,6 @@ public partial class OrbCounter : Control
     Color color;
 
     public override void _Ready() {
-        base._Ready();
         Globals = GetNode<Globals>("/root/Globals");
         label = GetNode<Label>("Label");
         label.Text = Globals.GetExperience().ToString();

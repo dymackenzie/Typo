@@ -4,7 +4,6 @@ using System;
 public partial class EnemyGenerator : Node2D
 {
 
-    [Export] NodePath playerPath;
     [Export] float cooldownDuration = 5; // in seconds
 
 	public Timer cooldown;
@@ -19,9 +18,11 @@ public partial class EnemyGenerator : Node2D
 	public override void _Ready() {
 		cooldown = GetNode<Timer>("EnemyCooldown");
 		basicEnemyScene = GD.Load<PackedScene>("res://scenes/game/enemies/BasicEnemy.tscn");
-		player = GetNode<Player>(playerPath);
-        pathFollow = GetNode<PathFollow2D>(playerPath + "/enemy_spawning/enemy_spawn_range");
-        marker = GetNode<Marker2D>(playerPath + "/enemy_spawning/enemy_spawn_range/Marker2D");
+		foreach (Node node in GetTree().GetNodesInGroup("player")) {
+            player = (Player) node;
+			pathFollow = GetNode<PathFollow2D>(node.GetPath() + "/enemy_spawning/enemy_spawn_range");
+			marker = GetNode<Marker2D>(node.GetPath() + "/enemy_spawning/enemy_spawn_range/Marker2D");
+        }
         cooldown.WaitTime = cooldownDuration;
         random.Randomize();
 	}

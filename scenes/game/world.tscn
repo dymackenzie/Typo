@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://bpd2lksdfdn7b"]
+[gd_scene load_steps=6 format=3 uid="uid://bpd2lksdfdn7b"]
 
 [ext_resource type="PackedScene" uid="uid://c6r7ykqjgt0s5" path="res://scenes/game/enemies/EnemyGenerator.tscn" id="3_lkvyb"]
 [ext_resource type="PackedScene" uid="uid://cycikbvsectqm" path="res://scenes/game/player/Player.tscn" id="3_npmoh"]
 [ext_resource type="PackedScene" uid="uid://cvdp3m6yklvpd" path="res://scenes/menu/OrbCounter.tscn" id="4_hmxcn"]
 [ext_resource type="PackedScene" uid="uid://cfw8o0ia0ge1u" path="res://scenes/menu/HealthBar.tscn" id="4_prje5"]
+[ext_resource type="PackedScene" uid="uid://p1dg4x55i2di" path="res://scenes/menu/WPMCounter.tscn" id="5_qwm6y"]
 
 [node name="World" type="Node2D"]
 y_sort_enabled = true
@@ -14,7 +15,6 @@ autostart = true
 [node name="player" parent="." instance=ExtResource("3_npmoh")]
 
 [node name="EnemyGenerator" parent="." instance=ExtResource("3_lkvyb")]
-playerPath = NodePath("../player")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -22,5 +22,11 @@ playerPath = NodePath("../player")
 
 [node name="HealthBar" parent="CanvasLayer" instance=ExtResource("4_prje5")]
 playerPath = NodePath("../../player")
+
+[node name="WPMCounter" parent="CanvasLayer" instance=ExtResource("5_qwm6y")]
+offset_left = -7.0
+offset_top = 17.0
+offset_right = 125.0
+offset_bottom = 81.0
 
 [connection signal="timeout" from="enemy_timer" to="." method="OnEnemyTimerTimeout"]

@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://p1dg4x55i2di"]
+
+[ext_resource type="Script" path="res://src/scripts/WPMCounter.cs" id="1_un4x3"]
+[ext_resource type="FontFile" uid="uid://dffeg3yeiqp5" path="res://assets/misc/m5x7.ttf" id="2_khf18"]
+
+[node name="WPMCounter" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 132.0
+offset_bottom = 64.0
+script = ExtResource("1_un4x3")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 11.0
+offset_right = 87.0
+offset_bottom = 37.0
+theme_override_fonts/font = ExtResource("2_khf18")
+theme_override_font_sizes/font_size = 32
+text = "WPM: 0"
+vertical_alignment = 1

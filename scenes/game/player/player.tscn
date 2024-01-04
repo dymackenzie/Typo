@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://cycikbvsectqm"]
+[gd_scene load_steps=22 format=3 uid="uid://cycikbvsectqm"]
 
 [ext_resource type="Script" path="res://src/scripts/Player.cs" id="1_0srf6"]
 [ext_resource type="Texture2D" uid="uid://c0rr0a800dmra" path="res://assets/sprites/player_character.png" id="1_vivj0"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bc1s3uj7dntq7" path="res://scenes/game/player/Dash.tscn" id="4_jx1nl"]
 [ext_resource type="PackedScene" uid="uid://c1cuqbs71jmei" path="res://scenes/game/ShakingCamera.tscn" id="4_l30nw"]
 [ext_resource type="Script" path="res://src/scripts/EnableAttack.cs" id="5_islc4"]
+[ext_resource type="FontFile" uid="uid://dffeg3yeiqp5" path="res://assets/misc/m5x7.ttf" id="7_m3mnt"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_k1g3e"]
 radius = 5.0
@@ -239,6 +240,18 @@ autoplay = "idle"
 wait_time = 3.0
 one_shot = true
 autostart = true
+
+[node name="InKillMode" type="Timer" parent="."]
+
+[node name="ProgressBar" type="ProgressBar" parent="InKillMode"]
+offset_left = -6.0
+offset_top = 12.0
+offset_right = 119.0
+offset_bottom = 29.0
+scale = Vector2(0.1, 0.1)
+theme_override_fonts/font = ExtResource("7_m3mnt")
+fill_mode = 1
+show_percentage = false
 
 [connection signal="CameraShakeRequested" from="." to="Sprite/ShakingCamera" method="OnCameraShakeRequested"]
 [connection signal="body_entered" from="Hit" to="." method="OnHitBodyEntered"]

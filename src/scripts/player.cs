@@ -2,6 +2,7 @@ using System;
 using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Godot;
 
@@ -11,6 +12,7 @@ public partial class Player : CharacterBody2D
 	[Signal] public delegate void CameraShakeRequestedEventHandler();
 	[Signal] public delegate void HealthChangedEventHandler();
 	[Signal] public delegate void InSlowdownEventHandler(bool slowdown);
+	[Signal] public delegate void WPMChangedEventHandler(double WPM);
 
 	// fields
 	[Export] public float speed 		= 100.0f;
@@ -40,6 +42,10 @@ public partial class Player : CharacterBody2D
 	// kill mode
 	public List<Enemy> 			enemies = new();
 	public bool 				withinEnemyReach = false;
+
+	// WPM
+	public ulong 				timeStart;
+	public double				WPM = 0;
 
 	public override void _Ready() {
 		playerSprite = GetNode<Sprite2D>("Sprite");
@@ -108,6 +114,8 @@ public partial class Player : CharacterBody2D
 		int currentLetterIndex = currentEnemy.currentLetterIndex;
 		string prompt = currentEnemy.GetPrompt();
 		string nextChar = prompt.Substr(currentLetterIndex, 1);
+		if (currentLetterIndex == 0)
+			timeStart = Time.GetTicksMsec();
 		// IF STRING MATCHES, DEAL DAMAGE AND ALL THAT STUFF
 		if (keyTyped == nextChar) {
 			currentLetterIndex += 1;
@@ -130,8 +138,23 @@ public partial class Player : CharacterBody2D
 		// reset letter index, is typing, and withinEnemyReach after prompt
 		currentEnemy.currentLetterIndex = 0;
 		isTyping = withinEnemyReach = false;
+		CalculateWPM();
 		AttackAnimation();
 		currentEnemy = null;
+	}
+
+	/*
+	Calculates WPM from typing
+	*/
+	public void CalculateWPM() {
+		ulong timePassed = Time.GetTicksMsec() - timeStart;
+		double seconds = timePassed / 60000.0;
+		double words = currentEnemy.difficulty / 5.0;
+		if (WPM == 0)
+			WPM = words / seconds;
+		else
+			WPM = (WPM + words / seconds) / 2;
+		EmitSignal(nameof(WPMChanged), WPM);
 	}
 
 	public void OnDamage() {

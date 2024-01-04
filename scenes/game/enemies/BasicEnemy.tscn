@@ -5,7 +5,7 @@
 [ext_resource type="Shader" path="res://assets/misc/basic_enemy.gdshader" id="3_2n2fo"]
 [ext_resource type="Texture2D" uid="uid://c0rr0a800dmra" path="res://assets/sprites/player_character.png" id="4_t8g56"]
 [ext_resource type="FontFile" uid="uid://dffeg3yeiqp5" path="res://assets/misc/m5x7.ttf" id="5_o78i8"]
-[ext_resource type="PackedScene" uid="uid://clsooicctrbmo" path="res://scenes/game/OrbGenerator.tscn" id="6_301ay"]
+[ext_resource type="PackedScene" uid="uid://clsooicctrbmo" path="res://scenes/game/enemies/OrbGenerator.tscn" id="6_301ay"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_j8xjh"]
 shader = ExtResource("3_2n2fo")
