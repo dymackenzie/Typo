@@ -33,6 +33,7 @@ public partial class Player : CharacterBody2D
 	public CollisionShape2D		hitbox;
 	public AnimationPlayer 		anim;
 	public ShakingCamera		camera;
+	public EnableAttack			area;
 	public Enemy 				currentEnemy = null;
 	public Dash 				dash = null;
 	public Timer				shield;
@@ -53,6 +54,7 @@ public partial class Player : CharacterBody2D
 		camera = GetNode<ShakingCamera>("Sprite/ShakingCamera");
 		anim = GetNode<AnimationPlayer>("AnimationPlayer");
 		dash = GetNode<Dash>("Dash");
+		area = GetNode<EnableAttack>("EnableAttack");
 	}
 
 	/*
@@ -80,7 +82,7 @@ public partial class Player : CharacterBody2D
 	*/
 	public void KillMode(float delta) {
 		currentEnemy.prompt.Visible = true;
-		if ((currentEnemy.GlobalPosition - GlobalPosition).Length() > 15.0f) {
+		if ((currentEnemy.GlobalPosition - GlobalPosition).Length() > 10.0f) {
 			// first, dash to enemy
 			if (!dash.IsDashing()) dash.StartDash(dash_duration);
 			Vector2 direction = (currentEnemy.GlobalPosition - GlobalPosition).Normalized();
@@ -193,6 +195,7 @@ public partial class Player : CharacterBody2D
 		string[] animations = new string[] {"attack_sweep", "attack_swoop", "attack_up", "attack_down"};
 		RandomNumberGenerator random = new();
 		anim.Play(animations[random.RandiRange(0, 3)]);
+		area.timer.Paused = true;
 		currentEnemy.EmitText((currentEnemy.difficulty * currentEnemy.healthUnit).ToString());
 	}
 
@@ -200,6 +203,7 @@ public partial class Player : CharacterBody2D
 		string[] animations = new string[] {"attack_sweep", "attack_swoop", "attack_up", "attack_down"};
 		if (animations.Contains<string>((string) animName)) {
 			// check if player has gone through all enemies
+			area.timer.Paused = false;
 			enemies.Remove(currentEnemy);
 			if (enemies.Count == 0) {
 				// all enemies have been wiped
@@ -250,6 +254,7 @@ public partial class Player : CharacterBody2D
 				dash.StartDash(dash_duration);
 			}
 			float speed = dash.IsDashing() ? dash_speed : this.speed;
+			hitbox.Disabled = dash.IsDashing();
 			if (x > 0) {
 				// if player is going right
 				// flips the sprite horizontally

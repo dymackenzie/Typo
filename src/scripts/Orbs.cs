@@ -21,7 +21,7 @@ public partial class Orbs : RigidBody2D
 	public Vector2 velocity;
 
     // for scaling
-    public Sprite2D sprite;
+    public AnimatedSprite2D sprite;
     public CollisionShape2D collisionShape2D;
 
 	public override void _Ready() {
@@ -38,7 +38,7 @@ public partial class Orbs : RigidBody2D
     Scales orb for more random shape
     */
     private void InitiateScale() {
-        sprite = GetNode<Sprite2D>("Sprite2D");
+        sprite = GetNode<AnimatedSprite2D>("Sprite2D");
         collisionShape2D = GetNode<CollisionShape2D>("Sprite2D/Hitbox/Hitbox");
         float scaleChange = random.RandfRange(0, 0.03f);
         sprite.Scale += new Vector2(scaleChange, scaleChange);

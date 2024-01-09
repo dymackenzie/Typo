@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://dogsk4rkx5w46"]
+
+[ext_resource type="Script" path="res://src/scripts/BlastArea.cs" id="1_5ljdb"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_r5tgv"]
+radius = 50.0
+
+[node name="BlastArea" type="Area2D"]
+modulate = Color(1, 1, 1, 0)
+script = ExtResource("1_5ljdb")
+searchColor = Color(0.254902, 0.254902, 0.254902, 0.784314)
+killColor = Color(0.603922, 0, 0, 0.784314)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_r5tgv")
+
+[connection signal="body_entered" from="." to="." method="OnBodyEntered"]
+[connection signal="body_exited" from="." to="." method="OnBodyExited"]

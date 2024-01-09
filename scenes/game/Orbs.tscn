@@ -1,22 +1,69 @@
-[gd_scene load_steps=4 format=3 uid="uid://7begipv8pick"]
+[gd_scene load_steps=10 format=3 uid="uid://7begipv8pick"]
 
 [ext_resource type="Script" path="res://src/scripts/Orbs.cs" id="1_tyevb"]
-[ext_resource type="Texture2D" uid="uid://bs5p4ml53g1ex" path="res://assets/sprites/orb.png" id="2_ungun"]
+[ext_resource type="Texture2D" uid="uid://cywhv2knn6rhc" path="res://assets/sprites/bullets_purple.png" id="2_7tv0h"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w2lfg"]
+atlas = ExtResource("2_7tv0h")
+region = Rect2(0, 208, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j8oth"]
+atlas = ExtResource("2_7tv0h")
+region = Rect2(16, 208, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_svtxf"]
+atlas = ExtResource("2_7tv0h")
+region = Rect2(32, 208, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_llxok"]
+atlas = ExtResource("2_7tv0h")
+region = Rect2(48, 208, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_35hmr"]
+atlas = ExtResource("2_7tv0h")
+region = Rect2(64, 208, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_nxyi8"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w2lfg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j8oth")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_svtxf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_llxok")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_35hmr")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_0dgt2"]
-radius = 1.0
+radius = 0.16
 
 [node name="Orb" type="RigidBody2D"]
 gravity_scale = 0.0
 script = ExtResource("1_tyevb")
 cooldownPeriod = 1.0
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(0.290196, 0.0352941, 0.52549, 1)
-scale = Vector2(0.04, 0.04)
-texture = ExtResource("2_ungun")
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.35, 0.35)
+sprite_frames = SubResource("SpriteFrames_nxyi8")
+autoplay = "default"
+frame = 2
+frame_progress = 0.916834
+offset = Vector2(0, -1)
 
 [node name="Hitbox" type="Area2D" parent="Sprite2D"]
+visible = false
 scale = Vector2(25, 25)
 
 [node name="Hitbox" type="CollisionShape2D" parent="Sprite2D/Hitbox"]

@@ -1,19 +1,19 @@
-[gd_scene load_steps=18 format=3 uid="uid://55pc43lgfq5g"]
+[gd_scene load_steps=18 format=3 uid="uid://cenxflxqsmuhb"]
 
-[ext_resource type="Script" path="res://src/scripts/Enemy.cs" id="1_ocb5q"]
-[ext_resource type="Texture2D" uid="uid://urgqga3v6f54" path="res://assets/sprites/position2.png" id="2_tw7ra"]
-[ext_resource type="Shader" path="res://assets/misc/basic_enemy.gdshader" id="3_2n2fo"]
-[ext_resource type="Texture2D" uid="uid://c0rr0a800dmra" path="res://assets/sprites/player_character.png" id="4_t8g56"]
-[ext_resource type="FontFile" uid="uid://dffeg3yeiqp5" path="res://assets/misc/m5x7.ttf" id="5_o78i8"]
-[ext_resource type="PackedScene" uid="uid://clsooicctrbmo" path="res://scenes/game/enemies/OrbGenerator.tscn" id="6_301ay"]
+[ext_resource type="Texture2D" uid="uid://urgqga3v6f54" path="res://assets/sprites/position2.png" id="1_mf185"]
+[ext_resource type="Script" path="res://src/scripts/RangedEnemy.cs" id="1_uwkqx"]
+[ext_resource type="Texture2D" uid="uid://c0rr0a800dmra" path="res://assets/sprites/player_character.png" id="2_rxr1b"]
+[ext_resource type="Shader" path="res://assets/misc/basic_enemy.gdshader" id="3_8xur3"]
+[ext_resource type="FontFile" uid="uid://dffeg3yeiqp5" path="res://assets/misc/m5x7.ttf" id="3_6163a"]
+[ext_resource type="PackedScene" uid="uid://clsooicctrbmo" path="res://scenes/game/enemies/OrbGenerator.tscn" id="4_yivnq"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_67rim"]
-shader = ExtResource("3_2n2fo")
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u53gs"]
+shader = ExtResource("3_8xur3")
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_01ddn"]
-radius = 4.53246
+[sub_resource type="CircleShape2D" id="CircleShape2D_ydp7h"]
+radius = 4.12311
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_jokxl"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_bveyc"]
 radius = 15.5952
 
 [sub_resource type="Animation" id="Animation_qgtda"]
@@ -141,28 +141,26 @@ _data = {
 "walk": SubResource("Animation_ymiwx")
 }
 
-[node name="BasicEnemy" type="CharacterBody2D" groups=["enemy"]]
-scale = Vector2(0.9, 0.9)
-script = ExtResource("1_ocb5q")
-killRadius = 40.0
-difficulty = 8
+[node name="RangedEnemy" type="CharacterBody2D" groups=["enemy"]]
+script = ExtResource("1_uwkqx")
+bulletSpeed = 50.0
 
 [node name="TruePosition" type="Sprite2D" parent="."]
-texture = ExtResource("2_tw7ra")
+modulate = Color(1, 1, 0.498039, 1)
+texture = ExtResource("1_mf185")
 
 [node name="Sprite" type="Sprite2D" parent="."]
-material = SubResource("ShaderMaterial_67rim")
-texture = ExtResource("4_t8g56")
+material = SubResource("ShaderMaterial_u53gs")
+texture = ExtResource("2_rxr1b")
 hframes = 8
 vframes = 20
-frame = 87
+frame = 99
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]
-position = Vector2(0, 3.33333)
-shape = SubResource("CircleShape2D_01ddn")
+position = Vector2(0, 4)
+shape = SubResource("CircleShape2D_ydp7h")
 
 [node name="AttackTimer" type="Timer" parent="."]
-wait_time = 5.0
 
 [node name="TypingText" type="RichTextLabel" parent="."]
 anchors_preset = 8
@@ -179,7 +177,7 @@ grow_vertical = 2
 scale = Vector2(0.35, 0.35)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
-theme_override_fonts/normal_font = ExtResource("5_o78i8")
+theme_override_fonts/normal_font = ExtResource("3_6163a")
 theme_override_font_sizes/normal_font_size = 32
 bbcode_enabled = true
 text = "[center]TYPING[/center]"
@@ -187,19 +185,28 @@ fit_content = true
 scroll_active = false
 autowrap_mode = 0
 
-[node name="OrbGenerator" parent="." instance=ExtResource("6_301ay")]
+[node name="OrbGenerator" parent="." instance=ExtResource("4_yivnq")]
 
 [node name="Damage" type="Area2D" parent="."]
 visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Damage"]
-shape = SubResource("CircleShape2D_jokxl")
+shape = SubResource("CircleShape2D_bveyc")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_fe58f")
 }
 autoplay = "walk"
+
+[node name="Beam" type="Line2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+show_behind_parent = true
+width = 1.0
+
+[node name="ShootingCooldown" type="Timer" parent="."]
+one_shot = true
+autostart = true
 
 [connection signal="timeout" from="AttackTimer" to="." method="OnAttackTimerTimeout"]
 [connection signal="body_entered" from="Damage" to="." method="OnDamageBodyEntered"]

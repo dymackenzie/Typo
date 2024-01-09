@@ -6,7 +6,7 @@ public partial class EnableAttack : Node2D
 
 	[Export] public int radius = 50;
 
-	public int pointCount = 50;
+	public int pointCount = 40;
     public bool killMode = false;
     public double originalWait;
     
@@ -29,10 +29,10 @@ public partial class EnableAttack : Node2D
     }
 
     public override void _Draw() {
-        DrawArc(Vector2.Zero, radius, 0, (float) Math.Tau, pointCount, new Color(1, 1, 1, 0.2f), 1, false);
-        if (killMode) {
-            DrawArc(Vector2.Zero, radius, 0, (float) Math.Tau * (float) (timer.TimeLeft / timer.WaitTime), pointCount, new Color(0.29f, 0.02f, 0.02f), 1, false);
-        }
+        if (killMode)
+            DrawArc(Vector2.Zero, radius, 0, (float) Math.Tau * (float) (timer.TimeLeft / timer.WaitTime), pointCount, new Color(0.29f, 0.02f, 0.02f, 0.8f), 1, false);
+        else
+            DrawArc(Vector2.Zero, radius, 0, (float) Math.Tau, pointCount, new Color(1, 1, 1, 0.2f), 1, false);
     }
 
     public void AddTime() {

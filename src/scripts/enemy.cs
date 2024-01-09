@@ -1,15 +1,16 @@
 using Godot;
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection.Metadata.Ecma335;
+using System.Runtime.InteropServices;
 
 public partial class Enemy : CharacterBody2D
 {
 
 	public enum EnemyState {
+		SHOOT,
 		SURROUND,
 		ATTACK,
-		HIT
+		HIT,
+		DEATH
 	}
 
 	[Export] public float speed 		= 50.0f;
@@ -25,26 +26,33 @@ public partial class Enemy : CharacterBody2D
 
 	public Globals					Globals;
 	public Words					Words = new();
-	public Player 					player = null;
+	public Player 					player;
 	public Timer 					attackTimer;
-	public AnimatedSprite2D 		sprite2D;
+	public Sprite2D			 		sprite2D;
 	public OrbGenerator				orbs;
-	public EnemyState 				state = EnemyState.SURROUND;
+	public AnimationPlayer			anim;
 	public RandomNumberGenerator 	random = new();
 	public PackedScene				floatingText;
+	// public PackedScene				poof;
 
+	public EnemyState 				state = EnemyState.SURROUND;
 	public RichTextLabel 			prompt;
+	public bool						deathState;
 	public bool						isAttacking;
-	public bool						isDying;
 	public string 					promptText;
 	public int 						currentLetterIndex;	
 
     public override void _Ready() {
+		foreach (Node node in GetTree().GetNodesInGroup("player")) {
+            player = (Player) node;
+        }
 		Globals = GetNode<Globals>("/root/Globals");
 		floatingText = GD.Load<PackedScene>("res://scenes/game/enemies/FloatingText.tscn");
+		// poof = GD.Load<PackedScene>("res://scenes/game/Poof.tscn");
 		prompt = GetNode<RichTextLabel>("TypingText");
 		attackTimer = GetNode<Timer>("AttackTimer");
-		sprite2D = GetNode<AnimatedSprite2D>("Sprite");
+		sprite2D = GetNode<Sprite2D>("Sprite");
+		anim = GetNode<AnimationPlayer>("AnimationPlayer");
 		orbs = GetNode<OrbGenerator>("OrbGenerator");
 		random.Randomize();
 		// word prompt
@@ -53,31 +61,31 @@ public partial class Enemy : CharacterBody2D
 		prompt.Text = SetCenterTags(promptText);
 		// health based on difficulty
 		health = difficulty * healthUnit;
-		// orb number
-		orbs.orbNumber = orbNumber;
+		orbs.orbNumber = orbNumber; // orb number
     }
 
     public override void _PhysicsProcess(double delta) {
 		// deal with slowdown
 		IsAttacking();
-		sprite2D.SpeedScale = Globals.inSlowdown ? slowdownRate : 1;
+		anim.SpeedScale = Globals.inSlowdown ? slowdownRate : 1;
 		delta *= Globals.inSlowdown ? slowdownRate : 1;
-		if (!isDying) {
-			switch(state) {
-				case EnemyState.SURROUND:
-					Move(GetCirclePosition(random.Randf()), (float)delta);
-					sprite2D.Play("walk");
-					break;
-				case EnemyState.ATTACK:
-					Move(player.GlobalPosition, (float)delta);
-					sprite2D.Play("walk");
-					break;
-				case EnemyState.HIT:
-					Move(player.GlobalPosition, (float)delta);
-					sprite2D.Play("attack");
-					break;
-			}
+		if (deathState)
+			return;
+		switch(state) {
+			case EnemyState.SURROUND:
+				Move(GetCirclePosition(random.Randf()), (float)delta);
+				anim.Play("walk");
+				break;
+			case EnemyState.ATTACK:
+				Move(player.GlobalPosition, (float)delta);
+				anim.Play("walk");
+				break;
+			case EnemyState.HIT:
+				Move(player.GlobalPosition, (float)delta);
+				anim.Play("attack1");
+				break;
 		}
+	
 	}
 
 	public void IsAttacking() {
@@ -104,20 +112,24 @@ public partial class Enemy : CharacterBody2D
 		CollisionShape2D hitbox = GetNode<CollisionShape2D>("Hitbox");
 		CollisionShape2D damageArea = GetNode<CollisionShape2D>("Damage/CollisionShape2D");
 		Sprite2D spritePos = GetNode<Sprite2D>("TruePosition");
-		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Linear).SetEase(Tween.EaseType.Out);
+		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Quart).SetEase(Tween.EaseType.Out);
 
 		var direction = (player.GlobalPosition - GlobalPosition).Normalized();
-		tween.TweenProperty(prompt, "modulate:a", 0.4, 0.3);
-		tween.Parallel().TweenProperty(this, "global_position", direction * 1, 0.5);
+		tween.TweenProperty(prompt, "modulate:a", 0.4, 0.1);
+		tween.TweenProperty(sprite2D, "position", -direction * 3, 0.1);
 
-		hitbox.Disabled = damageArea.Disabled = true;
+		hitbox.Disabled = damageArea.Disabled = deathState = true;
 		spritePos.Visible = false;
-		isDying = true; // disable hitbox
-		sprite2D.Play("death");
+		anim.Play("death");
 	}
 
-	public void OnAnimatedEnemyAnimationFinished() {
-		if (isDying) {
+	public void OnAnimationFinished(StringName animName) {
+		if ((string) animName == "death") {
+			// GpuParticles2D smoke = (GpuParticles2D) poof.Instantiate();
+			// smoke.GlobalPosition = GlobalPosition;
+			// smoke.Restart();
+			// smoke.Emitting = true;
+			// AddSibling(smoke);
 			QueueFree();
 			orbs.GenerateOrbs();
 		}

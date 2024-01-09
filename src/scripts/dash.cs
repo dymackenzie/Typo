@@ -4,18 +4,18 @@ using System;
 public partial class Dash : Node2D
 {
 
-	[Export] NodePath playerSprite;
-
 	private Timer timer;
+	private Player player;
 	private Timer ghostTimer;
 	private PackedScene ghostScene;
-	private Sprite2D sprite;
 
 	public override void _Ready() {
 		timer = GetNode<Timer>("duration");
 		ghostTimer = GetNode<Timer>("ghost");
 		ghostScene = GD.Load<PackedScene>("res://scenes/game/player/DashGhost.tscn");
-		sprite = GetNode<Sprite2D>(playerSprite);
+		foreach (Node node in GetTree().GetNodesInGroup("player")) {
+            player = (Player) node;
+        }
 	}
 
 	/*
@@ -42,8 +42,8 @@ public partial class Dash : Node2D
 		Sprite2D ghost = (Sprite2D) ghostScene.Instantiate();
 		GetParent().GetParent().AddChild(ghost);
 		// set ghost's attributes to match dashing sprite 
-		ghost.GlobalPosition = sprite.GlobalPosition;
-		ghost.FlipH = sprite.FlipH;
+		ghost.GlobalPosition = player.playerSprite.GlobalPosition;
+		ghost.FlipH = player.playerSprite.FlipH;
 	}
 
 	/*

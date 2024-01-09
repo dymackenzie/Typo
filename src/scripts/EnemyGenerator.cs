@@ -34,7 +34,6 @@ public partial class EnemyGenerator : Node2D
         Enemy enemyInstance = (Enemy) basicEnemyScene.Instantiate();
 		pathFollow.Progress = random.RandiRange(0, 1623); // instantiate enemy at random point
 		enemyInstance.GlobalPosition = marker.GlobalPosition;
-		enemyInstance.player = player;
 		AddSibling(enemyInstance);
 	}
 

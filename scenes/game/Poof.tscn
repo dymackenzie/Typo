@@ -1,0 +1,39 @@
+[gd_scene load_steps=6 format=3 uid="uid://bdntgsuf26yg5"]
+
+[ext_resource type="Texture2D" uid="uid://be863w6h275xn" path="res://assets/sprites/dust.png" id="1_fqc0t"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_hteha"]
+particles_animation = true
+particles_anim_h_frames = 5
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Gradient" id="Gradient_kcne2"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_eck6t"]
+gradient = SubResource("Gradient_kcne2")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qacdu"]
+lifetime_randomness = 0.7
+particle_flag_disable_z = true
+angle_max = 360.0
+direction = Vector3(0, -1, 0)
+initial_velocity_min = 20.0
+initial_velocity_max = 30.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.6
+color_ramp = SubResource("GradientTexture1D_eck6t")
+anim_speed_min = 1.0
+anim_speed_max = 1.0
+
+[node name="Poof" type="GPUParticles2D"]
+modulate = Color(0.290196, 0.0352941, 0.52549, 1)
+material = SubResource("CanvasItemMaterial_hteha")
+emitting = false
+amount = 20
+process_material = SubResource("ParticleProcessMaterial_qacdu")
+texture = ExtResource("1_fqc0t")
+lifetime = 1.2
+one_shot = true
+explosiveness = 0.9

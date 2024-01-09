@@ -184,6 +184,7 @@ _data = {
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
 script = ExtResource("1_0srf6")
+killZone = Color(0.290196, 0.0196078, 0.0196078, 1)
 
 [node name="TruePosition" type="Sprite2D" parent="."]
 texture = ExtResource("2_eydv0")
@@ -192,7 +193,7 @@ texture = ExtResource("2_eydv0")
 texture = ExtResource("1_vivj0")
 hframes = 8
 vframes = 20
-frame = 144
+frame = 68
 
 [node name="ShakingCamera" parent="Sprite" instance=ExtResource("4_l30nw")]
 
@@ -202,7 +203,6 @@ shape = SubResource("CircleShape2D_k1g3e")
 
 [node name="Dash" parent="." instance=ExtResource("4_jx1nl")]
 position = Vector2(115.788, -54.8593)
-playerSprite = NodePath("../Sprite")
 
 [node name="Hit" type="Area2D" parent="."]
 visible = false
@@ -217,6 +217,7 @@ visible = false
 shape = SubResource("CircleShape2D_q3rjr")
 
 [node name="enemy_spawning" type="Path2D" parent="."]
+visible = false
 curve = SubResource("Curve2D_3tprg")
 
 [node name="enemy_spawn_range" type="PathFollow2D" parent="enemy_spawning"]
@@ -229,7 +230,7 @@ progress = 1623.84
 script = ExtResource("5_islc4")
 
 [node name="InKillMode" type="Timer" parent="EnableAttack"]
-wait_time = 5.0
+wait_time = 2.0
 one_shot = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
