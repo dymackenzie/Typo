@@ -4,8 +4,6 @@ using System;
 public partial class Fireball : RigidBody2D
 {
 
-    [Signal] public delegate void PlayerHitEventHandler();
-
 	[Export] float launch = 40.0f;
     [Export] float speed = 20.0f;
     [Export] float friction = 1.0f;
@@ -65,7 +63,7 @@ public partial class Fireball : RigidBody2D
 
     public void OnCooldownTimeout() {
 		anim.Play("explosion");
-        PlayExplosionParticle();
+        // PlayExplosionParticle();
         QueueFree();
 	}
 
@@ -94,7 +92,9 @@ public partial class Fireball : RigidBody2D
     */
 	private void PlayExplosionParticle() {
 		GpuParticles2D explosionParticle = (GpuParticles2D) explosion.Instantiate();
+        explosionParticle.Scale = new Vector2(0.2f, 0.2f);
 		explosionParticle.GlobalPosition = GlobalPosition;
+        explosionParticle.Emitting = true;
 		AddSibling(explosionParticle);
 	}
 
@@ -103,7 +103,6 @@ public partial class Fireball : RigidBody2D
     */
     public void OnAnimationFinished(StringName animName) {
 		if ((string) animName == "explosion") {
-			PlayExplosionParticle();
 			QueueFree();
 		}
 	}
@@ -114,7 +113,8 @@ public partial class Fireball : RigidBody2D
     public void OnHitboxBodyEntered(Node2D body) {
         if (body.IsInGroup("player")) {
             anim.Play("explosion");
-			EmitSignal(nameof(PlayerHit));
+            // PlayExplosionParticle();
+			player.OnDamage();
         }
     }
 

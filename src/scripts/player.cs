@@ -12,7 +12,6 @@ public partial class Player : CharacterBody2D
 	[Signal] public delegate void WPMChangedEventHandler(double WPM);
 	[Signal] public delegate void KeySuccessEventHandler();
 	[Signal] public delegate void SwitchEnemyEventHandler();
-	[Signal] public delegate void PlayerHitEventHandler();
 
 	// fields
 	[Export] public int health			= 6;
@@ -40,6 +39,7 @@ public partial class Player : CharacterBody2D
 	public Enemy 				currentEnemy = null;
 	public Dash 				dash = null;
 	public Timer				shield;
+	public Color				originalColor;
 
 	// kill mode
 	public List<Enemy> 			enemies = new();
@@ -61,7 +61,9 @@ public partial class Player : CharacterBody2D
 
 		// connect signals
 		Globals.ExperienceChanged += OnExperience;
-		PlayerHit += OnDamage;
+
+		// variables
+		originalColor = Modulate;
 	}
 
 	/*
@@ -136,9 +138,9 @@ public partial class Player : CharacterBody2D
 		if (keyTyped == nextChar) {
 			currentLetterIndex += 1;
 			currentEnemy.currentLetterIndex = currentLetterIndex;
-			if ((RangedEnemy)currentEnemy != null) {
+			try {
 				((RangedEnemy)currentEnemy).OnHit(nextChar);
-			} else {
+			} catch {
 				currentEnemy.OnHit(nextChar);
 			}
 			currentEnemy.SetNextCharacter(false);
@@ -193,20 +195,18 @@ public partial class Player : CharacterBody2D
 	Handle experience visuals
 	*/
 	public void OnExperience(int level) {
-		Color color = Modulate;
 		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Linear).SetEase(Tween.EaseType.Out);
 		tween.TweenProperty(playerSprite, "modulate", experienceColor, 0.1);
-		tween.TweenProperty(playerSprite, "modulate", color, 0.1);
+		tween.TweenProperty(playerSprite, "modulate", originalColor, 0.1);
 	}
 
 	public void DamageVisuals() {
-		Color color = Modulate;
-		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Linear).SetEase(Tween.EaseType.Out);
 		float delay = 0.2f;
+		Tween damageTween = CreateTween().SetTrans(Tween.TransitionType.Linear).SetEase(Tween.EaseType.Out);
 		anim.Play("damage");
-		tween.TweenProperty(this, "modulate", damageColor, delay);
-		tween.TweenInterval(delay);
-		tween.TweenProperty(this, "modulate", color, shield.WaitTime - delay * 2);
+		damageTween.TweenProperty(this, "modulate", damageColor, delay);
+		damageTween.TweenInterval(delay);
+		damageTween.TweenProperty(this, "modulate", originalColor, shield.WaitTime - delay * 2);
 		EmitSignal(nameof(CameraShakeRequested), 5);
 	}
 
@@ -310,8 +310,10 @@ public partial class Player : CharacterBody2D
 		if (body.IsInGroup("enemy") ) {
 			Enemy enemy = (Enemy) body;
 			enemy.SetState("surround");
-			if ((RangedEnemy) body != null) {
+			try {
 				((RangedEnemy) body).SetState("shoot");
+			} catch {
+				// do nothing
 			}
 		}
 	}
@@ -337,8 +339,10 @@ public partial class Player : CharacterBody2D
 			enemy.attackTimer.Stop();
 			enemy.SetPositionColor(Colors.White);
 			enemy.SetState("surround");
-			if ((RangedEnemy) body != null) {
+			try {
 				((RangedEnemy) body).SetState("shoot");
+			} catch {
+				// do nothing
 			}
 			enemies.Remove(enemy);
 		}

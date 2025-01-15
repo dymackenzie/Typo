@@ -89,7 +89,7 @@ public partial class Enemy : CharacterBody2D
 
 	public void IsAttacking() {
 		if (player.shield.IsStopped() && canAttack) {
-			EmitSignal(nameof(Player.PlayerHitEventHandler));
+			player.OnDamage();
 		}
 	}
 
@@ -127,16 +127,21 @@ public partial class Enemy : CharacterBody2D
 
 	public void OnAnimationFinished(StringName animName) {
 		if ((string) animName == "death") {
-			// emit smoke death particles
-			GpuParticles2D smoke = (GpuParticles2D) poof.Instantiate();
-			smoke.GlobalPosition = GlobalPosition;
-			smoke.Restart();
-			smoke.Emitting = true;
-			AddSibling(smoke);
-
+			EmitSmoke();
 			QueueFree();
 			orbs.GenerateOrbs();
 		}
+	}
+
+	/*
+	Helper function to emit smoke particles
+	*/
+	private void EmitSmoke() {
+		GpuParticles2D smoke = (GpuParticles2D) poof.Instantiate();
+		smoke.GlobalPosition = GlobalPosition;
+		smoke.Restart();
+		smoke.Emitting = true;
+		AddSibling(smoke);
 	}
 
 	/*
