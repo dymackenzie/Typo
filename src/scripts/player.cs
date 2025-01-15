@@ -138,9 +138,18 @@ public partial class Player : CharacterBody2D
 		if (keyTyped == nextChar) {
 			currentLetterIndex += 1;
 			currentEnemy.currentLetterIndex = currentLetterIndex;
+			bool enemyIsNormal = false;
 			try {
 				((RangedEnemy)currentEnemy).OnHit(nextChar);
 			} catch {
+				enemyIsNormal = true;
+			}
+			try {
+				((BlastEnemy)currentEnemy).OnHit(nextChar);
+			} catch {
+				enemyIsNormal = true;
+			}
+			if (enemyIsNormal) {
 				currentEnemy.OnHit(nextChar);
 			}
 			currentEnemy.SetNextCharacter(false);
@@ -200,6 +209,9 @@ public partial class Player : CharacterBody2D
 		tween.TweenProperty(playerSprite, "modulate", originalColor, 0.1);
 	}
 
+	/*
+	Handle damage visuals
+	*/
 	public void DamageVisuals() {
 		float delay = 0.2f;
 		Tween damageTween = CreateTween().SetTrans(Tween.TransitionType.Linear).SetEase(Tween.EaseType.Out);
@@ -315,6 +327,11 @@ public partial class Player : CharacterBody2D
 			} catch {
 				// do nothing
 			}
+			try {
+				((BlastEnemy) body).SetState("shoot");
+			} catch {
+				// do nothing
+			}
 		}
 	}
 
@@ -341,6 +358,11 @@ public partial class Player : CharacterBody2D
 			enemy.SetState("surround");
 			try {
 				((RangedEnemy) body).SetState("shoot");
+			} catch {
+				// do nothing
+			}
+			try {
+				((BlastEnemy) body).SetState("shoot");
 			} catch {
 				// do nothing
 			}
