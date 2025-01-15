@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using System.Runtime.InteropServices;
 
 public partial class Enemy : CharacterBody2D
 {
@@ -17,10 +16,10 @@ public partial class Enemy : CharacterBody2D
 	[Export] public float killRadius 	= 50.0f;
 	[Export] public float healthUnit	= 20;
 	[Export] public int difficulty	 	= 6;
-	[Export] public float slowdownRate  = 0.05f;
 	[Export] public int orbNumber 		= 3;
 	[Export] public Color textCorrect 	= new("#00FF00");
 	[Export] public Color textWrong 	= new("#FF0000");
+	[Export] public PackedScene poof;
 
 	public float health = 0;
 
@@ -33,12 +32,11 @@ public partial class Enemy : CharacterBody2D
 	public AnimationPlayer			anim;
 	public RandomNumberGenerator 	random = new();
 	public PackedScene				floatingText;
-	// public PackedScene				poof;
 
 	public EnemyState 				state = EnemyState.SURROUND;
 	public RichTextLabel 			prompt;
 	public bool						deathState;
-	public bool						isAttacking;
+	public bool						canAttack;
 	public string 					promptText;
 	public int 						currentLetterIndex;	
 
@@ -48,17 +46,18 @@ public partial class Enemy : CharacterBody2D
         }
 		Globals = GetNode<Globals>("/root/Globals");
 		floatingText = GD.Load<PackedScene>("res://scenes/game/enemies/FloatingText.tscn");
-		// poof = GD.Load<PackedScene>("res://scenes/game/Poof.tscn");
 		prompt = GetNode<RichTextLabel>("TypingText");
 		attackTimer = GetNode<Timer>("AttackTimer");
 		sprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite");
 		anim = GetNode<AnimationPlayer>("AnimationPlayer");
 		orbs = GetNode<OrbGenerator>("OrbGenerator");
 		random.Randomize();
+
 		// word prompt
 		prompt.Visible = false;
 		promptText = (string)Words.Call("GetRandomPrompt", difficulty);
 		prompt.Text = SetCenterTags(promptText);
+
 		// health based on difficulty
 		health = difficulty * healthUnit;
 		orbs.orbNumber = orbNumber; // orb number
@@ -67,8 +66,8 @@ public partial class Enemy : CharacterBody2D
     public override void _PhysicsProcess(double delta) {
 		// deal with slowdown
 		IsAttacking();
-		anim.SpeedScale = Globals.inSlowdown ? slowdownRate : 1;
-		delta *= Globals.inSlowdown ? slowdownRate : 1;
+		anim.SpeedScale = Globals.inSlowdown ? Globals.slowdownRate : 1;
+		delta *= Globals.inSlowdown ? Globals.slowdownRate : 1;
 		if (deathState)
 			return;
 		switch(state) {
@@ -89,8 +88,8 @@ public partial class Enemy : CharacterBody2D
 	}
 
 	public void IsAttacking() {
-		if (player.shield.IsStopped() && isAttacking) {
-			player.OnDamage();
+		if (player.shield.IsStopped() && canAttack) {
+			EmitSignal(nameof(Player.PlayerHitEventHandler));
 		}
 	}
 
@@ -108,6 +107,9 @@ public partial class Enemy : CharacterBody2D
 		AddChild(text);
 	}
 
+	/*
+	When enemy health is <= 0, animate death and disable hitboxes
+	*/
 	public void OnDeath() {
 		CollisionShape2D hitbox = GetNode<CollisionShape2D>("Hitbox");
 		CollisionShape2D damageArea = GetNode<CollisionShape2D>("Damage/CollisionShape2D");
@@ -121,16 +123,17 @@ public partial class Enemy : CharacterBody2D
 		hitbox.Disabled = damageArea.Disabled = deathState = true;
 		spritePos.Visible = false;
 		anim.Play("death");
-		GD.Print(anim.CurrentAnimation);
 	}
 
 	public void OnAnimationFinished(StringName animName) {
 		if ((string) animName == "death") {
-			// GpuParticles2D smoke = (GpuParticles2D) poof.Instantiate();
-			// smoke.GlobalPosition = GlobalPosition;
-			// smoke.Restart();
-			// smoke.Emitting = true;
-			// AddSibling(smoke);
+			// emit smoke death particles
+			GpuParticles2D smoke = (GpuParticles2D) poof.Instantiate();
+			smoke.GlobalPosition = GlobalPosition;
+			smoke.Restart();
+			smoke.Emitting = true;
+			AddSibling(smoke);
+
 			QueueFree();
 			orbs.GenerateOrbs();
 		}
@@ -175,13 +178,13 @@ public partial class Enemy : CharacterBody2D
 	*/
 	public void OnDamageBodyEntered(Node2D body) {
 		if (body.IsInGroup("player")) {
-			isAttacking = true;
+			canAttack = true;
 		}
 	}
 
 	public void OnDamageBodyExited(Node2D body) {
 		if (body.IsInGroup("player")) {
-			isAttacking = false;
+			canAttack = false;
 		}
 	}
 
@@ -202,6 +205,10 @@ public partial class Enemy : CharacterBody2D
 			this.state = EnemyState.ATTACK;
 		} else if (state == "hit") {
 			this.state = EnemyState.HIT;
+		} else if (state == "shoot") {
+			this.state = EnemyState.SHOOT;
+		} else if (state == "death") {
+			this.state = EnemyState.DEATH;
 		}
 	}
 

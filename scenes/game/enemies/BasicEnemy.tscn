@@ -1,7 +1,8 @@
-[gd_scene load_steps=43 format=3 uid="uid://55pc43lgfq5g"]
+[gd_scene load_steps=44 format=3 uid="uid://55pc43lgfq5g"]
 
 [ext_resource type="Script" path="res://src/scripts/Enemy.cs" id="1_ocb5q"]
 [ext_resource type="Texture2D" uid="uid://br8whaxucqp43" path="res://assets/sprites/position1.png" id="2_0inwe"]
+[ext_resource type="PackedScene" uid="uid://bdntgsuf26yg5" path="res://scenes/game/Poof.tscn" id="2_a0nms"]
 [ext_resource type="FontFile" uid="uid://dffeg3yeiqp5" path="res://assets/misc/m5x7.ttf" id="5_o78i8"]
 [ext_resource type="Texture2D" uid="uid://cj5rdalu6kjh7" path="res://assets/sprites/Mud Guard/attack 1.png" id="6_04j6l"]
 [ext_resource type="PackedScene" uid="uid://clsooicctrbmo" path="res://scenes/game/enemies/OrbGenerator.tscn" id="6_301ay"]
@@ -300,13 +301,14 @@ scale = Vector2(0.9, 0.9)
 script = ExtResource("1_ocb5q")
 killRadius = 40.0
 difficulty = 8
+poof = ExtResource("2_a0nms")
 
 [node name="TruePosition" type="Sprite2D" parent="."]
 texture = ExtResource("2_0inwe")
 
 [node name="AnimatedSprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_d8mur")
-animation = &"death"
+animation = &"attack"
 autoplay = "idle"
 offset = Vector2(0, -2)
 

@@ -12,6 +12,7 @@ public partial class Player : CharacterBody2D
 	[Signal] public delegate void WPMChangedEventHandler(double WPM);
 	[Signal] public delegate void KeySuccessEventHandler();
 	[Signal] public delegate void SwitchEnemyEventHandler();
+	[Signal] public delegate void PlayerHitEventHandler();
 
 	// fields
 	[Export] public int health			= 6;
@@ -60,6 +61,7 @@ public partial class Player : CharacterBody2D
 
 		// connect signals
 		Globals.ExperienceChanged += OnExperience;
+		PlayerHit += OnDamage;
 	}
 
 	/*
@@ -134,7 +136,11 @@ public partial class Player : CharacterBody2D
 		if (keyTyped == nextChar) {
 			currentLetterIndex += 1;
 			currentEnemy.currentLetterIndex = currentLetterIndex;
-			currentEnemy.OnHit(nextChar);
+			if ((RangedEnemy)currentEnemy != null) {
+				((RangedEnemy)currentEnemy).OnHit(nextChar);
+			} else {
+				currentEnemy.OnHit(nextChar);
+			}
 			currentEnemy.SetNextCharacter(false);
 			EmitSignal(nameof(KeySuccess));
 			EmitSignal(nameof(CameraShakeRequested), 0);
@@ -304,6 +310,9 @@ public partial class Player : CharacterBody2D
 		if (body.IsInGroup("enemy") ) {
 			Enemy enemy = (Enemy) body;
 			enemy.SetState("surround");
+			if ((RangedEnemy) body != null) {
+				((RangedEnemy) body).SetState("shoot");
+			}
 		}
 	}
 
@@ -328,6 +337,9 @@ public partial class Player : CharacterBody2D
 			enemy.attackTimer.Stop();
 			enemy.SetPositionColor(Colors.White);
 			enemy.SetState("surround");
+			if ((RangedEnemy) body != null) {
+				((RangedEnemy) body).SetState("shoot");
+			}
 			enemies.Remove(enemy);
 		}
 	}

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b6frl867181au"]
+
+[ext_resource type="Script" path="res://src/scripts/FireballGenerator.cs" id="1_hpd6j"]
+
+[node name="FireballGenerator" type="Marker2D"]
+script = ExtResource("1_hpd6j")

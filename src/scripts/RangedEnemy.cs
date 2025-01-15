@@ -1,76 +1,98 @@
-using Godot;
-using Godot.NativeInterop;
 using System;
-using System.Runtime.InteropServices;
+using Godot;
 
 public partial class RangedEnemy : Enemy
 {
 
-	[Export] public float range = 150.0f;
+	[Export] public float range = 100.0f;
 	[Export] public float shootingCooldown = 5;
-	[Export] public float bulletSpeed = 10.0f;
 
-	public Color kill = new("4a0505");
-	public BlastArea blastArea;
-	public PackedScene blast;
-	public Line2D beam;
-	public Timer timer;
+	public FireballGenerator fireballs;
+	public Timer shootingCooldownTimer;
 	public Tween tween;
 
-    public override void _Ready() {
-        base._Ready();
-		beam = GetNode<Line2D>("Beam");
-		timer = GetNode<Timer>("ShootingCooldown");
-		blast = GD.Load<PackedScene>("res://scenes/game/enemies/BlastArea.tscn");
-		timer.WaitTime = shootingCooldown;
-    }
+	private bool isAttacking = false;
 
-    public override void _PhysicsProcess(double delta) {
-		DetermineState();
-		if (anim.CurrentAnimation != "fire_fist") {
-			base._PhysicsProcess(delta);
-		}
-		if (timer.IsStopped()) {
-			anim.Play("fire_fist");
-			timer.Start();
-		}
-		// if (state != EnemyState.SHOOT) {
-		// 	base._PhysicsProcess(delta);
-		// } else {
-		// 	if (timer.IsStopped()) {
-		// 		BlastSearch();
-		// 		tween = CreateTween();
-		// 		tween.TweenInterval(1);
-		// 		tween.TweenCallback(Callable.From(() => { anim.Play("fire_fist"); }));
-		// 		timer.Start();
-		// 	}
-		// }
-    }
+	public override void _Ready() {
+		base._Ready();
+		fireballs = GetNode<FireballGenerator>("FireballGenerator");
+		shootingCooldownTimer = GetNode<Timer>("ShootingCooldown");
 
-	/*
-	Generates area where player is
-	*/
-	public void BlastSearch() {
-		blastArea = (BlastArea) blast.Instantiate();
-		blastArea.GlobalPosition = player.GlobalPosition;
-		AddSibling(blastArea);
+		// variable set up
+		shootingCooldownTimer.WaitTime = shootingCooldown;
+	}
+
+	public override void _PhysicsProcess(double delta) {
+		// if not attacking, determine state
+		if (!isAttacking)
+			DetermineState();
+
+		// deal with slowdown
+		anim.SpeedScale = Globals.inSlowdown ? Globals.slowdownRate : 1;
+		delta *= Globals.inSlowdown ? Globals.slowdownRate : 1;
+		if (deathState)
+			return;
+
+		switch(state) {
+			case EnemyState.SURROUND:
+				Move(player.GlobalPosition, (float)delta);
+				anim.Play("walk");
+				break;
+			case EnemyState.ATTACK:
+			case EnemyState.HIT:
+			case EnemyState.SHOOT:
+				if (!isAttacking) {
+					isAttacking = true;
+					shootingCooldownTimer.Start();
+				}
+				anim.Play("attack");
+				break;
+		}
 	}
 
 	public new void OnAnimationFinished(StringName animName) {
 		base.OnAnimationFinished(animName);
-		if ((string) animName == "fire_fist") {
-			BlastSearch();
-			anim.Play("idle");
+		if ((string) animName == "attack") {
+			isAttacking = false;
 		}
-	}	
+	}
+
+	public void OnShootingCooldownTimeout() {
+		// fireballs.GenerateFireball();
+	}
+
+	/*
+	Override OnHit because ranged enemy has different death animation
+	*/
+	public new void OnHit(string s) {
+		health -= healthUnit;
+		EmitText(s);
+		if (health <= 0) {
+			OnRangedDeath();
+		}
+	}
+
+	/*
+	Override OnDeath because positional coords are not set correctly for sprite
+	*/
+	public void OnRangedDeath() {
+		CollisionShape2D hitbox = GetNode<CollisionShape2D>("Hitbox");
+		Sprite2D spritePos = GetNode<Sprite2D>("TruePosition");
+		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Quart).SetEase(Tween.EaseType.Out);
+		tween.TweenProperty(prompt, "modulate:a", 0.4, 0.1); // change transparency of prompt
+
+		hitbox.Disabled = deathState = true;
+		spritePos.Visible = false;
+		anim.Play("death"); // play animation
+	}
+
 
 	/*
 	Determine state of ranged enemy
 	*/
 	public void DetermineState() {
 		float distance = (player.GlobalPosition - GlobalPosition).Length();
-		state = distance < range ? EnemyState.SHOOT : EnemyState.SURROUND; // in shooting range
-		state = distance < 20.0f ? EnemyState.HIT : state; // in hitting range
+		state = distance < range ? EnemyState.SHOOT : EnemyState.SURROUND; // shoot or surround
 	}
 
 }

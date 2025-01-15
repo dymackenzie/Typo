@@ -1,0 +1,162 @@
+[gd_scene load_steps=19 format=3 uid="uid://chkx13kcw72s7"]
+
+[ext_resource type="Script" path="res://src/scripts/Fireball.cs" id="1_0vtma"]
+[ext_resource type="Texture2D" uid="uid://ckj6bpudd6imn" path="res://assets/sprites/bullets_orange.png" id="1_a7uei"]
+[ext_resource type="Shader" path="res://assets/misc/fireball.gdshader" id="1_vf7c4"]
+[ext_resource type="PackedScene" uid="uid://2e711btn878r" path="res://scenes/game/Explosion.tscn" id="2_67imp"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qtiuq"]
+shader = ExtResource("1_vf7c4")
+shader_parameter/target_color = Color(0.988235, 0.937255, 0.552941, 1)
+shader_parameter/replace_color = Color(0.796078, 1, 0.847059, 1)
+shader_parameter/tolerance = 1.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_msjrn"]
+atlas = ExtResource("1_a7uei")
+region = Rect2(240, 288, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yybx4"]
+atlas = ExtResource("1_a7uei")
+region = Rect2(256, 288, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3rpwq"]
+atlas = ExtResource("1_a7uei")
+region = Rect2(272, 288, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_noolb"]
+atlas = ExtResource("1_a7uei")
+region = Rect2(208, 288, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q4p6u"]
+atlas = ExtResource("1_a7uei")
+region = Rect2(176, 288, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mneno"]
+atlas = ExtResource("1_a7uei")
+region = Rect2(192, 288, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_diadx"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_msjrn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yybx4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3rpwq")
+}],
+"loop": false,
+"name": &"explosion",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_noolb")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q4p6u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mneno")
+}],
+"loop": false,
+"name": &"spawn",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_80g2g"]
+radius = 0.24
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_k361v"]
+radius = 0.16
+
+[sub_resource type="Animation" id="Animation_11h1v"]
+resource_name = "spawn"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"spawn"]
+}
+
+[sub_resource type="Animation" id="Animation_ak1yn"]
+resource_name = "idle"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"idle"]
+}
+
+[sub_resource type="Animation" id="Animation_y4vyq"]
+resource_name = "explosion"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"explosion"]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_edl5p"]
+_data = {
+"explosion": SubResource("Animation_y4vyq"),
+"idle": SubResource("Animation_ak1yn"),
+"spawn": SubResource("Animation_11h1v")
+}
+
+[node name="Fireball" type="RigidBody2D"]
+script = ExtResource("1_0vtma")
+explosion = ExtResource("2_67imp")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_qtiuq")
+sprite_frames = SubResource("SpriteFrames_diadx")
+animation = &"idle"
+
+[node name="Hitbox" type="Area2D" parent="AnimatedSprite2D"]
+visible = false
+scale = Vector2(25, 25)
+
+[node name="Hitbox" type="CollisionShape2D" parent="AnimatedSprite2D/Hitbox"]
+shape = SubResource("CircleShape2D_80g2g")
+
+[node name="Shape" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource("CircleShape2D_k361v")
+disabled = true
+one_way_collision_margin = 2.0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_edl5p")
+}
+
+[node name="Cooldown" type="Timer" parent="."]
+
+[connection signal="body_entered" from="AnimatedSprite2D/Hitbox" to="." method="OnHitboxBodyEntered"]
