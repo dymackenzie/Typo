@@ -327,11 +327,6 @@ public partial class Player : CharacterBody2D
 			} catch {
 				// do nothing
 			}
-			try {
-				((BlastEnemy) body).SetState("shoot");
-			} catch {
-				// do nothing
-			}
 		}
 	}
 
@@ -344,6 +339,12 @@ public partial class Player : CharacterBody2D
 			enemy.attackTimer.Start();
 			enemy.SetPositionColor(killZone);
 			enemies.Add(enemy);
+
+			try {
+				((BlastEnemy) body).SetState("attack");
+			} catch {
+				// do nothing
+			}
 		}
 	}
 

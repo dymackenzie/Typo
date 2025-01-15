@@ -4,7 +4,7 @@ using Godot;
 public partial class BlastEnemy : Enemy
 {
 
-	[Export] public float range = 80.0f;
+	[Export] public float range = 120.0f;
 	[Export] public float shootingCooldown = 1.6f;
 	[Export] public float blastCooldown = 5f;
 
@@ -35,6 +35,13 @@ public partial class BlastEnemy : Enemy
 		if (deathState)
 			return;
 
+		// flip sprite based on player position
+		if (player.GlobalPosition.X < GlobalPosition.X) {
+			sprite2D.FlipH = true;
+		} else {
+			sprite2D.FlipH = false;
+		}
+
 		switch(state) {
 			case EnemyState.SURROUND:
 				Move(player.GlobalPosition, (float)delta);
@@ -42,12 +49,15 @@ public partial class BlastEnemy : Enemy
 				break;
 			case EnemyState.ATTACK:
 			case EnemyState.HIT:
+				Move(player.GlobalPosition, (float)delta);
+				anim.Play("attack");
+				break;
 			case EnemyState.SHOOT:
 				if (!isAttacking) {
 					isAttacking = true;
 					shootingCooldownTimer.Start();
 				}
-				anim.Play("attack");
+				anim.Play("blast");
 				break;
 		}
 	}
