@@ -28,7 +28,7 @@ public partial class Enemy : CharacterBody2D
 	public Words					Words = new();
 	public Player 					player;
 	public Timer 					attackTimer;
-	public Sprite2D			 		sprite2D;
+	public AnimatedSprite2D			sprite2D;
 	public OrbGenerator				orbs;
 	public AnimationPlayer			anim;
 	public RandomNumberGenerator 	random = new();
@@ -51,7 +51,7 @@ public partial class Enemy : CharacterBody2D
 		// poof = GD.Load<PackedScene>("res://scenes/game/Poof.tscn");
 		prompt = GetNode<RichTextLabel>("TypingText");
 		attackTimer = GetNode<Timer>("AttackTimer");
-		sprite2D = GetNode<Sprite2D>("Sprite");
+		sprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite");
 		anim = GetNode<AnimationPlayer>("AnimationPlayer");
 		orbs = GetNode<OrbGenerator>("OrbGenerator");
 		random.Randomize();
@@ -121,6 +121,7 @@ public partial class Enemy : CharacterBody2D
 		hitbox.Disabled = damageArea.Disabled = deathState = true;
 		spritePos.Visible = false;
 		anim.Play("death");
+		GD.Print(anim.CurrentAnimation);
 	}
 
 	public void OnAnimationFinished(StringName animName) {

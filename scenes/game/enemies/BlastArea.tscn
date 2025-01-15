@@ -7,6 +7,7 @@ radius = 50.0
 
 [node name="BlastArea" type="Area2D"]
 modulate = Color(1, 1, 1, 0)
+show_behind_parent = true
 script = ExtResource("1_5ljdb")
 searchColor = Color(0.254902, 0.254902, 0.254902, 0.784314)
 killColor = Color(0.603922, 0, 0, 0.784314)
@@ -14,5 +15,8 @@ killColor = Color(0.603922, 0, 0, 0.784314)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_r5tgv")
 
+[node name="Timer" type="Timer" parent="."]
+
 [connection signal="body_entered" from="." to="." method="OnBodyEntered"]
 [connection signal="body_exited" from="." to="." method="OnBodyExited"]
+[connection signal="timeout" from="Timer" to="." method="OnTimeout"]

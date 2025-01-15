@@ -21,6 +21,8 @@ public partial class Player : CharacterBody2D
 	[Export] public float friction 		= 0.7f;
 	[Export] public float acceleration 	= 0.8f;
 	[Export] public Color killZone		= new(0.29f, 0.02f, 0.02f);
+	[Export] public Color experienceColor = new Color("4a0986");
+	[Export] public Color damageColor = new Color("E83B3B");
 
 	// animation variable
 	public bool 				inKillMode = false;
@@ -29,7 +31,7 @@ public partial class Player : CharacterBody2D
 	public bool					isAttacking = false;
 
 	public Globals				Globals;
-	public Sprite2D 			playerSprite;
+	public AnimatedSprite2D 	playerSprite;
 	public CollisionShape2D		hitbox;
 	public AnimationPlayer 		anim;
 	public ShakingCamera		camera;
@@ -48,13 +50,16 @@ public partial class Player : CharacterBody2D
 
 	public override void _Ready() {
 		Globals = GetNode<Globals>("/root/Globals");
-		playerSprite = GetNode<Sprite2D>("Sprite");
+		playerSprite = GetNode<AnimatedSprite2D>("AnimatedSprite");
 		hitbox = GetNode<CollisionShape2D>("Hitbox");
 		shield = GetNode<Timer>("ShieldDelay");
-		camera = GetNode<ShakingCamera>("Sprite/ShakingCamera");
+		camera = GetNode<ShakingCamera>("AnimatedSprite/ShakingCamera");
 		anim = GetNode<AnimationPlayer>("AnimationPlayer");
 		dash = GetNode<Dash>("Dash");
 		area = GetNode<EnableAttack>("EnableAttack");
+
+		// connect signals
+		Globals.ExperienceChanged += OnExperience;
 	}
 
 	/*
@@ -65,7 +70,7 @@ public partial class Player : CharacterBody2D
 		if (Input.IsActionJustPressed("enter_attack") && enemies.Count != 0) {
 			anim.Stop();
 			currentEnemy = enemies[0];
-			playerSprite.Frame = 40;
+			playerSprite.Frame = 3;
 			SwitchKillMode();
 		}
 		// move
@@ -178,11 +183,22 @@ public partial class Player : CharacterBody2D
 		shield.Start();
 	}
 
+	/*
+	Handle experience visuals
+	*/
+	public void OnExperience(int level) {
+		Color color = Modulate;
+		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Linear).SetEase(Tween.EaseType.Out);
+		tween.TweenProperty(playerSprite, "modulate", experienceColor, 0.1);
+		tween.TweenProperty(playerSprite, "modulate", color, 0.1);
+	}
+
 	public void DamageVisuals() {
 		Color color = Modulate;
 		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Linear).SetEase(Tween.EaseType.Out);
 		float delay = 0.2f;
-		tween.TweenProperty(this, "modulate", new Color("E83B3B"), delay);
+		anim.Play("damage");
+		tween.TweenProperty(this, "modulate", damageColor, delay);
 		tween.TweenInterval(delay);
 		tween.TweenProperty(this, "modulate", color, shield.WaitTime - delay * 2);
 		EmitSignal(nameof(CameraShakeRequested), 5);
@@ -192,16 +208,13 @@ public partial class Player : CharacterBody2D
 	Handles attack animation
 	*/
 	private void AttackAnimation() {
-		string[] animations = new string[] {"attack_sweep", "attack_swoop", "attack_up", "attack_down"};
-		RandomNumberGenerator random = new();
-		anim.Play(animations[random.RandiRange(0, 3)]);
+		anim.Play("hit");
 		area.timer.Paused = true;
 		currentEnemy.EmitText((currentEnemy.difficulty * currentEnemy.healthUnit).ToString());
 	}
 
 	public void OnAnimationFinished(StringName animName) {
-		string[] animations = new string[] {"attack_sweep", "attack_swoop", "attack_up", "attack_down"};
-		if (animations.Contains<string>((string) animName)) {
+		if ((string) animName == "hit") {
 			// check if player has gone through all enemies
 			area.timer.Paused = false;
 			enemies.Remove(currentEnemy);
@@ -212,7 +225,7 @@ public partial class Player : CharacterBody2D
 				Globals.inSlowdown = inKillMode;
 				EmitSignal(nameof(InSlowdown), false);
 			} else {
-				playerSprite.Frame = 40;
+				playerSprite.Frame = 3;
 				currentEnemy = enemies[0];
 				EmitSignal(nameof(SwitchEnemy));
 			}	
@@ -225,7 +238,7 @@ public partial class Player : CharacterBody2D
 	private void HandleAnimations() {
 		if (!inKillMode) {
 			if (dash.IsDashing()) {
-				anim.Play("dash");
+				anim.Play("charge");
 			} else if (isRunning) {
 				anim.Play("run");
 			} else {
@@ -243,6 +256,7 @@ public partial class Player : CharacterBody2D
 		direction = direction.Normalized();
 		float x = direction.X;
 		float y = direction.Y / 2;
+		hitbox.Disabled = dash.IsDashing();
 		if (direction == Vector2.Zero) {
 			// slowdown when no input
 			x = Lerp(Velocity.X, 0, friction);
@@ -254,7 +268,6 @@ public partial class Player : CharacterBody2D
 				dash.StartDash(dash_duration);
 			}
 			float speed = dash.IsDashing() ? dash_speed : this.speed;
-			hitbox.Disabled = dash.IsDashing();
 			if (x > 0) {
 				// if player is going right
 				// flips the sprite horizontally

@@ -4,18 +4,14 @@ using System;
 public partial class Globals : Node
 {
 
-    [Signal] public delegate void ExperienceChangedEventHandler();
+    [Signal] public delegate void ExperienceChangedEventHandler(int level);
 	
     public bool inSlowdown;
-    private int Experience = 0;
+    public int Experience = 0;
 
-    public void SetExperience(int experience) {
-        Experience = experience;
-        EmitSignal(nameof(ExperienceChanged));
-    }
-
-    public int GetExperience() {
-        return Experience;
+    public void AddExperience(int increment) {
+        Experience += increment;
+        EmitSignal(nameof(ExperienceChanged), increment);
     }
 
 }

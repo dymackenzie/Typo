@@ -5,6 +5,7 @@ public partial class OrbGenerator : Marker2D
 {
 
     [Export] public int orbNumber = 3;
+    [Export] public int orbLevel = 1;
 
     PackedScene orb;
 
@@ -20,6 +21,7 @@ public partial class OrbGenerator : Marker2D
         for (int i = 0; i < orbNumber; i++) {
             Orbs orbs = (Orbs) orb.Instantiate();
             orbs.GlobalPosition = GlobalPosition;
+            orbs.level = orbLevel;
             GetParent().GetParent().AddChild(orbs);
         }
     }

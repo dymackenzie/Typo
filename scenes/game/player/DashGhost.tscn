@@ -1,11 +1,12 @@
 [gd_scene load_steps=3 format=3 uid="uid://d1brfl8pss8ix"]
 
 [ext_resource type="Script" path="res://src/scripts/DashGhost.cs" id="1_640qa"]
-[ext_resource type="Texture2D" uid="uid://c0rr0a800dmra" path="res://assets/sprites/player_character.png" id="1_lc3qa"]
+[ext_resource type="Texture2D" uid="uid://ct33p845ckvxb" path="res://assets/sprites/Ball and Chain Bot/charge.png" id="1_ewyad"]
 
 [node name="DashGhost" type="Sprite2D"]
 modulate = Color(1, 1, 1, 0.784314)
-texture = ExtResource("1_lc3qa")
-region_enabled = true
-region_rect = Rect2(96, 144, 48, 48)
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("1_ewyad")
+vframes = 4
+region_rect = Rect2(40, 0, 48, 40)
 script = ExtResource("1_640qa")

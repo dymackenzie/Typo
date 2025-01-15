@@ -5,6 +5,7 @@ using System.Linq;
 public partial class Orbs : RigidBody2D
 {
 
+    [Export] public int level = 1;
 	[Export] float launch = 70.0f;
     [Export] float speed = 1.5f;
     [Export] float friction = 1f;
@@ -25,9 +26,9 @@ public partial class Orbs : RigidBody2D
     public CollisionShape2D collisionShape2D;
 
 	public override void _Ready() {
-        // finds player in tree
-        foreach (Player player in GetTree().GetNodesInGroup("player").Cast<Player>())
-            this.player = player;
+        foreach (Node node in GetTree().GetNodesInGroup("player")) {
+            player = (Player) node;
+        }
 		InitiateTimer();
 		random.Randomize();
         InitiateScale();
@@ -40,7 +41,7 @@ public partial class Orbs : RigidBody2D
     private void InitiateScale() {
         sprite = GetNode<AnimatedSprite2D>("Sprite2D");
         collisionShape2D = GetNode<CollisionShape2D>("Sprite2D/Hitbox/Hitbox");
-        float scaleChange = random.RandfRange(0, 0.03f);
+        float scaleChange = random.RandfRange(0, 0.03f) * (1 + (level * 0.1f));
         sprite.Scale += new Vector2(scaleChange, scaleChange);
     }
 
@@ -96,7 +97,7 @@ public partial class Orbs : RigidBody2D
     public void OnHitboxBodyEntered(Node2D body) {
         if (body.IsInGroup("player")) {
             Globals = GetNode<Globals>("/root/Globals");
-            Globals.SetExperience(Globals.GetExperience() + 1);
+            Globals.AddExperience(level);
             QueueFree();
         }
     }

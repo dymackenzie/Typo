@@ -27,17 +27,24 @@ public partial class RangedEnemy : Enemy
 
     public override void _PhysicsProcess(double delta) {
 		DetermineState();
-		if (state != EnemyState.SHOOT) {
+		if (anim.CurrentAnimation != "fire_fist") {
 			base._PhysicsProcess(delta);
-		} else {
-			if (timer.IsStopped()) {
-				Tween tween = CreateTween();
-				BlastSearch();
-				tween.TweenInterval(1);
-				tween.TweenCallback(Callable.From(() => { anim.Play("fire_fist"); }));
-				timer.Start();
-			}
 		}
+		if (timer.IsStopped()) {
+			anim.Play("fire_fist");
+			timer.Start();
+		}
+		// if (state != EnemyState.SHOOT) {
+		// 	base._PhysicsProcess(delta);
+		// } else {
+		// 	if (timer.IsStopped()) {
+		// 		BlastSearch();
+		// 		tween = CreateTween();
+		// 		tween.TweenInterval(1);
+		// 		tween.TweenCallback(Callable.From(() => { anim.Play("fire_fist"); }));
+		// 		timer.Start();
+		// 	}
+		// }
     }
 
 	/*
@@ -49,20 +56,11 @@ public partial class RangedEnemy : Enemy
 		AddSibling(blastArea);
 	}
 
-	/*
-	Shoot projectile
-	*/
-	public void Shoot() {
-		Tween tween = CreateTween();
-		blastArea.enabled = true;
-		tween.TweenInterval(1);
-		tween.TweenCallback(Callable.From(() => { blastArea.QueueFree(); }));
-	}
-
 	public new void OnAnimationFinished(StringName animName) {
 		base.OnAnimationFinished(animName);
 		if ((string) animName == "fire_fist") {
-			Shoot();
+			BlastSearch();
+			anim.Play("idle");
 		}
 	}	
 
@@ -72,7 +70,6 @@ public partial class RangedEnemy : Enemy
 	public void DetermineState() {
 		float distance = (player.GlobalPosition - GlobalPosition).Length();
 		state = distance < range ? EnemyState.SHOOT : EnemyState.SURROUND; // in shooting range
-		state = distance < 50.0f ? EnemyState.ATTACK : state; // in attacking range
 		state = distance < 20.0f ? EnemyState.HIT : state; // in hitting range
 	}
 
