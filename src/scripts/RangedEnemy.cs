@@ -5,10 +5,12 @@ public partial class RangedEnemy : Enemy
 {
 
 	[Export] public float range = 100.0f;
-	[Export] public float shootingCooldown = 5;
+	[Export] public float shootingCooldown = 1.6f;
+	[Export] public float shootingCooldown2 = 2.2f;
 
 	public FireballGenerator fireballs;
 	public Timer shootingCooldownTimer;
+	public Timer shootingCooldownTimer2;
 	public Tween tween;
 
 	private bool isAttacking = false;
@@ -17,9 +19,11 @@ public partial class RangedEnemy : Enemy
 		base._Ready();
 		fireballs = GetNode<FireballGenerator>("FireballGenerator");
 		shootingCooldownTimer = GetNode<Timer>("ShootingCooldown");
+		shootingCooldownTimer2 = GetNode<Timer>("ShootingCooldown2");
 
 		// variable set up
 		shootingCooldownTimer.WaitTime = shootingCooldown;
+		shootingCooldownTimer2.WaitTime = shootingCooldown2;
 	}
 
 	public override void _PhysicsProcess(double delta) {
@@ -44,6 +48,7 @@ public partial class RangedEnemy : Enemy
 				if (!isAttacking) {
 					isAttacking = true;
 					shootingCooldownTimer.Start();
+					shootingCooldownTimer2.Start();
 				}
 				anim.Play("attack");
 				break;
@@ -58,7 +63,7 @@ public partial class RangedEnemy : Enemy
 	}
 
 	public void OnShootingCooldownTimeout() {
-		// fireballs.GenerateFireball();
+		fireballs.GenerateFireball();
 	}
 
 	/*
