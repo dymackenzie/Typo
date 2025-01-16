@@ -1,4 +1,4 @@
-[gd_scene load_steps=75 format=3 uid="uid://cenxflxqsmuhb"]
+[gd_scene load_steps=76 format=3 uid="uid://cenxflxqsmuhb"]
 
 [ext_resource type="Texture2D" uid="uid://urgqga3v6f54" path="res://assets/sprites/position2.png" id="1_mf185"]
 [ext_resource type="Script" path="res://src/scripts/RangedEnemy.cs" id="1_uwkqx"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://bki47kc1liik5" path="res://assets/sprites/stormhead/idle.png" id="6_d3kyk"]
 [ext_resource type="Texture2D" uid="uid://bciqifvayeghd" path="res://assets/sprites/stormhead/run.png" id="7_1fsmv"]
 [ext_resource type="PackedScene" uid="uid://b6frl867181au" path="res://scenes/game/enemies/FireballGenerator.tscn" id="10_433sq"]
+[ext_resource type="PackedScene" uid="uid://chkx13kcw72s7" path="res://scenes/game/enemies/Fireball.tscn" id="13_d0xy3"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_f55m2"]
 shader = ExtResource("4_solkm")
@@ -410,6 +411,54 @@ radius = 4.12311
 [sub_resource type="CircleShape2D" id="CircleShape2D_bveyc"]
 radius = 15.5952
 
+[sub_resource type="Animation" id="Animation_o1b5s"]
+resource_name = "shoot"
+length = 4.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"attack"]
+}
+
+[sub_resource type="Animation" id="Animation_yg2l5"]
+resource_name = "blast"
+length = 2.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"blast"]
+}
+
+[sub_resource type="Animation" id="Animation_stkil"]
+resource_name = "fire_fist"
+length = 0.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"damaged"]
+}
+
 [sub_resource type="Animation" id="Animation_e84vj"]
 resource_name = "death"
 length = 1.4
@@ -460,53 +509,6 @@ tracks/0/keys = {
 "values": [&"walk"]
 }
 
-[sub_resource type="Animation" id="Animation_o1b5s"]
-resource_name = "shoot"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("AnimatedSprite:animation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"attack"]
-}
-
-[sub_resource type="Animation" id="Animation_stkil"]
-resource_name = "fire_fist"
-length = 0.8
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("AnimatedSprite:animation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"damaged"]
-}
-
-[sub_resource type="Animation" id="Animation_yg2l5"]
-resource_name = "blast"
-length = 2.6
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("AnimatedSprite:animation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"blast"]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_fe58f"]
 _data = {
 "attack": SubResource("Animation_o1b5s"),
@@ -532,7 +534,7 @@ material = SubResource("ShaderMaterial_f55m2")
 position = Vector2(0, -23)
 scale = Vector2(0.553221, 0.5)
 sprite_frames = SubResource("SpriteFrames_bcfmx")
-animation = &"walk"
+animation = &"attack"
 autoplay = "idle"
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]
@@ -579,15 +581,16 @@ libraries = {
 }
 autoplay = "idle"
 
-[node name="ShootingCooldown" type="Timer" parent="."]
+[node name="RangedShootingCooldown" type="Timer" parent="."]
 one_shot = true
 
 [node name="FireballGenerator" parent="." instance=ExtResource("10_433sq")]
 position = Vector2(0, -22)
+fireball = ExtResource("13_d0xy3")
 
-[node name="ShootingCooldown2" type="Timer" parent="."]
+[node name="RangedShootingCooldown2" type="Timer" parent="."]
 one_shot = true
 
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="OnAnimationFinished"]
-[connection signal="timeout" from="ShootingCooldown" to="." method="OnShootingCooldownTimeout"]
-[connection signal="timeout" from="ShootingCooldown2" to="." method="OnShootingCooldownTimeout"]
+[connection signal="timeout" from="RangedShootingCooldown" to="." method="_OnRangedShootingCooldown"]
+[connection signal="timeout" from="RangedShootingCooldown2" to="." method="_OnRangedShootingCooldown2"]

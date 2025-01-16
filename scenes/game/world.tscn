@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://bpd2lksdfdn7b"]
 
-[ext_resource type="PackedScene" uid="uid://55pc43lgfq5g" path="res://scenes/game/enemies/BasicEnemy.tscn" id="2_h6b6o"]
+[ext_resource type="PackedScene" uid="uid://cenxflxqsmuhb" path="res://scenes/game/enemies/RangedEnemy.tscn" id="2_g8jdx"]
 [ext_resource type="PackedScene" uid="uid://cycikbvsectqm" path="res://scenes/game/player/Player.tscn" id="3_npmoh"]
 [ext_resource type="PackedScene" uid="uid://buv8f1bkhq0np" path="res://scenes/menu/ShieldBar.tscn" id="3_yonda"]
 [ext_resource type="PackedScene" uid="uid://cvdp3m6yklvpd" path="res://scenes/menu/OrbCounter.tscn" id="4_hmxcn"]
@@ -15,8 +15,8 @@ autostart = true
 
 [node name="player" parent="." instance=ExtResource("3_npmoh")]
 
-[node name="BasicEnemy" parent="." instance=ExtResource("2_h6b6o")]
-position = Vector2(-120, -30)
+[node name="RangedEnemy" parent="." instance=ExtResource("2_g8jdx")]
+position = Vector2(-72, -22)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." groups=["UI"]]
 

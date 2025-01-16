@@ -114,7 +114,9 @@ public partial class Fireball : RigidBody2D
         if (body.IsInGroup("player")) {
             anim.Play("explosion");
             // PlayExplosionParticle();
-			player.OnDamage();
+            if (player.shield.IsStopped()) {
+                player.OnDamage();
+            }
         }
     }
 

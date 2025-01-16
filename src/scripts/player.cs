@@ -143,19 +143,14 @@ public partial class Player : CharacterBody2D
 		if (keyTyped == nextChar) {
 			currentLetterIndex += 1;
 			currentEnemy.currentLetterIndex = currentLetterIndex;
-			bool enemyIsNormal = false;
 			try {
 				((RangedEnemy)currentEnemy).OnHit(nextChar);
 			} catch {
-				enemyIsNormal = true;
-			}
-			try {
-				((BlastEnemy)currentEnemy).OnHit(nextChar);
-			} catch {
-				enemyIsNormal = true;
-			}
-			if (enemyIsNormal) {
-				currentEnemy.OnHit(nextChar);
+				try {
+					((BlastEnemy)currentEnemy).OnHit(nextChar);
+				} catch {
+					currentEnemy.OnHit(nextChar);
+				}
 			}
 			currentEnemy.SetNextCharacter(false);
 			EmitSignal(nameof(KeySuccess));

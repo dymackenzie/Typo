@@ -11,15 +11,14 @@ public partial class RangedEnemy : Enemy
 	public FireballGenerator fireballs;
 	public Timer shootingCooldownTimer;
 	public Timer shootingCooldownTimer2;
-	public Tween tween;
 
 	private bool isAttacking = false;
 
 	public override void _Ready() {
 		base._Ready();
 		fireballs = GetNode<FireballGenerator>("FireballGenerator");
-		shootingCooldownTimer = GetNode<Timer>("ShootingCooldown");
-		shootingCooldownTimer2 = GetNode<Timer>("ShootingCooldown2");
+		shootingCooldownTimer = GetNode<Timer>("RangedShootingCooldown");
+		shootingCooldownTimer2 = GetNode<Timer>("RangedShootingCooldown2");
 
 		// variable set up
 		shootingCooldownTimer.WaitTime = shootingCooldown;
@@ -62,7 +61,11 @@ public partial class RangedEnemy : Enemy
 		}
 	}
 
-	public void OnShootingCooldownTimeout() {
+	public void _OnRangedShootingCooldown() {
+		fireballs.GenerateFireball();
+	}
+
+	public void _OnRangedShootingCooldown2() {
 		fireballs.GenerateFireball();
 	}
 
@@ -90,7 +93,6 @@ public partial class RangedEnemy : Enemy
 		spritePos.Visible = false;
 		anim.Play("death"); // play animation
 	}
-
 
 	/*
 	Determine state of ranged enemy

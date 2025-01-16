@@ -29,6 +29,8 @@ public partial class Orbs : RigidBody2D
         foreach (Node node in GetTree().GetNodesInGroup("player")) {
             player = (Player) node;
         }
+        Globals = GetNode<Globals>("/root/Globals");
+
 		InitiateTimer();
 		random.Randomize();
         InitiateScale();
@@ -59,6 +61,10 @@ public partial class Orbs : RigidBody2D
     }
 
 	public override void _PhysicsProcess(double delta) {
+
+        // deal with slowdown
+		delta *= Globals.inSlowdown ? Globals.slowdownRate : 1;
+
         if (timePass <= launchPeriod) {
             ApplyFriction();
             MoveAndCollide(velocity * (float) delta);
