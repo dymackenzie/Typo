@@ -129,11 +129,12 @@ public partial class BlastEnemy : Enemy
 	*/
 	public void OnBlastDeath() {
 		CollisionShape2D hitbox = GetNode<CollisionShape2D>("Hitbox");
+		CollisionShape2D damageArea = GetNode<CollisionShape2D>("Damage/CollisionShape2D");
 		Sprite2D spritePos = GetNode<Sprite2D>("TruePosition");
 		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Quart).SetEase(Tween.EaseType.Out);
 		tween.TweenProperty(prompt, "modulate:a", 0.4, 0.1); // change transparency of prompt
 
-		hitbox.Disabled = deathState = true;
+		hitbox.Disabled = damageArea.Disabled = deathState = true;
 		spritePos.Visible = false;
 		anim.Play("death"); // play animation
 	}
