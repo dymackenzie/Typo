@@ -1,10 +1,10 @@
 [gd_scene load_steps=7 format=3 uid="uid://bpd2lksdfdn7b"]
 
+[ext_resource type="PackedScene" uid="uid://c6r7ykqjgt0s5" path="res://scenes/game/enemies/EnemyGenerator.tscn" id="2_c7l2s"]
 [ext_resource type="PackedScene" uid="uid://cycikbvsectqm" path="res://scenes/game/player/Player.tscn" id="3_npmoh"]
 [ext_resource type="PackedScene" uid="uid://buv8f1bkhq0np" path="res://scenes/menu/ShieldBar.tscn" id="3_yonda"]
 [ext_resource type="PackedScene" uid="uid://cvdp3m6yklvpd" path="res://scenes/menu/OrbCounter.tscn" id="4_hmxcn"]
 [ext_resource type="PackedScene" uid="uid://cfw8o0ia0ge1u" path="res://scenes/menu/HealthBar.tscn" id="4_prje5"]
-[ext_resource type="PackedScene" uid="uid://ojdt4f1bn650" path="res://scenes/game/enemies/BlastEnemy.tscn" id="5_jed0y"]
 [ext_resource type="PackedScene" uid="uid://p1dg4x55i2di" path="res://scenes/menu/WPMCounter.tscn" id="5_qwm6y"]
 
 [node name="World" type="Node2D"]
@@ -15,8 +15,7 @@ autostart = true
 
 [node name="player" parent="." instance=ExtResource("3_npmoh")]
 
-[node name="BlastEnemy" parent="." instance=ExtResource("5_jed0y")]
-position = Vector2(-100, -25)
+[node name="EnemyGenerator" parent="." instance=ExtResource("2_c7l2s")]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." groups=["UI"]]
 

@@ -213,6 +213,7 @@ public partial class Player : CharacterBody2D
 		if (health <= 0) {
 			// player is dead
 			isDead = true;
+			hitbox.Disabled = true;
 			anim.Stop();
 			anim.Play("death");
 		}
