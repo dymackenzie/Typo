@@ -13,7 +13,7 @@ public partial class ShieldBar : TextureRect
         player.ShieldChanged += Update;
     }
 
-    public void Update() {
-        Visible = !Visible;
-    }
+	public void Update() {
+		Visible = !Visible;
+	}
 }

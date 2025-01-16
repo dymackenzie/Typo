@@ -63,6 +63,7 @@ size_flags_vertical = 0
 [node name="ShieldBar" parent="CanvasLayer/CenterContainer/HEALTH/HBoxContainer/Health + Shield/MarginContainer/HBoxContainer/MarginContainer" instance=ExtResource("3_yonda")]
 custom_minimum_size = Vector2(18, 18)
 layout_mode = 2
+playerPath = NodePath("../../../../../../../../../player")
 
 [node name="WPM" type="MarginContainer" parent="CanvasLayer/CenterContainer"]
 layout_mode = 2

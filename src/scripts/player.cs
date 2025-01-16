@@ -24,6 +24,7 @@ public partial class Player : CharacterBody2D
 	[Export] public Color killZone		= new(0.29f, 0.02f, 0.02f);
 	[Export] public Color experienceColor = new Color("4a0986");
 	[Export] public Color damageColor = new Color("E83B3B");
+	[Export] public Color shieldColor = new Color("0a5499");
 
 	// animation variable
 	public bool 				inKillMode = false;
@@ -67,6 +68,7 @@ public partial class Player : CharacterBody2D
 
 		// variables
 		originalColor = Modulate;
+		hasShield = true;
 	}
 
 	/*
@@ -197,17 +199,16 @@ public partial class Player : CharacterBody2D
 	*/ 
 	public void OnDamage() {
 
-		// check if has shield
+		// modulate attack
 		if (hasShield) {
 			hasShield = false;
 			EmitSignal(nameof(ShieldChanged));
-			return;
+			ShieldVisuals();
+		} else {
+			health -= 1;
+			EmitSignal(nameof(HealthChanged));
+			DamageVisuals();
 		}
-
-		// modulate attack
-		DamageVisuals();
-		health -= 1;
-		EmitSignal(nameof(HealthChanged));
 		shield.Start();
 
 		if (health <= 0) {
@@ -235,6 +236,19 @@ public partial class Player : CharacterBody2D
 		Tween damageTween = CreateTween().SetTrans(Tween.TransitionType.Linear).SetEase(Tween.EaseType.Out);
 		anim.Play("damage");
 		damageTween.TweenProperty(this, "modulate", damageColor, delay);
+		damageTween.TweenInterval(delay);
+		damageTween.TweenProperty(this, "modulate", originalColor, shield.WaitTime - delay * 2);
+		EmitSignal(nameof(CameraShakeRequested), 5);
+	}
+
+	/*
+	Handle shield visuals
+	*/
+	public void ShieldVisuals() {
+		float delay = 0.2f;
+		Tween damageTween = CreateTween().SetTrans(Tween.TransitionType.Linear).SetEase(Tween.EaseType.Out);
+		anim.Play("damage");
+		damageTween.TweenProperty(this, "modulate", shieldColor, delay);
 		damageTween.TweenInterval(delay);
 		damageTween.TweenProperty(this, "modulate", originalColor, shield.WaitTime - delay * 2);
 		EmitSignal(nameof(CameraShakeRequested), 5);

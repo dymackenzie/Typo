@@ -399,6 +399,7 @@ offset = Vector2(0, -2)
 flip_h = true
 
 [node name="ShakingCamera" parent="AnimatedSprite" instance=ExtResource("4_l30nw")]
+zoomScale = 1.6
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]
 position = Vector2(0, 3)
