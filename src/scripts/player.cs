@@ -8,6 +8,7 @@ public partial class Player : CharacterBody2D
 
 	[Signal] public delegate void CameraShakeRequestedEventHandler(float shakeScale);
 	[Signal] public delegate void HealthChangedEventHandler();
+	[Signal] public delegate void ShieldChangedEventHandler();
 	[Signal] public delegate void InSlowdownEventHandler(bool slowdown);
 	[Signal] public delegate void WPMChangedEventHandler(double WPM);
 	[Signal] public delegate void KeySuccessEventHandler();
@@ -30,6 +31,7 @@ public partial class Player : CharacterBody2D
 	public bool 				isRunning = false;
 	public bool					isAttacking = false;
 	public bool					isDead = false;
+	public bool					hasShield = true;
 
 	public Globals				Globals;
 	public AnimatedSprite2D 	playerSprite;
@@ -194,6 +196,14 @@ public partial class Player : CharacterBody2D
 	Damage player
 	*/ 
 	public void OnDamage() {
+
+		// check if has shield
+		if (hasShield) {
+			hasShield = false;
+			EmitSignal(nameof(ShieldChanged));
+			return;
+		}
+
 		// modulate attack
 		DamageVisuals();
 		health -= 1;

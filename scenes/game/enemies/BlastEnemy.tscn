@@ -294,6 +294,53 @@ radius = 3.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_m47g5"]
 
+[sub_resource type="Animation" id="Animation_o1b5s"]
+resource_name = "shoot"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"attack"]
+}
+
+[sub_resource type="Animation" id="Animation_yg2l5"]
+resource_name = "blast"
+length = 2.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"blast"]
+}
+
+[sub_resource type="Animation" id="Animation_stkil"]
+resource_name = "fire_fist"
+length = 0.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"damaged"]
+}
+
 [sub_resource type="Animation" id="Animation_e84vj"]
 resource_name = "death"
 length = 1.4
@@ -344,53 +391,6 @@ tracks/0/keys = {
 "values": [&"walk"]
 }
 
-[sub_resource type="Animation" id="Animation_o1b5s"]
-resource_name = "shoot"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("AnimatedSprite:animation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"attack"]
-}
-
-[sub_resource type="Animation" id="Animation_stkil"]
-resource_name = "fire_fist"
-length = 0.8
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("AnimatedSprite:animation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"damaged"]
-}
-
-[sub_resource type="Animation" id="Animation_yg2l5"]
-resource_name = "blast"
-length = 2.6
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("AnimatedSprite:animation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"blast"]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_fe58f"]
 _data = {
 "attack": SubResource("Animation_o1b5s"),
@@ -417,7 +417,7 @@ scale = Vector2(0.6, 0.6)
 sprite_frames = SubResource("SpriteFrames_yse8l")
 animation = &"blast"
 autoplay = "idle"
-frame_progress = 0.850019
+frame_progress = 0.868792
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]
 position = Vector2(0, 4)

@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://bpd2lksdfdn7b"]
+[gd_scene load_steps=7 format=3 uid="uid://bpd2lksdfdn7b"]
 
+[ext_resource type="PackedScene" uid="uid://55pc43lgfq5g" path="res://scenes/game/enemies/BasicEnemy.tscn" id="2_h6b6o"]
 [ext_resource type="PackedScene" uid="uid://cycikbvsectqm" path="res://scenes/game/player/Player.tscn" id="3_npmoh"]
+[ext_resource type="PackedScene" uid="uid://buv8f1bkhq0np" path="res://scenes/menu/ShieldBar.tscn" id="3_yonda"]
 [ext_resource type="PackedScene" uid="uid://cvdp3m6yklvpd" path="res://scenes/menu/OrbCounter.tscn" id="4_hmxcn"]
 [ext_resource type="PackedScene" uid="uid://cfw8o0ia0ge1u" path="res://scenes/menu/HealthBar.tscn" id="4_prje5"]
-[ext_resource type="PackedScene" uid="uid://ojdt4f1bn650" path="res://scenes/game/enemies/BlastEnemy.tscn" id="5_jed0y"]
 [ext_resource type="PackedScene" uid="uid://p1dg4x55i2di" path="res://scenes/menu/WPMCounter.tscn" id="5_qwm6y"]
 
 [node name="World" type="Node2D"]
@@ -14,25 +15,78 @@ autostart = true
 
 [node name="player" parent="." instance=ExtResource("3_npmoh")]
 
-[node name="BlastEnemy" parent="." instance=ExtResource("5_jed0y")]
-position = Vector2(-118, -15)
+[node name="BasicEnemy" parent="." instance=ExtResource("2_h6b6o")]
+position = Vector2(-120, -30)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="OrbCounter" parent="CanvasLayer" instance=ExtResource("4_hmxcn")]
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="HealthBar" parent="CanvasLayer" instance=ExtResource("4_prje5")]
-offset_left = 33.0
-offset_top = -48.0
-offset_right = 131.0
-offset_bottom = -32.0
-scale = Vector2(2, 2)
-playerPath = NodePath("../../player")
+[node name="HEALTH" type="MarginContainer" parent="CanvasLayer/CenterContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 680
 
-[node name="WPMCounter" parent="CanvasLayer" instance=ExtResource("5_qwm6y")]
-offset_left = -7.0
-offset_top = 17.0
-offset_right = 125.0
-offset_bottom = 81.0
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/CenterContainer/HEALTH"]
+layout_mode = 2
+theme_override_constants/separation = 63
+
+[node name="Health + Shield" type="PanelContainer" parent="CanvasLayer/CenterContainer/HEALTH/HBoxContainer"]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/CenterContainer/HEALTH/HBoxContainer/Health + Shield"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/CenterContainer/HEALTH/HBoxContainer/Health + Shield/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="HealthBar" parent="CanvasLayer/CenterContainer/HEALTH/HBoxContainer/Health + Shield/MarginContainer/HBoxContainer" instance=ExtResource("4_prje5")]
+layout_mode = 2
+size_flags_vertical = 0
+playerPath = NodePath("../../../../../../../../player")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/CenterContainer/HEALTH/HBoxContainer/Health + Shield/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ShieldBar" parent="CanvasLayer/CenterContainer/HEALTH/HBoxContainer/Health + Shield/MarginContainer/HBoxContainer/MarginContainer" instance=ExtResource("3_yonda")]
+custom_minimum_size = Vector2(18, 18)
+layout_mode = 2
+
+[node name="WPM" type="MarginContainer" parent="CanvasLayer/CenterContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 390
+
+[node name="Orb + WPM Counter" type="PanelContainer" parent="CanvasLayer/CenterContainer/WPM"]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/CenterContainer/WPM/Orb + WPM Counter"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="VBoxContainer" parent="CanvasLayer/CenterContainer/WPM/Orb + WPM Counter/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 23
+alignment = 1
+
+[node name="OrbCounter" parent="CanvasLayer/CenterContainer/WPM/Orb + WPM Counter/MarginContainer/HBoxContainer" instance=ExtResource("4_hmxcn")]
+layout_mode = 2
+
+[node name="WPMCounter" parent="CanvasLayer/CenterContainer/WPM/Orb + WPM Counter/MarginContainer/HBoxContainer" instance=ExtResource("5_qwm6y")]
+layout_mode = 2
 
 [connection signal="timeout" from="enemy_timer" to="." method="OnEnemyTimerTimeout"]

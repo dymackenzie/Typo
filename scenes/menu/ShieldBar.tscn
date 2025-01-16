@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://buv8f1bkhq0np"]
+
+[ext_resource type="Texture2D" uid="uid://dc5cqgqr6slil" path="res://assets/sprites/shield_bar.png" id="1_81tr0"]
+[ext_resource type="Script" path="res://src/scripts/ShieldBar.cs" id="1_defm7"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ur2vv"]
+atlas = ExtResource("1_81tr0")
+region = Rect2(33, 40, 32, 29)
+
+[node name="ShieldBar" type="TextureRect"]
+offset_right = 14.0
+offset_bottom = 13.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = SubResource("AtlasTexture_ur2vv")
+expand_mode = 1
+stretch_mode = 4
+script = ExtResource("1_defm7")
