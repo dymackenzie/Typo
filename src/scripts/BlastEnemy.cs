@@ -6,7 +6,7 @@ public partial class BlastEnemy : Enemy
 
 	[Export] public float range = 120.0f;
 	[Export] public float shootingCooldown = 1.6f;
-	[Export] public float blastCooldown = 5f;
+	[Export] public float blastCooldown = 5.0f;
 
 	public Timer shootingCooldownTimer;
 	public Timer blastCooldownTimer;
@@ -42,12 +42,18 @@ public partial class BlastEnemy : Enemy
 			sprite2D.FlipH = false;
 		}
 
+		GD.Print(state);
+		GD.Print("isAttacking: " + isAttacking);
+
 		switch(state) {
-			case EnemyState.SURROUND:
+			case EnemyState.ATTACK:
 				Move(player.GlobalPosition, (float)delta);
 				anim.Play("walk");
 				break;
-			case EnemyState.ATTACK:
+			case EnemyState.SURROUND:
+				Move(GetCirclePosition(random.Randf()), (float)delta);
+				anim.Play("walk");
+				break;
 			case EnemyState.HIT:
 				Move(player.GlobalPosition, (float)delta);
 				anim.Play("attack");
@@ -56,25 +62,29 @@ public partial class BlastEnemy : Enemy
 				if (!isAttacking) {
 					isAttacking = true;
 					shootingCooldownTimer.Start();
+					blastCooldownTimer.Start();
 				}
-				anim.Play("blast");
 				break;
+		}
+
+		if (anim.CurrentAnimation == "") {
+			anim.Play("idle");
 		}
 	}
 
 	public new void OnAnimationFinished(StringName animName) {
 		base.OnAnimationFinished(animName);
-		if ((string) animName == "attack") {
-			isAttacking = false;
+		if ((string) animName == "blast") {
+			anim.Play("idle");
 		}
 	}
 
 	public void OnShootingCooldownTimeout() {
-		// 
+		anim.Play("blast");
 	}
 
 	public void OnBlastCooldownTimeout() {
-		// 
+		isAttacking = false;
 	}
 
 	/*

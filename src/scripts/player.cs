@@ -363,7 +363,7 @@ public partial class Player : CharacterBody2D
 				// do nothing
 			}
 			try {
-				((BlastEnemy) body).SetState("shoot");
+				((BlastEnemy) body).SetState("attack");
 			} catch {
 				// do nothing
 			}

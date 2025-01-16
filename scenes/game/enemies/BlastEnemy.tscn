@@ -219,7 +219,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_iue7x")
 }],
-"loop": false,
+"loop": true,
 "name": &"damaged",
 "speed": 5.0
 }, {
@@ -320,7 +320,6 @@ tracks/0/keys = {
 [sub_resource type="Animation" id="Animation_wmc83"]
 resource_name = "idle"
 length = 1.2
-loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -337,7 +336,6 @@ tracks/0/keys = {
 [sub_resource type="Animation" id="Animation_ymiwx"]
 resource_name = "walk"
 length = 1.2
-loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -369,6 +367,7 @@ tracks/0/keys = {
 [sub_resource type="Animation" id="Animation_stkil"]
 resource_name = "fire_fist"
 length = 0.8
+loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -384,7 +383,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_yg2l5"]
 resource_name = "blast"
-length = 1.6
+length = 1.4
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -422,7 +421,7 @@ material = SubResource("ShaderMaterial_pgdvi")
 position = Vector2(0, 3)
 scale = Vector2(0.6, 0.6)
 sprite_frames = SubResource("SpriteFrames_yse8l")
-animation = &"idle"
+animation = &"death"
 autoplay = "idle"
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]
@@ -474,6 +473,8 @@ autoplay = "idle"
 one_shot = true
 
 [node name="BlastCooldown" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
 
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="OnAnimationFinished"]
 [connection signal="timeout" from="ShootingCooldown" to="." method="OnShootingCooldownTimeout"]
