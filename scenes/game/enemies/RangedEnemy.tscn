@@ -493,6 +493,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_yg2l5"]
 resource_name = "blast"
+length = 2.6
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true

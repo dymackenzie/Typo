@@ -1,4 +1,4 @@
-[gd_scene load_steps=52 format=3 uid="uid://ojdt4f1bn650"]
+[gd_scene load_steps=54 format=3 uid="uid://ojdt4f1bn650"]
 
 [ext_resource type="Script" path="res://src/scripts/BlastEnemy.cs" id="1_tfg77"]
 [ext_resource type="Texture2D" uid="uid://urgqga3v6f54" path="res://assets/sprites/position2.png" id="2_ua6vb"]
@@ -50,6 +50,14 @@ region = Rect2(144, 480, 48, 48)
 [sub_resource type="AtlasTexture" id="AtlasTexture_glyts"]
 atlas = ExtResource("7_8wpai")
 region = Rect2(192, 480, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cumpi"]
+atlas = ExtResource("7_8wpai")
+region = Rect2(240, 480, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n3a36"]
+atlas = ExtResource("7_8wpai")
+region = Rect2(336, 480, 48, 48)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ch535"]
 atlas = ExtResource("7_8wpai")
@@ -166,20 +174,26 @@ animations = [{
 "speed": 5.0
 }, {
 "frames": [{
-"duration": 1.0,
+"duration": 3.0,
 "texture": SubResource("AtlasTexture_33kvr")
 }, {
-"duration": 1.0,
+"duration": 3.0,
 "texture": SubResource("AtlasTexture_t1ma3")
 }, {
-"duration": 1.0,
+"duration": 2.0,
 "texture": SubResource("AtlasTexture_cvlko")
 }, {
-"duration": 1.0,
+"duration": 2.0,
 "texture": SubResource("AtlasTexture_r3fev")
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_glyts")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cumpi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n3a36")
 }],
 "loop": true,
 "name": &"blast",
@@ -363,6 +377,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_yg2l5"]
 resource_name = "blast"
+length = 2.6
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -400,8 +415,9 @@ material = SubResource("ShaderMaterial_pgdvi")
 position = Vector2(0, 3)
 scale = Vector2(0.6, 0.6)
 sprite_frames = SubResource("SpriteFrames_yse8l")
-animation = &"walk"
+animation = &"blast"
 autoplay = "idle"
+frame_progress = 0.381991
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]
 position = Vector2(0, 4)

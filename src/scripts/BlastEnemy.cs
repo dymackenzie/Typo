@@ -5,7 +5,7 @@ public partial class BlastEnemy : Enemy
 {
 
 	[Export] public float range = 120.0f;
-	[Export] public float shootingCooldown = 3.0f;
+	[Export] public float shootingCooldown = 0.5f;
 	[Export] public float blastCooldown = 10.0f;
 
 	public Timer shootingCooldownTimer;
@@ -59,9 +59,7 @@ public partial class BlastEnemy : Enemy
 				anim.Play("attack");
 				break;
 			case EnemyState.SHOOT:
-				if (!isAttacking) {
-					isAttacking = true;
-					// BlastSearch();
+				if (blastCooldownTimer.IsStopped()) {
 					shootingCooldownTimer.Start();
 					blastCooldownTimer.Start();
 				}
@@ -78,16 +76,14 @@ public partial class BlastEnemy : Enemy
 		base.OnAnimationFinished(animName);
 		if ((string) animName == "blast") {
 			anim.Play("idle");
-			// Blast();
 		}
 	}
 
 	public void OnShootingCooldownTimeout() {
+		if (deathState)
+			return;
 		anim.Play("blast");
-	}
-
-	public void OnBlastCooldownTimeout() {
-		isAttacking = false;
+		BlastSearch();
 	}
 
 	/*
@@ -97,16 +93,6 @@ public partial class BlastEnemy : Enemy
 		blastArea = (BlastArea) blast.Instantiate();
 		blastArea.GlobalPosition = player.GlobalPosition;
 		AddSibling(blastArea);
-	}
-
-	/*
-	Blast!
-	*/
-	public void Blast() {
-		Tween tween = CreateTween();
-		blastArea.enabled = true;
-		tween.TweenInterval(1);
-		tween.TweenCallback(Callable.From(() => { blastArea.QueueFree(); }));
 	}
 
 	/*

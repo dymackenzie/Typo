@@ -231,6 +231,13 @@ public partial class Player : CharacterBody2D
 		currentEnemy.EmitText((currentEnemy.difficulty * currentEnemy.healthUnit).ToString());
 	}
 
+	/*
+	Handles camera shake
+	*/
+	public void CameraShake(float shakeScale) {
+		EmitSignal(nameof(CameraShakeRequested), shakeScale);
+	}
+
 	public void OnAnimationFinished(StringName animName) {
 		if ((string) animName == "hit") {
 			// check if player has gone through all enemies
