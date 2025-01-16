@@ -32,6 +32,9 @@ public partial class BlastEnemy : Enemy
 		if (blastCooldownTimer.IsStopped())
 			DetermineState();
 
+		// swinging at player and attacking?
+		IsAttacking();
+
 		// deal with slowdown
 		anim.SpeedScale = Globals.inSlowdown ? Globals.slowdownRate : 1;
 		delta *= Globals.inSlowdown ? Globals.slowdownRate : 1;
@@ -87,6 +90,21 @@ public partial class BlastEnemy : Enemy
 	}
 
 	/*
+	When player enters damage area
+	*/
+	public void _OnDamageBodyEntered(Node2D body) {
+		if (body.IsInGroup("player")) {
+			canAttack = true;
+		}
+	}
+
+	public void _OnDamageBodyExited(Node2D body) {
+		if (body.IsInGroup("player")) {
+			canAttack = false;
+		}
+	}
+
+	/*
 	Generates area where player is
 	*/
 	public void BlastSearch() {
@@ -126,8 +144,11 @@ public partial class BlastEnemy : Enemy
 	*/
 	public void DetermineState() {
 		float distance = (player.GlobalPosition - GlobalPosition).Length();
+		if (state == EnemyState.HIT)
+			return;
 		state = distance < range ? EnemyState.SHOOT : EnemyState.SURROUND; // shoot or surround
 		state = distance < 20 ? EnemyState.ATTACK : state; // attack if close
+		
 	}
 
 }

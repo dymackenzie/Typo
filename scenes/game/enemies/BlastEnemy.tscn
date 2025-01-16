@@ -417,7 +417,7 @@ scale = Vector2(0.6, 0.6)
 sprite_frames = SubResource("SpriteFrames_yse8l")
 animation = &"blast"
 autoplay = "idle"
-frame_progress = 0.381991
+frame_progress = 0.850019
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]
 position = Vector2(0, 4)
@@ -471,6 +471,8 @@ one_shot = true
 wait_time = 5.0
 one_shot = true
 
+[connection signal="body_entered" from="Damage" to="." method="_OnDamageBodyEntered"]
+[connection signal="body_exited" from="Damage" to="." method="_OnDamageBodyExited"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="OnAnimationFinished"]
 [connection signal="timeout" from="ShootingCooldown" to="." method="OnShootingCooldownTimeout"]
 [connection signal="timeout" from="BlastCooldown" to="." method="OnBlastCooldownTimeout"]

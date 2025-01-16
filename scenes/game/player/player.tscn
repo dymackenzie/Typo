@@ -194,9 +194,9 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_lcos8")
 }],
-"loop": true,
+"loop": false,
 "name": &"death",
-"speed": 6.0
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -393,8 +393,10 @@ texture = ExtResource("2_eydv0")
 [node name="AnimatedSprite" type="AnimatedSprite2D" parent="."]
 scale = Vector2(0.7, 0.7)
 sprite_frames = SubResource("SpriteFrames_d1q85")
-animation = &"hit"
+animation = &"death"
 autoplay = "idle"
+frame = 4
+frame_progress = 1.0
 offset = Vector2(0, -2)
 flip_h = true
 

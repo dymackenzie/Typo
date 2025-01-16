@@ -9,6 +9,7 @@ public partial class BlastArea : Area2D
 	[Export] public Color searchColor;
 	[Export] public Color killColor;
 	[Export] PackedScene explosion;
+	[Export] PackedScene trail;
 
 	public Globals Globals;
 	public Player player = null;
@@ -47,7 +48,12 @@ public partial class BlastArea : Area2D
 			PlayExplosionParticle();
 		} else {
 			DrawArc(Vector2.Zero, blastRadius, 0, (float) Math.Tau * (float) -(time / timeLimit), 50, killColor, 1, false);
-			DrawArc(Vector2.Zero, blastRadius + 0.9f, 0, (float) Math.Tau * (float) -((time + 0.3f) / timeLimit), 50, killColor, 1, false);
+			// DrawArc(Vector2.Zero, blastRadius + 0.9f, 0, (float) Math.Tau * (float) -((time + 0.3f) / timeLimit), 50, killColor, 1, false);
+			float angle = (float) Math.Tau * (float) -(time / timeLimit);
+			PlayTrailParticle(
+				GlobalPosition + blastRadius * new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)), 
+				new Vector2(Mathf.Cos(angle), Mathf.Sin(angle))
+			);
 			// DrawCircle(position, blastRadius, searchColor);
 		}
     }
@@ -62,6 +68,17 @@ public partial class BlastArea : Area2D
 			MakeVisible();
 		}
 		QueueRedraw();
+	}
+
+	/*
+	Function to instantiate and play trail particle
+	*/
+	private void PlayTrailParticle(Vector2 position, Vector2 direction) {
+		GpuParticles2D trailParticle = (GpuParticles2D) trail.Instantiate();
+		trailParticle.GlobalPosition = position;
+		trailParticle.Rotation = direction.Angle();
+		trailParticle.Emitting = true;
+		AddSibling(trailParticle);
 	}
 
 	/*

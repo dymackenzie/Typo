@@ -29,6 +29,7 @@ public partial class Player : CharacterBody2D
 	public bool 				isTyping = false;
 	public bool 				isRunning = false;
 	public bool					isAttacking = false;
+	public bool					isDead = false;
 
 	public Globals				Globals;
 	public AnimatedSprite2D 	playerSprite;
@@ -198,6 +199,13 @@ public partial class Player : CharacterBody2D
 		health -= 1;
 		EmitSignal(nameof(HealthChanged));
 		shield.Start();
+
+		if (health <= 0) {
+			// player is dead
+			isDead = true;
+			anim.Stop();
+			anim.Play("death");
+		}
 	}
 
 	/*
@@ -238,7 +246,11 @@ public partial class Player : CharacterBody2D
 		EmitSignal(nameof(CameraShakeRequested), shakeScale);
 	}
 
+	/*
+	Handles all animation finished functions
+	*/
 	public void OnAnimationFinished(StringName animName) {
+
 		if ((string) animName == "hit") {
 			// check if player has gone through all enemies
 			area.timer.Paused = false;
@@ -255,13 +267,20 @@ public partial class Player : CharacterBody2D
 				EmitSignal(nameof(SwitchEnemy));
 			}	
 		}
+
+		if ((string) animName == "death") {
+			QueueFree();
+			// navigate to game over screen
+			GetTree().ChangeSceneToFile("res://scenes/menu/EndScreen.tscn");
+		}
+
 	}
 
 	/*
 	Handles all animations
 	*/
 	private void HandleAnimations() {
-		if (!inKillMode) {
+		if (!inKillMode && !isDead) {
 			if (dash.IsDashing()) {
 				anim.Play("charge");
 			} else if (isRunning) {
@@ -331,6 +350,11 @@ public partial class Player : CharacterBody2D
 			enemy.SetState("surround");
 			try {
 				((RangedEnemy) body).SetState("shoot");
+			} catch {
+				// do nothing
+			}
+			try {
+				((BlastEnemy) body).SetState("attack");
 			} catch {
 				// do nothing
 			}
