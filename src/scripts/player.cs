@@ -18,6 +18,7 @@ public partial class Player : CharacterBody2D
 	[Export] public int health			= 6;
 	[Export] public float speed 		= 100.0f;
 	[Export] public float dash_speed 	= 200.0f;
+	[Export] public float dashCooldownTime = 1.0f;
 	[Export] public float dash_duration = 0.2f;
 	[Export] public float friction 		= 0.7f;
 	[Export] public float acceleration 	= 0.8f;
@@ -43,6 +44,7 @@ public partial class Player : CharacterBody2D
 	public Enemy 				currentEnemy = null;
 	public Dash 				dash = null;
 	public Timer				shield;
+	public Timer				dashCooldownTimer;
 	public Color				originalColor;
 
 	// kill mode
@@ -61,6 +63,7 @@ public partial class Player : CharacterBody2D
 		camera = GetNode<ShakingCamera>("AnimatedSprite/ShakingCamera");
 		anim = GetNode<AnimationPlayer>("AnimationPlayer");
 		dash = GetNode<Dash>("Dash");
+		dashCooldownTimer = GetNode<Timer>("DashCooldown");
 		area = GetNode<EnableAttack>("EnableAttack");
 
 		// connect signals
@@ -69,6 +72,7 @@ public partial class Player : CharacterBody2D
 		// variables
 		originalColor = Modulate;
 		hasShield = true;
+		dashCooldownTimer.WaitTime = dashCooldownTime;
 	}
 
 	/*
@@ -327,8 +331,9 @@ public partial class Player : CharacterBody2D
 			isRunning = false;
 		} else if (direction != Vector2.Zero) {
 			// dash
-			if (Input.IsActionJustPressed("dash") && !dash.IsDashing()) {
+			if (Input.IsActionJustPressed("dash") && !dash.IsDashing() && dashCooldownTimer.IsStopped()) {
 				dash.StartDash(dash_duration);
+				dashCooldownTimer.Start();
 			}
 			float speed = dash.IsDashing() ? dash_speed : this.speed;
 			if (x > 0) {
