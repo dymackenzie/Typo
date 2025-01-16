@@ -13,7 +13,7 @@ show_behind_parent = true
 priority = -1
 script = ExtResource("1_5ljdb")
 searchColor = Color(0.254902, 0.254902, 0.254902, 0.784314)
-killColor = Color(0.603922, 0, 0, 0.784314)
+killColor = Color(0.796078, 1, 0.847059, 0.627451)
 explosion = ExtResource("2_pj4f6")
 trail = ExtResource("3_b8456")
 

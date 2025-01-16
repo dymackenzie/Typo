@@ -32,7 +32,7 @@ scale_curve = SubResource("CurveTexture_m5ga8")
 color_ramp = SubResource("GradientTexture1D_6j5dc")
 
 [node name="Explosion" type="GPUParticles2D"]
-modulate = Color(0.603922, 0, 0, 0.784314)
+modulate = Color(0.796078, 1, 0.847059, 0.627451)
 show_behind_parent = true
 emitting = false
 amount = 4
