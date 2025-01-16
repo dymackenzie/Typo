@@ -1,4 +1,4 @@
-[gd_scene load_steps=55 format=3 uid="uid://ojdt4f1bn650"]
+[gd_scene load_steps=52 format=3 uid="uid://ojdt4f1bn650"]
 
 [ext_resource type="Script" path="res://src/scripts/BlastEnemy.cs" id="1_tfg77"]
 [ext_resource type="Texture2D" uid="uid://urgqga3v6f54" path="res://assets/sprites/position2.png" id="2_ua6vb"]
@@ -50,18 +50,6 @@ region = Rect2(144, 480, 48, 48)
 [sub_resource type="AtlasTexture" id="AtlasTexture_glyts"]
 atlas = ExtResource("7_8wpai")
 region = Rect2(192, 480, 48, 48)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_fvxfo"]
-atlas = ExtResource("7_8wpai")
-region = Rect2(240, 480, 48, 48)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_0nsvc"]
-atlas = ExtResource("7_8wpai")
-region = Rect2(288, 480, 48, 48)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ih3ke"]
-atlas = ExtResource("7_8wpai")
-region = Rect2(336, 480, 48, 48)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ch535"]
 atlas = ExtResource("7_8wpai")
@@ -192,15 +180,6 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_glyts")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_fvxfo")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_0nsvc")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ih3ke")
 }],
 "loop": true,
 "name": &"blast",
@@ -320,6 +299,7 @@ tracks/0/keys = {
 [sub_resource type="Animation" id="Animation_wmc83"]
 resource_name = "idle"
 length = 1.2
+loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -336,6 +316,7 @@ tracks/0/keys = {
 [sub_resource type="Animation" id="Animation_ymiwx"]
 resource_name = "walk"
 length = 1.2
+loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -367,7 +348,6 @@ tracks/0/keys = {
 [sub_resource type="Animation" id="Animation_stkil"]
 resource_name = "fire_fist"
 length = 0.8
-loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -383,7 +363,6 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_yg2l5"]
 resource_name = "blast"
-length = 1.4
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -421,7 +400,7 @@ material = SubResource("ShaderMaterial_pgdvi")
 position = Vector2(0, 3)
 scale = Vector2(0.6, 0.6)
 sprite_frames = SubResource("SpriteFrames_yse8l")
-animation = &"death"
+animation = &"walk"
 autoplay = "idle"
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]

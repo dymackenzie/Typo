@@ -5,11 +5,13 @@ public partial class BlastEnemy : Enemy
 {
 
 	[Export] public float range = 120.0f;
-	[Export] public float shootingCooldown = 1.6f;
-	[Export] public float blastCooldown = 5.0f;
+	[Export] public float shootingCooldown = 3.0f;
+	[Export] public float blastCooldown = 10.0f;
 
 	public Timer shootingCooldownTimer;
 	public Timer blastCooldownTimer;
+	public BlastArea blastArea;
+	public PackedScene blast;
 	public Tween tween;
 
 	private bool isAttacking = false;
@@ -18,6 +20,7 @@ public partial class BlastEnemy : Enemy
 		base._Ready();
 		shootingCooldownTimer = GetNode<Timer>("ShootingCooldown");
 		blastCooldownTimer = GetNode<Timer>("BlastCooldown");
+		blast = GD.Load<PackedScene>("res://scenes/game/enemies/BlastArea.tscn");
 
 		// variable set up
 		shootingCooldownTimer.WaitTime = shootingCooldown;
@@ -26,7 +29,7 @@ public partial class BlastEnemy : Enemy
 
 	public override void _PhysicsProcess(double delta) {
 		// if not attacking, determine state
-		if (!isAttacking)
+		if (blastCooldownTimer.IsStopped())
 			DetermineState();
 
 		// deal with slowdown
@@ -41,9 +44,6 @@ public partial class BlastEnemy : Enemy
 		} else {
 			sprite2D.FlipH = false;
 		}
-
-		GD.Print(state);
-		GD.Print("isAttacking: " + isAttacking);
 
 		switch(state) {
 			case EnemyState.ATTACK:
@@ -61,13 +61,15 @@ public partial class BlastEnemy : Enemy
 			case EnemyState.SHOOT:
 				if (!isAttacking) {
 					isAttacking = true;
+					// BlastSearch();
 					shootingCooldownTimer.Start();
 					blastCooldownTimer.Start();
 				}
 				break;
 		}
 
-		if (anim.CurrentAnimation == "") {
+		if (anim.CurrentAnimation == "" ||
+			(anim.CurrentAnimation == "walk" && state == EnemyState.SHOOT)) {
 			anim.Play("idle");
 		}
 	}
@@ -76,6 +78,7 @@ public partial class BlastEnemy : Enemy
 		base.OnAnimationFinished(animName);
 		if ((string) animName == "blast") {
 			anim.Play("idle");
+			// Blast();
 		}
 	}
 
@@ -85,6 +88,25 @@ public partial class BlastEnemy : Enemy
 
 	public void OnBlastCooldownTimeout() {
 		isAttacking = false;
+	}
+
+	/*
+	Generates area where player is
+	*/
+	public void BlastSearch() {
+		blastArea = (BlastArea) blast.Instantiate();
+		blastArea.GlobalPosition = player.GlobalPosition;
+		AddSibling(blastArea);
+	}
+
+	/*
+	Blast!
+	*/
+	public void Blast() {
+		Tween tween = CreateTween();
+		blastArea.enabled = true;
+		tween.TweenInterval(1);
+		tween.TweenCallback(Callable.From(() => { blastArea.QueueFree(); }));
 	}
 
 	/*

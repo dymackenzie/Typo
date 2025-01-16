@@ -429,6 +429,7 @@ tracks/0/keys = {
 [sub_resource type="Animation" id="Animation_wmc83"]
 resource_name = "idle"
 length = 1.2
+loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -445,6 +446,7 @@ tracks/0/keys = {
 [sub_resource type="Animation" id="Animation_ymiwx"]
 resource_name = "walk"
 length = 1.2
+loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -476,7 +478,6 @@ tracks/0/keys = {
 [sub_resource type="Animation" id="Animation_stkil"]
 resource_name = "fire_fist"
 length = 0.8
-loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -492,7 +493,6 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_yg2l5"]
 resource_name = "blast"
-length = 1.4
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
