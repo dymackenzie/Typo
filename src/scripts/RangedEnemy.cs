@@ -5,7 +5,7 @@ public partial class RangedEnemy : Enemy
 {
 
 	[Export] public float range = 100.0f;
-	[Export] public float shootingCooldown = 1.6f;
+	[Export] public float shootingCooldown = 0.5f;
 	[Export] public float shootingCooldown2 = 2.2f;
 
 	public FireballGenerator fireballs;
@@ -13,6 +13,7 @@ public partial class RangedEnemy : Enemy
 	public Timer shootingCooldownTimer2;
 
 	private bool isAttacking = false;
+	private bool attackFinished = true;
 
 	public override void _Ready() {
 		base._Ready();
@@ -36,6 +37,15 @@ public partial class RangedEnemy : Enemy
 		if (deathState)
 			return;
 
+		// flip sprite based on player position
+		if (player.GlobalPosition.X < GlobalPosition.X) {
+			sprite2D.FlipH = true;
+			fireballs.Position = new Vector2(-8, 0);
+		} else {
+			sprite2D.FlipH = false;
+			fireballs.Position = new Vector2(8, 0);
+		}
+
 		switch(state) {
 			case EnemyState.SURROUND:
 				Move(player.GlobalPosition, (float)delta);
@@ -46,27 +56,34 @@ public partial class RangedEnemy : Enemy
 			case EnemyState.SHOOT:
 				if (!isAttacking) {
 					isAttacking = true;
-					shootingCooldownTimer.Start();
+					fireballs.GenerateFireball();
 					shootingCooldownTimer2.Start();
+					attackFinished = false;
 				}
 				anim.Play("attack");
 				break;
+		}
+
+		if (anim.CurrentAnimation == "" ||
+			(anim.CurrentAnimation == "walk" && state == EnemyState.SHOOT) ||
+			(state == EnemyState.SHOOT && attackFinished)) {
+			anim.Play("idle");
 		}
 	}
 
 	public new void OnAnimationFinished(StringName animName) {
 		base.OnAnimationFinished(animName);
 		if ((string) animName == "attack") {
-			isAttacking = false;
+			attackFinished = true;
 		}
 	}
 
-	public void _OnRangedShootingCooldown() {
-		fireballs.GenerateFireball();
-	}
+	// public void _OnRangedShootingCooldown() {
+	// 	fireballs.GenerateFireball();
+	// }
 
 	public void _OnRangedShootingCooldown2() {
-		fireballs.GenerateFireball();
+		isAttacking = false;
 	}
 
 	/*

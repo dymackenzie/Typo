@@ -1,11 +1,10 @@
-[gd_scene load_steps=73 format=3 uid="uid://ojdt4f1bn650"]
+[gd_scene load_steps=75 format=3 uid="uid://ojdt4f1bn650"]
 
 [ext_resource type="Script" path="res://src/scripts/BlastEnemy.cs" id="1_tfg77"]
 [ext_resource type="Texture2D" uid="uid://urgqga3v6f54" path="res://assets/sprites/position2.png" id="2_ua6vb"]
 [ext_resource type="PackedScene" uid="uid://bdntgsuf26yg5" path="res://scenes/game/Poof.tscn" id="2_yitgy"]
 [ext_resource type="Shader" path="res://assets/misc/fireball.gdshader" id="4_mkwqa"]
 [ext_resource type="Texture2D" uid="uid://kbpnswnc5xwt" path="res://assets/sprites/stormhead/attack.png" id="5_xqhed"]
-[ext_resource type="Texture2D" uid="uid://2hbla2v2nb25" path="res://assets/sprites/stormhead/damaged.png" id="6_rri66"]
 [ext_resource type="Texture2D" uid="uid://dwy3gxmia33qk" path="res://assets/sprites/stormhead/death.png" id="7_4w67v"]
 [ext_resource type="Texture2D" uid="uid://bki47kc1liik5" path="res://assets/sprites/stormhead/idle.png" id="8_7530k"]
 [ext_resource type="FontFile" uid="uid://dffeg3yeiqp5" path="res://assets/misc/m5x7.ttf" id="9_8qgbd"]
@@ -18,13 +17,25 @@ shader_parameter/target_color = Color(0.25098, 0.427451, 0.419608, 1)
 shader_parameter/replace_color = Color(1, 1, 1, 0)
 shader_parameter/tolerance = 0.024
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_jgcfn"]
-atlas = ExtResource("6_rri66")
-region = Rect2(0, 0, 109, 124)
+[sub_resource type="AtlasTexture" id="AtlasTexture_bmrgt"]
+atlas = ExtResource("5_xqhed")
+region = Rect2(0, 124, 114, 124)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_cf4yw"]
-atlas = ExtResource("6_rri66")
-region = Rect2(0, 124, 109, 124)
+[sub_resource type="AtlasTexture" id="AtlasTexture_qjfkv"]
+atlas = ExtResource("5_xqhed")
+region = Rect2(0, 248, 114, 124)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r0saw"]
+atlas = ExtResource("5_xqhed")
+region = Rect2(0, 496, 114, 124)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ka5is"]
+atlas = ExtResource("5_xqhed")
+region = Rect2(0, 2232, 114, 124)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g873j"]
+atlas = ExtResource("5_xqhed")
+region = Rect2(0, 2356, 114, 124)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_mner3"]
 atlas = ExtResource("5_xqhed")
@@ -226,10 +237,19 @@ region = Rect2(0, 1116, 111, 124)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_jgcfn")
+"texture": SubResource("AtlasTexture_bmrgt")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_cf4yw")
+"texture": SubResource("AtlasTexture_qjfkv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r0saw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ka5is")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g873j")
 }],
 "loop": true,
 "name": &"attack",
@@ -408,6 +428,21 @@ radius = 3.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_m47g5"]
 
+[sub_resource type="Animation" id="Animation_fu5df"]
+resource_name = "damaged"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"attack"]
+}
+
 [sub_resource type="Animation" id="Animation_xmgo4"]
 resource_name = "blast"
 length = 4.0
@@ -422,38 +457,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [&"blast"]
-}
-
-[sub_resource type="Animation" id="Animation_05qj3"]
-resource_name = "walk"
-length = 2.0
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("AnimatedSprite:animation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"walk"]
-}
-
-[sub_resource type="Animation" id="Animation_qeghf"]
-resource_name = "idle"
-length = 1.8
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("AnimatedSprite:animation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"idle"]
 }
 
 [sub_resource type="Animation" id="Animation_gjqqh"]
@@ -472,9 +475,9 @@ tracks/0/keys = {
 "values": [&"death"]
 }
 
-[sub_resource type="Animation" id="Animation_fu5df"]
-resource_name = "damaged"
-length = 0.4
+[sub_resource type="Animation" id="Animation_qeghf"]
+resource_name = "idle"
+length = 1.8
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -485,7 +488,23 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [&"attack"]
+"values": [&"idle"]
+}
+
+[sub_resource type="Animation" id="Animation_05qj3"]
+resource_name = "walk"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"walk"]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_k1xbs"]
@@ -511,7 +530,7 @@ material = SubResource("ShaderMaterial_wy8rd")
 position = Vector2(1.14812, -26.5)
 scale = Vector2(0.573908, 0.556452)
 sprite_frames = SubResource("SpriteFrames_0b4qt")
-animation = &"blast"
+animation = &"attack"
 autoplay = "idle"
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]

@@ -20,29 +20,29 @@ shader_parameter/target_color = Color(0.25098, 0.427451, 0.419608, 1)
 shader_parameter/replace_color = Color(1, 1, 1, 0)
 shader_parameter/tolerance = 0.024
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_20ti4"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_yvnf8"]
 atlas = ExtResource("5_mfyhv")
-region = Rect2(0, 0, 58, 26)
+region = Rect2(5, 78, 46, 26)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_a3rev"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_c8adu"]
 atlas = ExtResource("5_mfyhv")
-region = Rect2(0, 26, 58, 26)
+region = Rect2(5, 0, 46, 26)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_kipo6"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_hx275"]
 atlas = ExtResource("5_mfyhv")
-region = Rect2(0, 52, 58, 26)
+region = Rect2(5, 26, 46, 26)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_tw3q0"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_xtl85"]
 atlas = ExtResource("5_mfyhv")
-region = Rect2(0, 78, 58, 26)
+region = Rect2(5, 52, 46, 26)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_taygm"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_p08tu"]
 atlas = ExtResource("6_1vcn7")
-region = Rect2(0, 0, 58, 26)
+region = Rect2(0, 0, 39, 26)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_g26el"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_2xrte"]
 atlas = ExtResource("6_1vcn7")
-region = Rect2(0, 26, 58, 26)
+region = Rect2(0, 26, 39, 26)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ohpbn"]
 atlas = ExtResource("7_4bq5x")
@@ -116,16 +116,19 @@ region = Rect2(0, 182, 39, 26)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_20ti4")
+"texture": SubResource("AtlasTexture_yvnf8")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_a3rev")
+"texture": SubResource("AtlasTexture_c8adu")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_kipo6")
+"texture": SubResource("AtlasTexture_hx275")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_tw3q0")
+"texture": SubResource("AtlasTexture_xtl85")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yvnf8")
 }],
 "loop": true,
 "name": &"attack",
@@ -133,10 +136,10 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_taygm")
+"texture": SubResource("AtlasTexture_p08tu")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_g26el")
+"texture": SubResource("AtlasTexture_2xrte")
 }],
 "loop": false,
 "name": &"damaged",
@@ -230,6 +233,18 @@ tracks/0/keys = {
 "update": 1,
 "values": [&"attack"]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = false
+tracks/1/path = NodePath("AnimatedSprite:position")
+tracks/1/interp = 0
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(0, 1)]
+}
 
 [sub_resource type="Animation" id="Animation_stkil"]
 resource_name = "fire_fist"
@@ -318,7 +333,7 @@ texture = ExtResource("1_mf185")
 
 [node name="AnimatedSprite" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_f55m2")
-position = Vector2(4, 1)
+position = Vector2(0, 1)
 scale = Vector2(0.553221, 0.5)
 sprite_frames = SubResource("SpriteFrames_bcfmx")
 animation = &"attack"

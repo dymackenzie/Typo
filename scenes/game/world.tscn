@@ -16,7 +16,7 @@ autostart = true
 [node name="player" parent="." instance=ExtResource("3_npmoh")]
 
 [node name="BlastEnemy" parent="." instance=ExtResource("2_v0vml")]
-position = Vector2(-105, -16)
+position = Vector2(-92, -32)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." groups=["UI"]]
 

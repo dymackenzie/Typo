@@ -33,7 +33,7 @@ public partial class BlastEnemy : Enemy
 			DetermineState();
 
 		// swinging at player and attacking?
-		// IsAttacking();
+		IsAttacking();
 
 		// deal with slowdown
 		anim.SpeedScale = Globals.inSlowdown ? Globals.slowdownRate : 1;
@@ -58,9 +58,9 @@ public partial class BlastEnemy : Enemy
 				anim.Play("walk");
 				break;
 			case EnemyState.HIT:
-				// Move(player.GlobalPosition, (float)delta);
-				// anim.Play("attack");
-				// break;
+				Move(player.GlobalPosition, (float)delta);
+				anim.Play("attack");
+				break;
 			case EnemyState.SHOOT:
 				if (blastCooldownTimer.IsStopped()) {
 					shootingCooldownTimer.Start();
