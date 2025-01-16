@@ -15,11 +15,15 @@ public partial class ShakingCamera : Camera2D
     private Tween tween;
     private Player player;
     private Timer timer;
+    private CanvasLayer canvasLayer;
     private RandomNumberGenerator random = new();
 
     public override void _Ready() {
         foreach (Node node in GetTree().GetNodesInGroup("player")) {
             player = (Player) node;
+        }
+        foreach (Node node in GetTree().GetNodesInGroup("UI")) {
+            canvasLayer = (CanvasLayer) node;
         }
         timer = GetNode<Timer>("Timer");
         player.CameraShakeRequested += OnCameraShakeRequested;
@@ -65,10 +69,13 @@ public partial class ShakingCamera : Camera2D
 	*/
 	public void CameraZoom(bool zoomIn) {
 		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.Out);
-		if (zoomIn) 
+		if (zoomIn) {
             tween.TweenProperty(this, "zoom", Zoom + new Vector2(zoomScale, zoomScale), zoomDuration);
-        else 
+            canvasLayer.Visible = false;
+        } else {
             tween.TweenProperty(this, "zoom", Zoom - new Vector2(zoomScale, zoomScale), zoomDuration);
+            canvasLayer.Visible = true;
+        }
 	} 
 
 }
