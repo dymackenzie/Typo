@@ -10,6 +10,8 @@ public partial class ShopScript : Control
 	[Signal] public delegate void IncreaseKillzoneTimeEventHandler();
 	[Signal] public delegate void IncreaseOrbDropsEventHandler();
 
+	[Export] public float fadeTime = 0.2f;
+
 	public struct ShopItem {
 		public string id;
 		public string item;
@@ -91,13 +93,30 @@ public partial class ShopScript : Control
 			// buy successful
 			globals.AddExperience(-item.price);
 			EmitSignalByName(item.signal);
+			BuySuccessVisuals(index);
 			activeShopItems[index] = ChooseRandomShopItem();
 			PopulateShopItems();
 		} else {
 			// fail to buy
-			GD.Print("Not enough experience to buy " + item.id);
+			BuyFailVisuals(index);
 		}
-		
+	}
+
+	private void BuySuccessVisuals(int index) {
+		// fade in and out on buy
+		Panel card = (Panel) GetNode("SHOP/v/cards/Card" + index + "/Card");
+		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Quint).SetEase(Tween.EaseType.Out);
+		tween.TweenProperty(card, "modulate:a", 0, fadeTime);
+		tween.TweenInterval(0.1f);
+		tween.TweenProperty(card, "modulate:a", 1, fadeTime);
+	}
+
+	private void BuyFailVisuals(int index) {
+		// flash red on fail to buy
+		Panel card = (Panel) GetNode("SHOP/v/cards/Card" + index + "/Card");
+		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Quint).SetEase(Tween.EaseType.Out);
+		tween.TweenProperty(card, "modulate", new Color("e83b3b"), fadeTime / 2);
+		tween.TweenProperty(card, "modulate", new Color(1, 1, 1, 1), fadeTime / 2);
 	}
 
 	private void PopulateShopItems() {
