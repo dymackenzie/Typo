@@ -41,9 +41,19 @@ public partial class EnemyGenerator : Node2D
 		} else if (enemySpawnPercentage < rangedEnemySpawnChance) {
 			enemyInstance = (Enemy) rangedEnemyScene.Instantiate();
 		} else {
+			// spawn multiple enemies
+			int enemyNumber = random.RandiRange(0, 2);
+			for (int i = 0; i < enemyNumber; i++) {
+				enemyInstance = (Enemy) basicEnemyScene.Instantiate();
+				pathFollow.Progress = random.RandiRange(0, 1623); // instantiate enemy at random point
+				// also i honestly don't know where this number came from... it's been too long to remember
+				enemyInstance.GlobalPosition = marker.GlobalPosition;
+				AddSibling(enemyInstance);
+			}
 			enemyInstance = (Enemy) basicEnemyScene.Instantiate();
 		}
 		pathFollow.Progress = random.RandiRange(0, 1623); // instantiate enemy at random point
+		// also i honestly don't know where this number came from... it's been too long to remember
 		enemyInstance.GlobalPosition = marker.GlobalPosition;
 		AddSibling(enemyInstance);
 	}
