@@ -10,7 +10,8 @@ public partial class BlastArea : Area2D
 	[Export] public Color killColor;
 	[Export] PackedScene explosion;
 	[Export] PackedScene trail;
-	[Export] AtlasTexture ring;
+	[Export] Sprite2D ring;
+	[Export] Sprite2D ring2;
 
 	public Globals Globals;
 	public Player player = null;
@@ -25,9 +26,11 @@ public partial class BlastArea : Area2D
 		Globals = GetNode<Globals>("/root/Globals");
 		shape2D = GetNode<CollisionShape2D>("CollisionShape2D");
 		shape2D.Shape.Set("radius", blastRadius);
+		ring.Scale = new Vector2(blastRadius / 18.0f + 1f, blastRadius / 18.0f + 1f);
+		ring2.Scale = new Vector2(blastRadius / 18.0f, blastRadius / 18.0f);
 		
 		// make fade in on instance
-		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Quint).SetEase(Tween.EaseType.Out);
+		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Linear).SetEase(Tween.EaseType.Out);
 		tween.TweenProperty(this, "modulate:a", 0.75, timeLimit);
 	}
 
@@ -47,8 +50,9 @@ public partial class BlastArea : Area2D
 		if (enabled) {
         	// DrawCircle(position, blastRadius * 1.2f, killColor);
 			PlayExplosionParticle();
+			RingExplosion();
 		} else {
-			DrawArc(Vector2.Zero, blastRadius, 0, (float) Math.Tau * (float) -(time / timeLimit), 50, killColor, 1, false);
+			// DrawArc(Vector2.Zero, blastRadius, 0, (float) Math.Tau * (float) -(time / timeLimit), 50, killColor, 1, false);
 			// DrawArc(Vector2.Zero, blastRadius + 0.9f, 0, (float) Math.Tau * (float) -((time + 0.3f) / timeLimit), 50, killColor, 1, false);
 			float angle = (float) Math.Tau * (float) -(time / timeLimit);
 			PlayTrailParticle(
@@ -59,7 +63,21 @@ public partial class BlastArea : Area2D
 		}
     }
 
-	public override void _Process(double delta) {
+    private void RingExplosion() {
+		// explode ring outwards
+		Vector2 scale = ring.Scale;
+		Vector2 scale2 = ring2.Scale;
+        Tween tween = CreateTween().SetTrans(Tween.TransitionType.Quint).SetEase(Tween.EaseType.Out);
+		tween.SetParallel();
+		tween.TweenProperty(ring, "modulate:a", 0.5, 0.2f);
+		tween.TweenProperty(ring, "modulate:a", 0.6, 0.2f);
+		tween.TweenProperty(ring, "scale", scale + new Vector2(0.05f, 0.05f), 0.2f);
+		tween.TweenProperty(ring, "scale", scale2 + new Vector2(0.05f, 0.05f), 0.2f);
+		tween.TweenProperty(ring, "rotation", Math.Tau, 0.4f);
+		tween.TweenProperty(ring2, "rotation", -Math.Tau, 0.4f);
+    }
+
+    public override void _Process(double delta) {
 		if (Globals.inSlowdown) {
 			time += (float) delta * Globals.slowdownRate;
 		} else {

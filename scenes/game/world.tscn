@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://bpd2lksdfdn7b"]
 
+[ext_resource type="PackedScene" uid="uid://ojdt4f1bn650" path="res://scenes/game/enemies/BlastEnemy.tscn" id="2_48f4r"]
 [ext_resource type="PackedScene" uid="uid://dyo725eek8asy" path="res://scenes/menu/Shop.tscn" id="2_s7hm6"]
-[ext_resource type="PackedScene" uid="uid://c6r7ykqjgt0s5" path="res://scenes/game/enemies/EnemyGenerator.tscn" id="2_v8utu"]
 [ext_resource type="PackedScene" uid="uid://cycikbvsectqm" path="res://scenes/game/player/Player.tscn" id="3_npmoh"]
 [ext_resource type="PackedScene" uid="uid://buv8f1bkhq0np" path="res://scenes/menu/ShieldBar.tscn" id="3_yonda"]
 [ext_resource type="PackedScene" uid="uid://cvdp3m6yklvpd" path="res://scenes/menu/OrbCounter.tscn" id="4_hmxcn"]
@@ -17,7 +17,8 @@ autostart = true
 [node name="player" parent="." node_paths=PackedStringArray("shop") instance=ExtResource("3_npmoh")]
 shop = NodePath("../Shop")
 
-[node name="EnemyGenerator" parent="." instance=ExtResource("2_v8utu")]
+[node name="BlastEnemy" parent="." instance=ExtResource("2_48f4r")]
+position = Vector2(-97, -39)
 
 [node name="Shop" parent="." node_paths=PackedStringArray("UI") instance=ExtResource("2_s7hm6")]
 UI = NodePath("../CanvasLayer")

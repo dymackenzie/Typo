@@ -86,6 +86,8 @@ public partial class Player : CharacterBody2D
 	Called every frame, delta is amount of time passed.
 	*/
 	public override void _PhysicsProcess(double delta) {
+		// if player is dead, do nothing
+		if (isDead) return;
 		// attack 
 		if (Input.IsActionJustPressed("enter_attack") && enemies.Count != 0) {
 			anim.Stop();
@@ -112,6 +114,15 @@ public partial class Player : CharacterBody2D
 			if (!dash.IsDashing()) dash.StartDash(dash_duration);
 			Vector2 direction = (currentEnemy.GlobalPosition - GlobalPosition).Normalized();
 			Vector2 desiredVelocity = new Vector2(direction.X, direction.Y / 2) * dash_speed;
+			// flip sprite to face enemy
+			if (direction.X > 0) {
+				playerSprite.FlipH = false;
+			} else {
+				playerSprite.FlipH = true;
+			}
+			// set animation to hit motion
+			anim.Pause();
+			anim.CurrentAnimation = "charge";
 			MoveAndCollide(desiredVelocity * delta);
 		} else {
 			isTyping = true;

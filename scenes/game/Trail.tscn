@@ -9,6 +9,7 @@ gravity = Vector3(0, 30, 0)
 
 [node name="Trail" type="GPUParticles2D"]
 modulate = Color(0.796078, 1, 0.847059, 0.627451)
+show_behind_parent = true
 emitting = false
 amount = 5
 process_material = SubResource("ParticleProcessMaterial_gnhq3")

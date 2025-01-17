@@ -1,18 +1,14 @@
-[gd_scene load_steps=7 format=3 uid="uid://dogsk4rkx5w46"]
+[gd_scene load_steps=6 format=3 uid="uid://dogsk4rkx5w46"]
 
 [ext_resource type="Script" path="res://src/scripts/BlastArea.cs" id="1_5ljdb"]
 [ext_resource type="PackedScene" uid="uid://2e711btn878r" path="res://scenes/game/Explosion.tscn" id="2_pj4f6"]
 [ext_resource type="PackedScene" uid="uid://xpkn2iglpydo" path="res://scenes/game/Trail.tscn" id="3_b8456"]
-[ext_resource type="Texture2D" uid="uid://cixhvgjo6omg2" path="res://assets/map/SCi-fi assets planet one.png" id="4_gi5a1"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_6003m"]
-atlas = ExtResource("4_gi5a1")
-region = Rect2(213, 102, 37, 36)
+[ext_resource type="Texture2D" uid="uid://dvysfh4kem6gs" path="res://assets/map/blue_ring.png" id="4_lmwq0"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_r5tgv"]
 radius = 50.0
 
-[node name="BlastArea" type="Area2D"]
+[node name="BlastArea" type="Area2D" node_paths=PackedStringArray("ring", "ring2")]
 modulate = Color(1, 1, 1, 0)
 show_behind_parent = true
 priority = -1
@@ -21,10 +17,19 @@ searchColor = Color(0.254902, 0.254902, 0.254902, 0.784314)
 killColor = Color(0.796078, 1, 0.847059, 0.627451)
 explosion = ExtResource("2_pj4f6")
 trail = ExtResource("3_b8456")
-ring = SubResource("AtlasTexture_6003m")
+ring = NodePath("Ring")
+ring2 = NodePath("Ring2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_r5tgv")
+
+[node name="Ring" type="Sprite2D" parent="."]
+modulate = Color(0.764706, 0.764706, 0.764706, 0)
+texture = ExtResource("4_lmwq0")
+
+[node name="Ring2" type="Sprite2D" parent="."]
+modulate = Color(0.764706, 0.764706, 0.764706, 0)
+texture = ExtResource("4_lmwq0")
 
 [connection signal="body_entered" from="." to="." method="OnBodyEntered"]
 [connection signal="body_exited" from="." to="." method="OnBodyExited"]

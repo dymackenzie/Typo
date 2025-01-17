@@ -176,7 +176,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"damage",
-"speed": 6.0
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -233,7 +233,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"idle",
-"speed": 6.0
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -262,7 +262,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"run",
-"speed": 6.0
+"speed": 5.0
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_k1g3e"]
@@ -282,6 +282,7 @@ point_count = 5
 
 [sub_resource type="Animation" id="Animation_3rg0k"]
 resource_name = "charge"
+length = 1.2
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -297,7 +298,6 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_l5ap5"]
 resource_name = "damage"
-length = 0.6
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -328,7 +328,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_hytmg"]
 resource_name = "hit"
-length = 0.7
+length = 0.8
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -344,7 +344,6 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_yedl0"]
 resource_name = "idle"
-length = 0.2
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -360,6 +359,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_vsx1k"]
 resource_name = "run"
+length = 1.6
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -384,6 +384,7 @@ _data = {
 }
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
+top_level = true
 script = ExtResource("1_0srf6")
 killZone = Color(0.290196, 0.0196078, 0.0196078, 1)
 
@@ -395,6 +396,7 @@ scale = Vector2(0.7, 0.7)
 sprite_frames = SubResource("SpriteFrames_d1q85")
 animation = &"charge"
 autoplay = "idle"
+frame = 3
 offset = Vector2(0, -2)
 flip_h = true
 
@@ -451,7 +453,6 @@ autoplay = "idle"
 one_shot = true
 
 [node name="ProjectileTimer" type="Timer" parent="."]
-wait_time = 0.5
 one_shot = true
 
 [connection signal="body_entered" from="Hit" to="." method="OnHitBodyEntered"]
