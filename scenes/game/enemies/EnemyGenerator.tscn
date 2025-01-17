@@ -10,6 +10,8 @@ script = ExtResource("1_wnce2")
 basicEnemyScene = ExtResource("2_fi5i4")
 rangedEnemyScene = ExtResource("3_s1e05")
 blastEnemyScene = ExtResource("4_mx6wg")
+blastEnemySpawnChance = 0.3
+rangedEnemySpawnChance = 0.5
 
 [node name="EnemyCooldown" type="Timer" parent="."]
 autostart = true

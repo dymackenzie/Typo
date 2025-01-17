@@ -6,66 +6,31 @@ using System.Runtime.CompilerServices;
 public partial class Shop : CanvasLayer
 {
 
-	[Signal] public delegate void BuyShieldEventHandler();
-	[Signal] public delegate void IncreaseSpeedEventHandler();
-	[Signal] public delegate void DecreaseDashCooldownEventHandler();
-	[Signal] public delegate void IncreaseKillzoneTimeEventHandler();
-	[Signal] public delegate void IncreaseOrbDropsEventHandler();
+	[Export] public float fadeTime = 0.5f;
+	[Export] CanvasLayer UI;
 
-	public struct ShopItem {
-		public string id;
-		public string item;
-		public int price;
-		public string description;
-		public string signal;
-	}
+	Control control;
 
 	public bool isOpen = false;
-	public List<ShopItem> shopItems = new();
-
-	private void PrepareShopItems() {
-		shopItems.Add
-        (
-            new ShopItem
-            {
-				id = "shield",
-                item = "res://assets/menu/shop_items/shield.png",
-                price = 100,
-                description = " ~ +1 Shield",
-                signal = "BuyShieldEventHandler"
-            }
-		);
-		shopItems.Add
-        (
-            new ShopItem
-            {
-				id = "orbs",
-                item = "res://assets/menu/shop_items/purple_orb.png",
-                price = 200,
-                description = " ~ +1 Orb / Kill",
-                signal = "IncreaseOrbDropEventHandler"
-            }
-		);
-		shopItems.Add
-        (
-            new ShopItem
-            {
-				id = "shield",
-                item = "res://assets/menu/shop_items/shield.png",
-                price = 100,
-                description = " ~ +1 Shield",
-                signal = "BuyShieldEventHandler"
-            }
-		);
-	}
+	
 
 	public override void _Ready() {
-		Close();
-		PrepareShopItems();
-		PopulateShopItems();
+		control = GetNode<Control>("Main");
+
+		// set opacity to 0
+		Color modulate = control.Modulate;
+		control.Modulate = new Color(modulate.R, modulate.G, modulate.B, 0);
+
+		isOpen = false;
+		GetTree().Paused = false;
 	}
 
 	public override void _Process(double delta) {
+		HandleInput();
+	}
+
+	public void HandleInput() {
+		// open and close shop
 		if (Input.IsActionJustPressed("ui_focus_next")) {
 			if (!isOpen) {
 				Open();
@@ -75,55 +40,26 @@ public partial class Shop : CanvasLayer
 		}
 	}
 
-	private void PopulateShopItems() {
-		for (int i = 0; i < 3; i++) {
-			// get nodes
-			TextureRect item = (TextureRect) GetNode("Main/SHOP/v/cards/Card" + i + "/Card/v/ItemContainer/Item" + i);
-			Label price = (Label) GetNode("Main/SHOP/v/cards/Card" + i + "/Card/v/DescriptionContainer/HBoxContainer/Price" + i);
-			Label description = (Label) GetNode("Main/SHOP/v/cards/Card" + i + "/Card/v/DescriptionContainer/HBoxContainer/Description" + i);
+	public void Open() {
+		// make UI disappear
+		UI.Visible = false;
 
-			// populate nodes
-			item.Texture = (Texture2D) GD.Load(shopItems[i].item);
-			price.Text = shopItems[i].price.ToString();
-			description.Text = shopItems[i].description;
-		}
-	}
-
-
-	private void ChooseShopItem() {
-
-	}
-
-	private void EmitSignalByName(string signal) {
-		switch (signal) {
-			case "BuyShieldEventHandler":
-				EmitSignal(nameof(BuyShieldEventHandler));
-				break;
-			case "IncreaseSpeedEventHandler":
-				EmitSignal(nameof(IncreaseSpeedEventHandler));
-				break;
-			case "DecreaseDashCooldownEventHandler":
-				EmitSignal(nameof(DecreaseDashCooldownEventHandler));
-				break;
-			case "IncreaseKillzoneTimeEventHandler":
-				EmitSignal(nameof(IncreaseKillzoneTimeEventHandler));
-				break;
-			case "IncreaseOrbDropsEventHandler":
-				EmitSignal(nameof(IncreaseOrbDropsEventHandler));
-				break;
-			default:
-				GD.Print("Signal not found: " + signal);
-				break;
-		}
-	}
-
-	private void Open() {
-		Visible = true;
+		GetTree().Paused = true;
 		isOpen = true;
+		// make fade in on instance
+		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Quint).SetEase(Tween.EaseType.Out);
+		tween.TweenProperty(control, "modulate:a", 1, fadeTime);
 	}
 
-	private void Close() {
-		Visible = false;
+	public void Close() {
+		// make fade in on instance
+		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Quint).SetEase(Tween.EaseType.Out);
+		tween.TweenProperty(control, "modulate:a", 0, fadeTime);
 		isOpen = false;
+		GetTree().Paused = false;
+
+		// make UI appear
+		UI.Visible = true;
 	}
+
 }

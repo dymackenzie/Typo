@@ -1,7 +1,8 @@
-[gd_scene load_steps=28 format=3 uid="uid://dyo725eek8asy"]
+[gd_scene load_steps=29 format=3 uid="uid://dyo725eek8asy"]
 
 [ext_resource type="Script" path="res://src/scripts/Shop.cs" id="1_kgy47"]
 [ext_resource type="FontFile" uid="uid://dffeg3yeiqp5" path="res://assets/misc/m5x7.ttf" id="2_ad6na"]
+[ext_resource type="Script" path="res://src/scripts/ShopScript.cs" id="2_j261t"]
 [ext_resource type="Script" path="res://src/scripts/AnimatedTexture.cs" id="2_vu5h1"]
 [ext_resource type="PackedScene" uid="uid://cvdp3m6yklvpd" path="res://scenes/menu/OrbCounter.tscn" id="3_otj75"]
 [ext_resource type="Texture2D" uid="uid://gftaxqb6wsi4" path="res://assets/menu/Pixel Art Buttons.png" id="4_pbq6o"]
@@ -113,15 +114,18 @@ font = ExtResource("2_ad6na")
 font_size = 26
 
 [node name="Shop" type="CanvasLayer"]
+process_mode = 3
 script = ExtResource("1_kgy47")
 
 [node name="Main" type="Control" parent="."]
+process_mode = 2
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("2_j261t")
 
 [node name="TAB" type="MarginContainer" parent="Main"]
 layout_mode = 0
@@ -382,6 +386,7 @@ text = "~ +1 Shield"
 label_settings = SubResource("LabelSettings_vhofa")
 
 [node name="Label" type="Label" parent="Main/SHOP/v"]
+visible = false
 layout_mode = 2
 text = "Refresh"
 label_settings = SubResource("LabelSettings_k8rdu")
