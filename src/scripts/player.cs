@@ -75,6 +75,9 @@ public partial class Player : CharacterBody2D
 		// connect signals
 		Globals.ExperienceChanged += OnExperience;
 		shopScript.BuyShield += OnBuyShield; 
+		shopScript.IncreaseSpeed += OnIncreaseSpeed;
+		shopScript.DecreaseDashCooldown += OnDecreaseDashCooldown;
+		shopScript.IncreaseKillzoneTime += OnIncreaseKillzoneTime;
 
 		// variables
 		originalColor = Modulate;
@@ -82,10 +85,10 @@ public partial class Player : CharacterBody2D
 		dashCooldownTimer.WaitTime = dashCooldownTime;
 	}
 
-	/*
+    /*
 	Called every frame, delta is amount of time passed.
 	*/
-	public override void _PhysicsProcess(double delta) {
+    public override void _PhysicsProcess(double delta) {
 		// if player is dead, do nothing
 		if (isDead) return;
 		// attack 
@@ -449,11 +452,23 @@ public partial class Player : CharacterBody2D
 		return first + ((second - first) * by);
 	}
 
-	/************************************************** SHOP **************************************************/
+	/************************************************** SHOP SIGNALS **************************************************/
 
 	private void OnBuyShield() {
 		hasShield = true;
 		EmitSignal(nameof(ShieldChanged));
+	}
+
+	private void OnIncreaseSpeed(float percentage) {
+		speed *= 1 + percentage;
+	}
+
+	private void OnDecreaseDashCooldown(float percentage) {
+		dashCooldownTimer.WaitTime *= 1 - percentage;
+	}
+
+	private void OnIncreaseKillzoneTime(float percentage) {
+		area.timer.WaitTime *= 1 + percentage;
 	}
 
 }

@@ -5,11 +5,14 @@ using System.Collections.Generic;
 public partial class ShopScript : Control
 {
 	[Signal] public delegate void BuyShieldEventHandler();
-	[Signal] public delegate void IncreaseSpeedEventHandler();
-	[Signal] public delegate void DecreaseDashCooldownEventHandler();
-	[Signal] public delegate void IncreaseKillzoneTimeEventHandler();
+	[Signal] public delegate void IncreaseSpeedEventHandler(float percentage);
+	[Signal] public delegate void DecreaseDashCooldownEventHandler(float percentage);
+	[Signal] public delegate void IncreaseKillzoneTimeEventHandler(float percentage);
 	[Signal] public delegate void IncreaseOrbDropsEventHandler();
 
+	[Export] public float speedIncreasePercent = 0.05f;
+	[Export] public float dashCooldownDecreasePercent = 0.10f;
+	[Export] public float killZoneIncreasePercent = 0.15f;
 	[Export] public float fadeTime = 0.2f;
 
 	public struct ShopItem {
@@ -41,7 +44,7 @@ public partial class ShopScript : Control
             {
 				id = "shield",
                 item = "res://assets/menu/shop_items/shield.png",
-                price = 100,
+                price = 60,
                 description = " ~ +1 Shield",
                 signal = "BuyShieldEventHandler"
             }
@@ -52,9 +55,42 @@ public partial class ShopScript : Control
             {
 				id = "orbs",
                 item = "res://assets/menu/shop_items/purple_orb.png",
-                price = 200,
+                price = 75,
                 description = " ~ +1 Orb / Kill",
-                signal = "IncreaseOrbDropEventHandler"
+                signal = "IncreaseOrbDropsEventHandler"
+            }
+		);
+		shopItems.Add
+        (
+            new ShopItem
+            {
+				id = "dash",
+                item = "res://assets/menu/shop_items/wind_dash.png",
+                price = 30,
+                description = " ~ +10% Dash",
+                signal = "DecreaseDashCooldownEventHandler"
+            }
+		);
+		shopItems.Add
+        (
+            new ShopItem
+            {
+				id = "killzone",
+                item = "res://assets/menu/shop_items/sword_attack.png",
+                price = 100,
+                description = " ~ +15% Killzone",
+                signal = "IncreaseKillzoneTimeEventHandler"
+            }
+		);
+		shopItems.Add
+        (
+            new ShopItem
+            {
+				id = "speed",
+                item = "res://assets/menu/shop_items/hermes_boots_speed.png",
+                price = 20,
+                description = " ~ +5% Speed",
+                signal = "IncreaseSpeedEventHandler"
             }
 		);
 	}
@@ -154,16 +190,16 @@ public partial class ShopScript : Control
 				EmitSignal(nameof(BuyShield));
 				break;
 			case "IncreaseSpeedEventHandler":
-				EmitSignal(nameof(IncreaseSpeed));
+				EmitSignal(nameof(IncreaseSpeed), speedIncreasePercent);
 				break;
 			case "DecreaseDashCooldownEventHandler":
-				EmitSignal(nameof(DecreaseDashCooldown));
+				EmitSignal(nameof(DecreaseDashCooldown), dashCooldownDecreasePercent);
 				break;
 			case "IncreaseKillzoneTimeEventHandler":
-				EmitSignal(nameof(IncreaseKillzoneTime));
+				EmitSignal(nameof(IncreaseKillzoneTime), killZoneIncreasePercent);
 				break;
 			case "IncreaseOrbDropsEventHandler":
-				EmitSignal(nameof(IncreaseOrbDrops));
+				globals.ExperienceAddOns++;
 				break;
 			default:
 				GD.Print("Signal not found: " + signal);

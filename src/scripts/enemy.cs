@@ -60,7 +60,7 @@ public partial class Enemy : CharacterBody2D
 
 		// health based on difficulty
 		health = difficulty * healthUnit;
-		orbs.orbNumber = orbNumber; // orb number
+		orbs.orbNumber = orbNumber + Globals.ExperienceAddOns; // orb number
     }
 
     public override void _PhysicsProcess(double delta) {

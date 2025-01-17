@@ -10,6 +10,7 @@ public partial class Globals : Node
     public float slowdownRate = 0.05f;
 
     public int Experience = 200;
+    public int ExperienceAddOns = 0;
 
     public void AddExperience(int increment) {
         Experience += increment;
