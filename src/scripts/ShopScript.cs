@@ -89,7 +89,7 @@ public partial class ShopScript : Control
 		ShopItem item = activeShopItems[index];
 		if (globals.Experience >= item.price) {
 			// buy successful
-			globals.Experience -= item.price;
+			globals.AddExperience(-item.price);
 			EmitSignalByName(item.signal);
 			activeShopItems[index] = ChooseRandomShopItem();
 			PopulateShopItems();
@@ -132,19 +132,19 @@ public partial class ShopScript : Control
 	private void EmitSignalByName(string signal) {
 		switch (signal) {
 			case "BuyShieldEventHandler":
-				EmitSignal(nameof(BuyShieldEventHandler));
+				EmitSignal(nameof(BuyShield));
 				break;
 			case "IncreaseSpeedEventHandler":
-				EmitSignal(nameof(IncreaseSpeedEventHandler));
+				EmitSignal(nameof(IncreaseSpeed));
 				break;
 			case "DecreaseDashCooldownEventHandler":
-				EmitSignal(nameof(DecreaseDashCooldownEventHandler));
+				EmitSignal(nameof(DecreaseDashCooldown));
 				break;
 			case "IncreaseKillzoneTimeEventHandler":
-				EmitSignal(nameof(IncreaseKillzoneTimeEventHandler));
+				EmitSignal(nameof(IncreaseKillzoneTime));
 				break;
 			case "IncreaseOrbDropsEventHandler":
-				EmitSignal(nameof(IncreaseOrbDropsEventHandler));
+				EmitSignal(nameof(IncreaseOrbDrops));
 				break;
 			default:
 				GD.Print("Signal not found: " + signal);

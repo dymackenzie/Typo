@@ -14,7 +14,8 @@ y_sort_enabled = true
 [node name="enemy_timer" type="Timer" parent="."]
 autostart = true
 
-[node name="player" parent="." instance=ExtResource("3_npmoh")]
+[node name="player" parent="." node_paths=PackedStringArray("shop") instance=ExtResource("3_npmoh")]
+shop = NodePath("../Shop")
 
 [node name="EnemyGenerator" parent="." instance=ExtResource("2_v8utu")]
 

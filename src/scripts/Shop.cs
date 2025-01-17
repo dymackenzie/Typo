@@ -8,6 +8,7 @@ public partial class Shop : CanvasLayer
 
 	[Export] public float fadeTime = 0.5f;
 	[Export] CanvasLayer UI;
+	[Export] public ShopScript shopScript;
 
 	Control control;
 

@@ -26,6 +26,7 @@ public partial class Player : CharacterBody2D
 	[Export] public Color experienceColor = new Color("4a0986");
 	[Export] public Color damageColor = new Color("E83B3B");
 	[Export] public Color shieldColor = new Color("0a5499");
+	[Export] Shop shop;
 
 	// animation variable
 	public bool 				inKillMode = false;
@@ -45,6 +46,7 @@ public partial class Player : CharacterBody2D
 	public Dash 				dash = null;
 	public Timer				shield;
 	public Timer				dashCooldownTimer;
+	public Timer				projectileTimer; // to help with shots immediately after killzone
 	public Color				originalColor;
 
 	// kill mode
@@ -64,10 +66,15 @@ public partial class Player : CharacterBody2D
 		anim = GetNode<AnimationPlayer>("AnimationPlayer");
 		dash = GetNode<Dash>("Dash");
 		dashCooldownTimer = GetNode<Timer>("DashCooldown");
+		projectileTimer = GetNode<Timer>("ProjectileTimer");
 		area = GetNode<EnableAttack>("EnableAttack");
+
+		// connect shop
+		ShopScript shopScript = shop.shopScript;
 
 		// connect signals
 		Globals.ExperienceChanged += OnExperience;
+		shopScript.BuyShield += OnBuyShield; 
 
 		// variables
 		originalColor = Modulate;
@@ -204,6 +211,7 @@ public partial class Player : CharacterBody2D
 			EmitSignal(nameof(ShieldChanged));
 			ShieldVisuals();
 		} else {
+			// modulate shield
 			health -= 1;
 			EmitSignal(nameof(HealthChanged));
 			DamageVisuals();
@@ -285,6 +293,8 @@ public partial class Player : CharacterBody2D
 				camera.CameraZoom(inKillMode = false);
 				Globals.inSlowdown = inKillMode;
 				EmitSignal(nameof(InSlowdown), false);
+				// projectile timer to help with shots immediately after killzone
+				projectileTimer.Start();
 			} else {
 				playerSprite.Frame = 3;
 				currentEnemy = enemies[0];
@@ -426,6 +436,13 @@ public partial class Player : CharacterBody2D
 	*/
 	private static float Lerp(float first, float second, float by) {
 		return first + ((second - first) * by);
+	}
+
+	/************************************************** SHOP **************************************************/
+
+	private void OnBuyShield() {
+		hasShield = true;
+		EmitSignal(nameof(ShieldChanged));
 	}
 
 }

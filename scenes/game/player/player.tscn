@@ -450,6 +450,10 @@ autoplay = "idle"
 [node name="DashCooldown" type="Timer" parent="."]
 one_shot = true
 
+[node name="ProjectileTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
 [connection signal="body_entered" from="Hit" to="." method="OnHitBodyEntered"]
 [connection signal="body_exited" from="Hit" to="." method="OnHitBodyExited"]
 [connection signal="body_entered" from="Attack" to="." method="OnAttackBodyEntered"]

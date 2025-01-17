@@ -102,7 +102,7 @@ _data = {
 "spawn": SubResource("Animation_11h1v")
 }
 
-[node name="Fireball" type="RigidBody2D"]
+[node name="Fireball" type="RigidBody2D" groups=["projectile"]]
 gravity_scale = 0.0
 script = ExtResource("1_0vtma")
 speed = 0.2
