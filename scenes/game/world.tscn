@@ -1,6 +1,5 @@
-[gd_scene load_steps=7 format=3 uid="uid://bpd2lksdfdn7b"]
+[gd_scene load_steps=6 format=3 uid="uid://bpd2lksdfdn7b"]
 
-[ext_resource type="PackedScene" uid="uid://ojdt4f1bn650" path="res://scenes/game/enemies/BlastEnemy.tscn" id="2_v0vml"]
 [ext_resource type="PackedScene" uid="uid://cycikbvsectqm" path="res://scenes/game/player/Player.tscn" id="3_npmoh"]
 [ext_resource type="PackedScene" uid="uid://buv8f1bkhq0np" path="res://scenes/menu/ShieldBar.tscn" id="3_yonda"]
 [ext_resource type="PackedScene" uid="uid://cvdp3m6yklvpd" path="res://scenes/menu/OrbCounter.tscn" id="4_hmxcn"]
@@ -14,9 +13,6 @@ y_sort_enabled = true
 autostart = true
 
 [node name="player" parent="." instance=ExtResource("3_npmoh")]
-
-[node name="BlastEnemy" parent="." instance=ExtResource("2_v0vml")]
-position = Vector2(-92, -32)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." groups=["UI"]]
 

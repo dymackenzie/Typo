@@ -1,6 +1,387 @@
-[gd_scene load_steps=2 format=3 uid="uid://dyo725eek8asy"]
+[gd_scene load_steps=28 format=3 uid="uid://dyo725eek8asy"]
 
 [ext_resource type="Script" path="res://src/scripts/Shop.cs" id="1_kgy47"]
+[ext_resource type="FontFile" uid="uid://dffeg3yeiqp5" path="res://assets/misc/m5x7.ttf" id="2_ad6na"]
+[ext_resource type="Script" path="res://src/scripts/AnimatedTexture.cs" id="2_vu5h1"]
+[ext_resource type="PackedScene" uid="uid://cvdp3m6yklvpd" path="res://scenes/menu/OrbCounter.tscn" id="3_otj75"]
+[ext_resource type="Texture2D" uid="uid://gftaxqb6wsi4" path="res://assets/menu/Pixel Art Buttons.png" id="4_pbq6o"]
+[ext_resource type="Texture2D" uid="uid://brarldgbwpruf" path="res://assets/menu/Keys/1-Key.png" id="5_fwf1t"]
+[ext_resource type="Texture2D" uid="uid://dc5cqgqr6slil" path="res://assets/sprites/shield_bar.png" id="7_whi1w"]
+[ext_resource type="Texture2D" uid="uid://c2v2hwc3hy20q" path="res://assets/menu/Keys/2-Key.png" id="8_bfjk2"]
+[ext_resource type="Texture2D" uid="uid://bd17hq34cu5qr" path="res://assets/menu/Keys/3-Key.png" id="9_5sdtc"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ktd1d"]
+line_spacing = 0.0
+font = ExtResource("2_ad6na")
+font_size = 36
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1r00n"]
+atlas = ExtResource("5_fwf1t")
+region = Rect2(0, 4, 32, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hxiwq"]
+atlas = ExtResource("5_fwf1t")
+region = Rect2(0, 5, 32, 27)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_553gd"]
+atlas = ExtResource("5_fwf1t")
+region = Rect2(32, 5, 32, 27)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_7o4e8"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hxiwq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_553gd")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jbaes"]
+texture = ExtResource("4_pbq6o")
+region_rect = Rect2(198, 3, 54, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cp7lj"]
+atlas = ExtResource("7_whi1w")
+region = Rect2(33, 40, 32, 29)
+
+[sub_resource type="LabelSettings" id="LabelSettings_qwjrc"]
+font = ExtResource("2_ad6na")
+font_color = Color(0.290196, 0.0352941, 0.52549, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_vhofa"]
+font = ExtResource("2_ad6na")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qn53e"]
+atlas = ExtResource("8_bfjk2")
+region = Rect2(0, 4, 32, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5x7o0"]
+atlas = ExtResource("8_bfjk2")
+region = Rect2(0, 5, 32, 27)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dc4x0"]
+atlas = ExtResource("8_bfjk2")
+region = Rect2(32, 5, 32, 27)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_goytd"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5x7o0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dc4x0")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xya1u"]
+atlas = ExtResource("9_5sdtc")
+region = Rect2(0, 5, 33, 27)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u8im8"]
+atlas = ExtResource("9_5sdtc")
+region = Rect2(0, 5, 32, 27)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dp756"]
+atlas = ExtResource("9_5sdtc")
+region = Rect2(32, 5, 32, 27)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_knbfq"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u8im8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dp756")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="LabelSettings" id="LabelSettings_k8rdu"]
+font = ExtResource("2_ad6na")
+font_size = 26
 
 [node name="Shop" type="CanvasLayer"]
 script = ExtResource("1_kgy47")
+
+[node name="Main" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TAB" type="MarginContainer" parent="Main"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Main/TAB"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Main/TAB/HBoxContainer"]
+layout_mode = 2
+text = "TAB TO RESUME"
+label_settings = SubResource("LabelSettings_ktd1d")
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="ORBS" type="MarginContainer" parent="Main"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 40
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Main/ORBS"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Main/ORBS/HBoxContainer"]
+modulate = Color(0.290196, 0.0352941, 0.52549, 1)
+layout_mode = 2
+text = "ORBS: "
+label_settings = SubResource("LabelSettings_ktd1d")
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="MarginContainer" type="MarginContainer" parent="Main/ORBS/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 1
+
+[node name="OrbCounter" parent="Main/ORBS/HBoxContainer/MarginContainer" instance=ExtResource("3_otj75")]
+layout_mode = 2
+
+[node name="SHOP" type="MarginContainer" parent="Main"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="v" type="VBoxContainer" parent="Main/SHOP"]
+layout_mode = 2
+
+[node name="cards" type="HBoxContainer" parent="Main/SHOP/v"]
+layout_mode = 2
+theme_override_constants/separation = 23
+
+[node name="Card0" type="VBoxContainer" parent="Main/SHOP/v/cards"]
+layout_mode = 2
+
+[node name="ButtonNumber" type="MarginContainer" parent="Main/SHOP/v/cards/Card0"]
+layout_mode = 2
+theme_override_constants/margin_bottom = 12
+
+[node name="Number0" type="TextureRect" parent="Main/SHOP/v/cards/Card0/ButtonNumber"]
+custom_minimum_size = Vector2(5, 30)
+layout_mode = 2
+texture = SubResource("AtlasTexture_1r00n")
+expand_mode = 1
+stretch_mode = 4
+script = ExtResource("2_vu5h1")
+sprites = SubResource("SpriteFrames_7o4e8")
+autoPlay = true
+
+[node name="Card" type="Panel" parent="Main/SHOP/v/cards/Card0"]
+custom_minimum_size = Vector2(150, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_jbaes")
+
+[node name="v" type="VBoxContainer" parent="Main/SHOP/v/cards/Card0/Card"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 23
+alignment = 1
+
+[node name="ItemContainer" type="MarginContainer" parent="Main/SHOP/v/cards/Card0/Card/v"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_right = 45
+
+[node name="Item0" type="TextureRect" parent="Main/SHOP/v/cards/Card0/Card/v/ItemContainer"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_cp7lj")
+expand_mode = 1
+
+[node name="DescriptionContainer" type="MarginContainer" parent="Main/SHOP/v/cards/Card0/Card/v"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Main/SHOP/v/cards/Card0/Card/v/DescriptionContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="Price0" type="Label" parent="Main/SHOP/v/cards/Card0/Card/v/DescriptionContainer/HBoxContainer"]
+layout_mode = 2
+text = "10 "
+label_settings = SubResource("LabelSettings_qwjrc")
+
+[node name="Description0" type="Label" parent="Main/SHOP/v/cards/Card0/Card/v/DescriptionContainer/HBoxContainer"]
+layout_mode = 2
+text = "~ +1 Shield"
+label_settings = SubResource("LabelSettings_vhofa")
+
+[node name="Card1" type="VBoxContainer" parent="Main/SHOP/v/cards"]
+layout_mode = 2
+
+[node name="ButtonNumber" type="MarginContainer" parent="Main/SHOP/v/cards/Card1"]
+layout_mode = 2
+theme_override_constants/margin_bottom = 12
+
+[node name="Number1" type="TextureRect" parent="Main/SHOP/v/cards/Card1/ButtonNumber"]
+custom_minimum_size = Vector2(5, 30)
+layout_mode = 2
+texture = SubResource("AtlasTexture_qn53e")
+expand_mode = 1
+stretch_mode = 4
+script = ExtResource("2_vu5h1")
+sprites = SubResource("SpriteFrames_goytd")
+autoPlay = true
+
+[node name="Card" type="Panel" parent="Main/SHOP/v/cards/Card1"]
+custom_minimum_size = Vector2(150, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_jbaes")
+
+[node name="v" type="VBoxContainer" parent="Main/SHOP/v/cards/Card1/Card"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 23
+alignment = 1
+
+[node name="ItemContainer" type="MarginContainer" parent="Main/SHOP/v/cards/Card1/Card/v"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_right = 45
+
+[node name="Item1" type="TextureRect" parent="Main/SHOP/v/cards/Card1/Card/v/ItemContainer"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_cp7lj")
+expand_mode = 1
+
+[node name="DescriptionContainer" type="MarginContainer" parent="Main/SHOP/v/cards/Card1/Card/v"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Main/SHOP/v/cards/Card1/Card/v/DescriptionContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="Price1" type="Label" parent="Main/SHOP/v/cards/Card1/Card/v/DescriptionContainer/HBoxContainer"]
+layout_mode = 2
+text = "10 "
+label_settings = SubResource("LabelSettings_qwjrc")
+
+[node name="Description1" type="Label" parent="Main/SHOP/v/cards/Card1/Card/v/DescriptionContainer/HBoxContainer"]
+layout_mode = 2
+text = "~ +1 Shield"
+label_settings = SubResource("LabelSettings_vhofa")
+
+[node name="Card2" type="VBoxContainer" parent="Main/SHOP/v/cards"]
+layout_mode = 2
+
+[node name="ButtonNumber" type="MarginContainer" parent="Main/SHOP/v/cards/Card2"]
+layout_mode = 2
+theme_override_constants/margin_bottom = 12
+
+[node name="Number2" type="TextureRect" parent="Main/SHOP/v/cards/Card2/ButtonNumber"]
+custom_minimum_size = Vector2(5, 30)
+layout_mode = 2
+texture = SubResource("AtlasTexture_xya1u")
+expand_mode = 1
+stretch_mode = 4
+script = ExtResource("2_vu5h1")
+sprites = SubResource("SpriteFrames_knbfq")
+autoPlay = true
+
+[node name="Card" type="Panel" parent="Main/SHOP/v/cards/Card2"]
+custom_minimum_size = Vector2(150, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_jbaes")
+
+[node name="v" type="VBoxContainer" parent="Main/SHOP/v/cards/Card2/Card"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 23
+alignment = 1
+
+[node name="ItemContainer" type="MarginContainer" parent="Main/SHOP/v/cards/Card2/Card/v"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_right = 45
+
+[node name="Item2" type="TextureRect" parent="Main/SHOP/v/cards/Card2/Card/v/ItemContainer"]
+layout_mode = 2
+texture = SubResource("AtlasTexture_cp7lj")
+expand_mode = 1
+
+[node name="DescriptionContainer" type="MarginContainer" parent="Main/SHOP/v/cards/Card2/Card/v"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Main/SHOP/v/cards/Card2/Card/v/DescriptionContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="Price2" type="Label" parent="Main/SHOP/v/cards/Card2/Card/v/DescriptionContainer/HBoxContainer"]
+layout_mode = 2
+text = "10 "
+label_settings = SubResource("LabelSettings_qwjrc")
+
+[node name="Description2" type="Label" parent="Main/SHOP/v/cards/Card2/Card/v/DescriptionContainer/HBoxContainer"]
+layout_mode = 2
+text = "~ +1 Shield"
+label_settings = SubResource("LabelSettings_vhofa")
+
+[node name="Label" type="Label" parent="Main/SHOP/v"]
+layout_mode = 2
+text = "Refresh"
+label_settings = SubResource("LabelSettings_k8rdu")

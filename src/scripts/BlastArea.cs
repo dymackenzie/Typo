@@ -10,6 +10,7 @@ public partial class BlastArea : Area2D
 	[Export] public Color killColor;
 	[Export] PackedScene explosion;
 	[Export] PackedScene trail;
+	[Export] AtlasTexture ring;
 
 	public Globals Globals;
 	public Player player = null;
