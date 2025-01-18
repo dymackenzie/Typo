@@ -130,12 +130,15 @@ public partial class ShopScript : Control
 			globals.AddExperience(-item.price);
 			EmitSignalByName(item.signal);
 			BuySuccessVisuals(index);
-			activeShopItems[index] = ChooseRandomShopItem();
-			PopulateShopItems();
 		} else {
 			// fail to buy
 			BuyFailVisuals(index);
 		}
+	}
+
+	private void BuyRepopulate(int index) {
+		activeShopItems[index] = ChooseRandomShopItem();
+		PopulateShopItems();
 	}
 
 	private void BuySuccessVisuals(int index) {
@@ -143,6 +146,7 @@ public partial class ShopScript : Control
 		Panel card = (Panel) GetNode("SHOP/v/cards/Card" + index + "/Card");
 		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Quint).SetEase(Tween.EaseType.Out);
 		tween.TweenProperty(card, "modulate:a", 0, fadeTime);
+		tween.TweenCallback(Callable.From(() => {BuyRepopulate(index);}));
 		tween.TweenInterval(0.1f);
 		tween.TweenProperty(card, "modulate:a", 1, fadeTime);
 	}

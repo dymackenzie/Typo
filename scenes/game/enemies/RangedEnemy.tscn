@@ -346,7 +346,6 @@ shape = SubResource("CircleShape2D_ydp7h")
 [node name="AttackTimer" type="Timer" parent="."]
 
 [node name="TypingText" type="RichTextLabel" parent="."]
-top_level = true
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5

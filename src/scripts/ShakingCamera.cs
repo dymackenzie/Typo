@@ -11,6 +11,7 @@ public partial class ShakingCamera : Camera2D
     [Export] public float zoomDuration     = 0.4f;
     [Export] public bool shakeEnable       = false;
 
+    private Globals globals;
     private float shakeScale;
     private Tween tween;
     private Player player;
@@ -25,8 +26,11 @@ public partial class ShakingCamera : Camera2D
         foreach (Node node in GetTree().GetNodesInGroup("UI")) {
             canvasLayer = (CanvasLayer) node;
         }
+        globals = GetNode<Globals>("/root/Globals");
         timer = GetNode<Timer>("Timer");
         player.CameraShakeRequested += OnCameraShakeRequested;
+        globals.CameraShake += OnCameraShakeRequested;
+
         random.Randomize();
         SetDuration(duration);
         SetProcess(false);

@@ -384,7 +384,6 @@ _data = {
 }
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
-top_level = true
 script = ExtResource("1_0srf6")
 killZone = Color(0.290196, 0.0196078, 0.0196078, 1)
 

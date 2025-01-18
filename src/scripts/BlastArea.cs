@@ -13,21 +13,26 @@ public partial class BlastArea : Area2D
 	[Export] Sprite2D ring;
 	[Export] Sprite2D ring2;
 
-	public Globals Globals;
+	public Globals globals;
 	public Player player = null;
 	public Vector2 position;
 	public CollisionShape2D shape2D;
+	public Timer shakingTimer;
 
 	// timer
 	public float time = 0.0f;
 	public float timeLimit = 2.0f;
 
 	public override void _Ready() {
-		Globals = GetNode<Globals>("/root/Globals");
+		globals = GetNode<Globals>("/root/Globals");
+		shakingTimer = GetNode<Timer>("ShakingCameraTimer");
+		shakingTimer.WaitTime = timeLimit;
 		shape2D = GetNode<CollisionShape2D>("CollisionShape2D");
 		shape2D.Shape.Set("radius", blastRadius);
 		ring.Scale = new Vector2(blastRadius / 18.0f + 1f, blastRadius / 18.0f + 1f);
 		ring2.Scale = new Vector2(blastRadius / 18.0f, blastRadius / 18.0f);
+		shakingTimer.Start();
+
 		
 		// make fade in on instance
 		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Linear).SetEase(Tween.EaseType.Out);
@@ -78,8 +83,8 @@ public partial class BlastArea : Area2D
     }
 
     public override void _Process(double delta) {
-		if (Globals.inSlowdown) {
-			time += (float) delta * Globals.slowdownRate;
+		if (globals.inSlowdown) {
+			time += (float) delta * globals.slowdownRate;
 		} else {
 			time += (float) delta;
 		}
@@ -123,6 +128,10 @@ public partial class BlastArea : Area2D
 		if (body.IsInGroup("player")) {
 			player = null;
 		}
+	}
+
+	public void _OnShakingCameraTimeout() {
+		globals.ShakeCamera(1);
 	}
 
 }
