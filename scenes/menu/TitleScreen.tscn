@@ -1,44 +1,93 @@
-[gd_scene load_steps=3 format=3 uid="uid://dhyacm8wu0p4g"]
+[gd_scene load_steps=8 format=3 uid="uid://dhyacm8wu0p4g"]
 
 [ext_resource type="Script" path="res://src/scripts/TitleScreen.cs" id="1_hqaes"]
+[ext_resource type="Texture2D" uid="uid://c6wff03f6bqlk" path="res://assets/menu/terminal_pixel.png" id="2_nblop"]
+[ext_resource type="FontFile" uid="uid://dffeg3yeiqp5" path="res://assets/misc/m5x7.ttf" id="3_2wswu"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_u228d"]
+texture = ExtResource("2_nblop")
 
 [sub_resource type="LabelSettings" id="LabelSettings_tb3xv"]
-font_size = 28
+font = ExtResource("3_2wswu")
+font_size = 112
 
-[node name="TitleScreen" type="CanvasLayer"]
+[sub_resource type="LabelSettings" id="LabelSettings_kwgc3"]
+font = ExtResource("3_2wswu")
+
+[sub_resource type="LabelSettings" id="LabelSettings_rgrx5"]
+font = ExtResource("3_2wswu")
+font_color = Color(0.909804, 0.231373, 0.231373, 1)
+
+[node name="TitleScreen" type="CanvasLayer" node_paths=PackedStringArray("input", "error")]
 script = ExtResource("1_hqaes")
+input = NodePath("MarginContainer/Panel/MarginContainer/Rows/WPM")
+error = NodePath("MarginContainer/Panel/MarginContainer/Rows/Error")
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -332.5
+offset_top = -365.5
+offset_right = 332.5
+offset_bottom = 365.5
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
-layout_mode = 2
 theme_override_constants/margin_left = 300
 theme_override_constants/margin_top = 300
 theme_override_constants/margin_right = 300
 theme_override_constants/margin_bottom = 300
 
-[node name="Rows" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
+[node name="Panel" type="Panel" parent="MarginContainer"]
+custom_minimum_size = Vector2(850, 600)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_u228d")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -23.0
+offset_top = -57.5
+offset_right = 23.0
+offset_bottom = 57.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Rows" type="VBoxContainer" parent="MarginContainer/Panel/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/Rows"]
+[node name="Title" type="Label" parent="MarginContainer/Panel/MarginContainer/Rows"]
 layout_mode = 2
 text = "Typo"
 label_settings = SubResource("LabelSettings_tb3xv")
 horizontal_alignment = 1
 
-[node name="Start" type="Button" parent="PanelContainer/MarginContainer/Rows"]
+[node name="Description" type="Label" parent="MarginContainer/Panel/MarginContainer/Rows"]
 layout_mode = 2
-text = "Start"
+text = "Type in desired WPM to start,
+or 'q' to quit."
+label_settings = SubResource("LabelSettings_kwgc3")
+horizontal_alignment = 1
 
-[node name="Quit" type="Button" parent="PanelContainer/MarginContainer/Rows"]
+[node name="WPM" type="TextEdit" parent="MarginContainer/Panel/MarginContainer/Rows"]
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-text = "Quit"
+theme_override_fonts/font = ExtResource("3_2wswu")
+placeholder_text = ">_"
+selecting_enabled = false
+scroll_fit_content_height = true
+use_default_word_separators = false
 
-[connection signal="pressed" from="PanelContainer/MarginContainer/Rows/Start" to="." method="_OnStartPressed"]
-[connection signal="pressed" from="PanelContainer/MarginContainer/Rows/Quit" to="." method="_OnQuitPressed"]
+[node name="Error" type="Label" parent="MarginContainer/Panel/MarginContainer/Rows"]
+visible = false
+layout_mode = 2
+text = "Invalid input"
+label_settings = SubResource("LabelSettings_rgrx5")
+horizontal_alignment = 1

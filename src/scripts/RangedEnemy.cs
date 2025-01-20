@@ -32,8 +32,8 @@ public partial class RangedEnemy : Enemy
 			DetermineState();
 
 		// deal with slowdown
-		anim.SpeedScale = Globals.inSlowdown ? Globals.slowdownRate : 1;
-		delta *= Globals.inSlowdown ? Globals.slowdownRate : 1;
+		anim.SpeedScale = Globals.InSlowdown ? Globals.SlowdownRate : 1;
+		delta *= Globals.InSlowdown ? Globals.SlowdownRate : 1;
 		if (deathState)
 			return;
 
@@ -106,6 +106,7 @@ public partial class RangedEnemy : Enemy
 		Tween tween = CreateTween().SetTrans(Tween.TransitionType.Quart).SetEase(Tween.EaseType.Out);
 		tween.TweenProperty(prompt, "modulate:a", 0.4, 0.1); // change transparency of prompt
 
+		prompt.ZIndex = -10;
 		hitbox.Disabled = deathState = true;
 		spritePos.Visible = false;
 		anim.Play("death"); // play animation

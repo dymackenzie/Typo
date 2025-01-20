@@ -151,7 +151,7 @@ public partial class Player : CharacterBody2D
 		isTyping = withinEnemyReach = false;
 		camera.CameraZoom(inKillMode = !inKillMode);
 		hitbox.Disabled = inKillMode;
-		Globals.inSlowdown = inKillMode;
+		Globals.InSlowdown = inKillMode;
 		EmitSignal(nameof(InSlowdown), inKillMode);
 	}
 
@@ -305,7 +305,7 @@ public partial class Player : CharacterBody2D
 				// all enemies have been wiped
 				hitbox.Disabled = false;
 				camera.CameraZoom(inKillMode = false);
-				Globals.inSlowdown = inKillMode;
+				Globals.InSlowdown = inKillMode;
 				EmitSignal(nameof(InSlowdown), false);
 				// projectile timer to help with shots immediately after killzone
 				projectileTimer.Start();

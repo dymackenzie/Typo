@@ -12,8 +12,3 @@ rangedEnemyScene = ExtResource("3_s1e05")
 blastEnemyScene = ExtResource("4_mx6wg")
 blastEnemySpawnChance = 0.3
 rangedEnemySpawnChance = 0.5
-
-[node name="EnemyCooldown" type="Timer" parent="."]
-autostart = true
-
-[connection signal="timeout" from="EnemyCooldown" to="." method="OnEnemyCooldownTimeout"]

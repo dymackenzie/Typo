@@ -63,7 +63,7 @@ public partial class Orbs : RigidBody2D
 	public override void _PhysicsProcess(double delta) {
 
         // deal with slowdown
-		delta *= Globals.inSlowdown ? Globals.slowdownRate : 1;
+		delta *= Globals.InSlowdown ? Globals.SlowdownRate : 1;
 
         if (timePass <= launchPeriod) {
             ApplyFriction();

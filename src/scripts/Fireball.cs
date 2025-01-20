@@ -37,8 +37,8 @@ public partial class Fireball : RigidBody2D
 
     public override void _PhysicsProcess(double delta) {
 		// deal with slowdown
-		anim.SpeedScale = Globals.inSlowdown ? Globals.slowdownRate : 1;
-		delta *= Globals.inSlowdown ? Globals.slowdownRate : 1;
+		anim.SpeedScale = Globals.InSlowdown ? Globals.SlowdownRate : 1;
+		delta *= Globals.InSlowdown ? Globals.SlowdownRate : 1;
 
 		// if animation is explosion, don't move
         if (anim.CurrentAnimation == "explosion")

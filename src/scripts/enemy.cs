@@ -66,8 +66,8 @@ public partial class Enemy : CharacterBody2D
     public override void _PhysicsProcess(double delta) {
 		// deal with slowdown
 		IsAttacking();
-		anim.SpeedScale = Globals.inSlowdown ? Globals.slowdownRate : 1;
-		delta *= Globals.inSlowdown ? Globals.slowdownRate : 1;
+		anim.SpeedScale = Globals.InSlowdown ? Globals.SlowdownRate : 1;
+		delta *= Globals.InSlowdown ? Globals.SlowdownRate : 1;
 		if (deathState)
 			return;
 		switch(state) {
@@ -120,6 +120,7 @@ public partial class Enemy : CharacterBody2D
 		tween.TweenProperty(prompt, "modulate:a", 0.4, 0.1);
 		tween.TweenProperty(sprite2D, "position", -direction * 3, 0.1);
 
+		prompt.ZIndex = -10;
 		hitbox.Disabled = damageArea.Disabled = deathState = true;
 		spritePos.Visible = false;
 		anim.Play("death");

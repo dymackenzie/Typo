@@ -31,8 +31,5 @@ texture = ExtResource("4_lmwq0")
 modulate = Color(0.764706, 0.764706, 0.764706, 0)
 texture = ExtResource("4_lmwq0")
 
-[node name="ShakingCameraTimer" type="Timer" parent="."]
-
 [connection signal="body_entered" from="." to="." method="OnBodyEntered"]
 [connection signal="body_exited" from="." to="." method="OnBodyExited"]
-[connection signal="timeout" from="ShakingCameraTimer" to="." method="_OnShakingCameraTimeout"]

@@ -11,29 +11,42 @@ public partial class EnemyGenerator : Node2D
 	[Export] public float blastEnemySpawnChance = 0.15f;
 	[Export] public float rangedEnemySpawnChance = 0.4f;
 
-	public Timer cooldown;
 	public Player player;
     public RandomNumberGenerator random = new();
+	public Globals globals;
 
     // spawnpoints
     public PathFollow2D pathFollow;
     public Marker2D marker;
 
+	private double time = 0;
+
 	public override void _Ready() {
-		cooldown = GetNode<Timer>("EnemyCooldown");
+		globals = GetNode<Globals>("/root/Globals");
 		foreach (Node node in GetTree().GetNodesInGroup("player")) {
             player = (Player) node;
 			pathFollow = GetNode<PathFollow2D>(node.GetPath() + "/enemy_spawning/enemy_spawn_range");
 			marker = GetNode<Marker2D>(node.GetPath() + "/enemy_spawning/enemy_spawn_range/Marker2D");
         }
-        cooldown.WaitTime = cooldownDuration;
         random.Randomize();
 	}
 
-	/*
+    public override void _PhysicsProcess(double delta) {
+		// deal with slowdown
+		delta *= globals.InSlowdown ? globals.SlowdownRate : 1;
+
+		// after time is up, spawn enemy
+        time += delta;
+		if (time >= cooldownDuration) {
+			RandomEnemySpawn();
+			time = 0;
+		}
+    }
+
+    /*
 	Controls enemy spawn timing.
 	*/
-	public void RandomEnemySpawn() {
+    public void RandomEnemySpawn() {
 		float enemySpawnPercentage = random.RandiRange(0, 100) / 100.0f;
 		Enemy enemyInstance;
 		if (enemySpawnPercentage < blastEnemySpawnChance) {
@@ -57,9 +70,4 @@ public partial class EnemyGenerator : Node2D
 		enemyInstance.GlobalPosition = marker.GlobalPosition;
 		AddSibling(enemyInstance);
 	}
-	
-	public void OnEnemyCooldownTimeout() {
-		RandomEnemySpawn();
-	}
-
 }

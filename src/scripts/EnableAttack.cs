@@ -10,14 +10,17 @@ public partial class EnableAttack : Node2D
     public bool killMode = false;
     public double originalWait;
     
+    public Globals globals;
     public Player player;
     public Timer timer;
 
     public override void _Ready() {
+        globals = GetNode<Globals>("/root/Globals");
         foreach (Node node in GetTree().GetNodesInGroup("player")) {
             player = (Player) node;
         }
         timer = GetNode<Timer>("InKillMode");
+        timer.WaitTime = 60.0f / globals.PlayerWPM * 4;
         originalWait = timer.WaitTime;
         player.InSlowdown += BeginCountdown;
         player.SwitchEnemy += OnEnemySwitch;

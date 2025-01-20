@@ -17,21 +17,18 @@ public partial class BlastArea : Area2D
 	public Player player = null;
 	public Vector2 position;
 	public CollisionShape2D shape2D;
-	public Timer shakingTimer;
 
 	// timer
 	public float time = 0.0f;
 	public float timeLimit = 2.0f;
+	private bool hasShaken = false;
 
 	public override void _Ready() {
 		globals = GetNode<Globals>("/root/Globals");
-		shakingTimer = GetNode<Timer>("ShakingCameraTimer");
-		shakingTimer.WaitTime = timeLimit;
 		shape2D = GetNode<CollisionShape2D>("CollisionShape2D");
 		shape2D.Shape.Set("radius", blastRadius);
 		ring.Scale = new Vector2(blastRadius / 18.0f + 1f, blastRadius / 18.0f + 1f);
 		ring2.Scale = new Vector2(blastRadius / 18.0f, blastRadius / 18.0f);
-		shakingTimer.Start();
 
 		
 		// make fade in on instance
@@ -83,12 +80,16 @@ public partial class BlastArea : Area2D
     }
 
     public override void _Process(double delta) {
-		if (globals.inSlowdown) {
-			time += (float) delta * globals.slowdownRate;
+		if (globals.InSlowdown) {
+			time += (float) delta * globals.SlowdownRate;
 		} else {
 			time += (float) delta;
 		}
 		if (time >= timeLimit) {
+			if (!hasShaken) {
+				globals.ShakeCamera(1);
+				hasShaken = true;
+			}
 			MakeVisible();
 		}
 		QueueRedraw();
@@ -129,9 +130,4 @@ public partial class BlastArea : Area2D
 			player = null;
 		}
 	}
-
-	public void _OnShakingCameraTimeout() {
-		globals.ShakeCamera(1);
-	}
-
 }

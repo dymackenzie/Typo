@@ -385,6 +385,7 @@ _data = {
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
 script = ExtResource("1_0srf6")
+speed = 80.0
 killZone = Color(0.290196, 0.0196078, 0.0196078, 1)
 
 [node name="TruePosition" type="Sprite2D" parent="."]
