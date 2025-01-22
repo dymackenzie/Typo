@@ -336,7 +336,7 @@ material = SubResource("ShaderMaterial_f55m2")
 position = Vector2(0, 1)
 scale = Vector2(0.553221, 0.5)
 sprite_frames = SubResource("SpriteFrames_bcfmx")
-animation = &"attack"
+animation = &"damaged"
 autoplay = "idle"
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]

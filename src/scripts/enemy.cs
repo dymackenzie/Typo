@@ -101,20 +101,30 @@ public partial class Enemy : CharacterBody2D
 		health -= healthUnit;
 		EmitText(s);
 		if (health <= 0 && hasShield) {
-			int shieldBuff = 2;
-			SetPrompt(difficulty - shieldBuff);
-			currentLetterIndex = 0;
-			health = (difficulty - shieldBuff) * healthUnit;
+			OnShieldBreak();
 		}
 		if (health <= 0 && !hasShield) {
 			OnDeath();
 		}
 	}
 
+	/*
+	Helper function to do floating text damage visuals
+	*/
 	public void EmitText(string s) {
 		FloatingText text = (FloatingText) floatingText.Instantiate();
 		text.SetText(s);
 		AddChild(text);
+	}
+
+	/*
+	When shield is broken for enemy, change prompt and reset health
+	*/
+	public void OnShieldBreak() {
+		int shieldBuff = 2;
+		SetPrompt(difficulty - shieldBuff);
+		health = (difficulty - shieldBuff) * healthUnit;
+		currentLetterIndex = 0;
 	}
 
 	/*

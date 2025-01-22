@@ -401,10 +401,10 @@ offset = Vector2(0, -2)
 flip_h = true
 
 [node name="ShakingCamera" parent="AnimatedSprite" instance=ExtResource("4_l30nw")]
-limit_left = -800
-limit_top = -800
-limit_right = 800
-limit_bottom = 800
+limit_left = -200
+limit_top = -200
+limit_right = 200
+limit_bottom = 200
 zoomScale = 1.6
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]

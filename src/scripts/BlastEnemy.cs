@@ -120,10 +120,7 @@ public partial class BlastEnemy : Enemy
 		health -= healthUnit;
 		EmitText(s);
 		if (health <= 0 && hasShield) {
-			int shieldBuff = 2;
-			SetPrompt(difficulty - shieldBuff);
-			currentLetterIndex = 0;
-			health = (difficulty - shieldBuff) * healthUnit;
+			OnShieldBreak();
 		}
 		if (health <= 0) {
 			OnBlastDeath();
