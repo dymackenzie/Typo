@@ -17,6 +17,7 @@ public partial class Enemy : CharacterBody2D
 	[Export] public float healthUnit	= 20;
 	[Export] public int difficulty	 	= 6;
 	[Export] public int orbNumber 		= 3;
+	[Export] public bool hasShield		= false;
 	[Export] public Color textCorrect 	= new("#00FF00");
 	[Export] public Color textWrong 	= new("#FF0000");
 	[Export] public PackedScene poof;
@@ -39,6 +40,7 @@ public partial class Enemy : CharacterBody2D
 	public bool						canAttack;
 	public string 					promptText;
 	public int 						currentLetterIndex;	
+	
 
     public override void _Ready() {
 		foreach (Node node in GetTree().GetNodesInGroup("player")) {
@@ -55,8 +57,10 @@ public partial class Enemy : CharacterBody2D
 
 		// word prompt
 		prompt.Visible = false;
-		promptText = (string)Words.Call("GetRandomPrompt", difficulty);
-		prompt.Text = SetCenterTags(promptText);
+		SetPrompt();
+
+		// add overall difficulty to local difficulty
+		difficulty += Globals.Difficulty;
 
 		// health based on difficulty
 		health = difficulty * healthUnit;
@@ -96,9 +100,13 @@ public partial class Enemy : CharacterBody2D
 	public void OnHit(string s) {
 		health -= healthUnit;
 		EmitText(s);
-		if (health <= 0) {
+		if (health <= 0 && hasShield) {
+			SetPrompt();
+			health = difficulty * healthUnit;
+		}
+		if (health <= 0 && !hasShield) {
 			OnDeath();
-		}	
+		}
 	}
 
 	public void EmitText(string s) {
@@ -132,6 +140,14 @@ public partial class Enemy : CharacterBody2D
 			QueueFree();
 			orbs.GenerateOrbs();
 		}
+	}
+
+	/*
+	Helper function to randomly select prompt and set it to the prompt text
+	*/
+	public void SetPrompt() {
+		promptText = (string)Words.Call("GetRandomPrompt", difficulty);
+		prompt.Text = SetCenterTags(promptText);
 	}
 
 	/*
@@ -236,7 +252,7 @@ public partial class Enemy : CharacterBody2D
 	}
 
 	/*
-	Colors the text according to user input
+	Colors the text according to user input (wrong or correct)
 	*/
 	public void SetNextCharacter(bool wrong) {
 		string correctText = string.Concat(GetBBCodeColorTag(textCorrect), GetPrompt().AsSpan(0, currentLetterIndex), GetEndColorTag());

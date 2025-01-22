@@ -5,6 +5,7 @@ public partial class EnemyGenerator : Node2D
 {
 
     [Export] float cooldownDuration = 5; // in seconds
+	[Export] float difficultyIncreaseDuration = 180; // in seconds
 	[Export] public PackedScene basicEnemyScene;
 	[Export] public PackedScene rangedEnemyScene;
 	[Export] public PackedScene blastEnemyScene;
@@ -20,6 +21,7 @@ public partial class EnemyGenerator : Node2D
     public Marker2D marker;
 
 	private double time = 0;
+	private double difficultyIncreaseTime = 0;
 
 	public override void _Ready() {
 		globals = GetNode<Globals>("/root/Globals");
@@ -37,9 +39,14 @@ public partial class EnemyGenerator : Node2D
 
 		// after time is up, spawn enemy
         time += delta;
+		difficultyIncreaseTime += delta;
 		if (time >= cooldownDuration) {
 			RandomEnemySpawn();
 			time = 0;
+		}
+		if (difficultyIncreaseTime >= difficultyIncreaseDuration) {
+			globals.Difficulty++;
+			difficultyIncreaseTime = 0;
 		}
     }
 

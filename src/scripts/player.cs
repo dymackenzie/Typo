@@ -57,6 +57,9 @@ public partial class Player : CharacterBody2D
 	public ulong 				timeStart;
 	public double				WPM = 0;
 
+	// streak
+	public int					streak = 0;
+
 	public override void _Ready() {
 		Globals = GetNode<Globals>("/root/Globals");
 		playerSprite = GetNode<AnimatedSprite2D>("AnimatedSprite");
@@ -181,7 +184,15 @@ public partial class Player : CharacterBody2D
 			EmitSignal(nameof(KeySuccess));
 			EmitSignal(nameof(CameraShakeRequested), 0);
 			if (currentLetterIndex == prompt.Length) {
-				ResetPrompt(); // when player has gone through word
+				if (currentEnemy.hasShield) {
+					// if enemy has shield, remove shield
+					// and set next word
+					currentEnemy.hasShield = false;
+					currentEnemy.SetPrompt();
+					currentEnemy.currentLetterIndex = 0;
+				} else {
+					ResetPrompt(); // when player has gone through word
+				}
 			}
 		} else {
 			currentEnemy.SetNextCharacter(true);
@@ -303,6 +314,7 @@ public partial class Player : CharacterBody2D
 			enemies.Remove(currentEnemy);
 			if (enemies.Count == 0) {
 				// all enemies have been wiped
+				streak = 0;
 				hitbox.Disabled = false;
 				camera.CameraZoom(inKillMode = false);
 				Globals.InSlowdown = inKillMode;
@@ -310,6 +322,7 @@ public partial class Player : CharacterBody2D
 				// projectile timer to help with shots immediately after killzone
 				projectileTimer.Start();
 			} else {
+				streak++;
 				playerSprite.Frame = 3;
 				currentEnemy = enemies[0];
 				EmitSignal(nameof(SwitchEnemy));

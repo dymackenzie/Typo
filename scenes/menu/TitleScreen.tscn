@@ -9,7 +9,7 @@ texture = ExtResource("2_nblop")
 
 [sub_resource type="LabelSettings" id="LabelSettings_tb3xv"]
 font = ExtResource("3_2wswu")
-font_size = 112
+font_size = 120
 
 [sub_resource type="LabelSettings" id="LabelSettings_kwgc3"]
 font = ExtResource("3_2wswu")
@@ -41,7 +41,7 @@ theme_override_constants/margin_right = 300
 theme_override_constants/margin_bottom = 300
 
 [node name="Panel" type="Panel" parent="MarginContainer"]
-custom_minimum_size = Vector2(850, 600)
+custom_minimum_size = Vector2(1000, 700)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_u228d")
 
@@ -72,6 +72,7 @@ horizontal_alignment = 1
 [node name="Description" type="Label" parent="MarginContainer/Panel/MarginContainer/Rows"]
 layout_mode = 2
 text = "Type in desired WPM to start,
+'settings' for settings page,
 or 'q' to quit."
 label_settings = SubResource("LabelSettings_kwgc3")
 horizontal_alignment = 1

@@ -23,14 +23,11 @@ public partial class TitleScreen : CanvasLayer
 
 			if (userInput.Contains('q')) {
 				GetTree().Quit();
-			}
-			if (userInput.Contains("settings")) {
+			} else if (userInput.Contains("settings")) {
 				GD.Print("settings page");
-			}
-			if (Regex.Matches(userInput ,@"[a-zA-Z]").Count > 0) {
+			} else if (Regex.Matches(userInput ,@"[a-zA-Z]").Count > 0) {
 				error.Visible = true;
-			}
-			else {
+			} else {
 				error.Visible = false;
 				try {
 					int wpm = int.Parse(userInput);
