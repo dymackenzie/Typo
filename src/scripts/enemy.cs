@@ -57,7 +57,7 @@ public partial class Enemy : CharacterBody2D
 
 		// word prompt
 		prompt.Visible = false;
-		SetPrompt();
+		SetPrompt(difficulty);
 
 		// add overall difficulty to local difficulty
 		difficulty += Globals.Difficulty;
@@ -101,8 +101,10 @@ public partial class Enemy : CharacterBody2D
 		health -= healthUnit;
 		EmitText(s);
 		if (health <= 0 && hasShield) {
-			SetPrompt();
-			health = difficulty * healthUnit;
+			int shieldBuff = 2;
+			SetPrompt(difficulty - shieldBuff);
+			currentLetterIndex = 0;
+			health = (difficulty - shieldBuff) * healthUnit;
 		}
 		if (health <= 0 && !hasShield) {
 			OnDeath();
@@ -145,7 +147,7 @@ public partial class Enemy : CharacterBody2D
 	/*
 	Helper function to randomly select prompt and set it to the prompt text
 	*/
-	public void SetPrompt() {
+	public void SetPrompt(int difficulty) {
 		promptText = (string)Words.Call("GetRandomPrompt", difficulty);
 		prompt.Text = SetCenterTags(promptText);
 	}

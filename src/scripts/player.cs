@@ -186,10 +186,7 @@ public partial class Player : CharacterBody2D
 			if (currentLetterIndex == prompt.Length) {
 				if (currentEnemy.hasShield) {
 					// if enemy has shield, remove shield
-					// and set next word
 					currentEnemy.hasShield = false;
-					currentEnemy.SetPrompt();
-					currentEnemy.currentLetterIndex = 0;
 				} else {
 					ResetPrompt(); // when player has gone through word
 				}

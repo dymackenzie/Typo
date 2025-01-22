@@ -92,6 +92,12 @@ public partial class RangedEnemy : Enemy
 	public new void OnHit(string s) {
 		health -= healthUnit;
 		EmitText(s);
+		if (health <= 0 && hasShield) {
+			int shieldBuff = 2;
+			SetPrompt(difficulty - shieldBuff);
+			currentLetterIndex = 0;
+			health = (difficulty - shieldBuff) * healthUnit;
+		}
 		if (health <= 0) {
 			OnRangedDeath();
 		}
