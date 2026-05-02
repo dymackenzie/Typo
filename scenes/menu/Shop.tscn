@@ -1,9 +1,9 @@
-[gd_scene load_steps=29 format=3 uid="uid://dyo725eek8asy"]
+[gd_scene format=3 uid="uid://dyo725eek8asy"]
 
-[ext_resource type="Script" path="res://src/scripts/Shop.cs" id="1_kgy47"]
+[ext_resource type="Script" uid="uid://d2apffj0bvyhh" path="res://src/scripts/Shop.cs" id="1_kgy47"]
 [ext_resource type="FontFile" uid="uid://dffeg3yeiqp5" path="res://assets/misc/m5x7.ttf" id="2_ad6na"]
-[ext_resource type="Script" path="res://src/scripts/ShopScript.cs" id="2_j261t"]
-[ext_resource type="Script" path="res://src/scripts/AnimatedTexture.cs" id="2_vu5h1"]
+[ext_resource type="Script" uid="uid://yvstmlkhyhxc" path="res://src/scripts/ShopScript.cs" id="2_j261t"]
+[ext_resource type="Script" uid="uid://bv2vedqqprbqi" path="res://src/scripts/AnimatedTexture.cs" id="2_vu5h1"]
 [ext_resource type="PackedScene" uid="uid://cvdp3m6yklvpd" path="res://scenes/menu/OrbCounter.tscn" id="3_otj75"]
 [ext_resource type="Texture2D" uid="uid://gftaxqb6wsi4" path="res://assets/menu/Pixel Art Buttons.png" id="4_pbq6o"]
 [ext_resource type="Texture2D" uid="uid://brarldgbwpruf" path="res://assets/menu/Keys/1-Key.png" id="5_fwf1t"]
@@ -113,12 +113,12 @@ animations = [{
 font = ExtResource("2_ad6na")
 font_size = 26
 
-[node name="Shop" type="CanvasLayer" node_paths=PackedStringArray("shopScript")]
+[node name="Shop" type="CanvasLayer" unique_id=198984285 node_paths=PackedStringArray("shopScript")]
 process_mode = 3
 script = ExtResource("1_kgy47")
 shopScript = NodePath("Main")
 
-[node name="Main" type="Control" parent="."]
+[node name="Main" type="Control" parent="." unique_id=320137855]
 process_mode = 2
 layout_mode = 3
 anchors_preset = 15
@@ -128,17 +128,17 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_j261t")
 
-[node name="TAB" type="MarginContainer" parent="Main"]
+[node name="TAB" type="MarginContainer" parent="Main" unique_id=1306374783]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 theme_override_constants/margin_left = 30
 theme_override_constants/margin_top = 20
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Main/TAB"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Main/TAB" unique_id=283049033]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Main/TAB/HBoxContainer"]
+[node name="Label" type="Label" parent="Main/TAB/HBoxContainer" unique_id=1666895715]
 layout_mode = 2
 text = "TAB TO RESUME"
 label_settings = SubResource("LabelSettings_ktd1d")
@@ -146,7 +146,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 uppercase = true
 
-[node name="ORBS" type="MarginContainer" parent="Main"]
+[node name="ORBS" type="MarginContainer" parent="Main" unique_id=258693598]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -157,24 +157,24 @@ grow_horizontal = 0
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 40
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Main/ORBS"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Main/ORBS" unique_id=1489209034]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Main/ORBS/HBoxContainer"]
+[node name="Label" type="Label" parent="Main/ORBS/HBoxContainer" unique_id=2106677762]
 modulate = Color(0.290196, 0.0352941, 0.52549, 1)
 layout_mode = 2
 text = "ORBS: "
 label_settings = SubResource("LabelSettings_ktd1d")
 
-[node name="MarginContainer" type="MarginContainer" parent="Main/ORBS/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Main/ORBS/HBoxContainer" unique_id=997727777]
 layout_mode = 2
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 30
 
-[node name="OrbCounter" parent="Main/ORBS/HBoxContainer/MarginContainer" instance=ExtResource("3_otj75")]
+[node name="OrbCounter" parent="Main/ORBS/HBoxContainer/MarginContainer" unique_id=198792813 instance=ExtResource("3_otj75")]
 layout_mode = 2
 
-[node name="SHOP" type="MarginContainer" parent="Main"]
+[node name="SHOP" type="MarginContainer" parent="Main" unique_id=338758054]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -188,21 +188,21 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="v" type="VBoxContainer" parent="Main/SHOP"]
+[node name="v" type="VBoxContainer" parent="Main/SHOP" unique_id=709109569]
 layout_mode = 2
 
-[node name="cards" type="HBoxContainer" parent="Main/SHOP/v"]
+[node name="cards" type="HBoxContainer" parent="Main/SHOP/v" unique_id=301386907]
 layout_mode = 2
 theme_override_constants/separation = 23
 
-[node name="Card0" type="VBoxContainer" parent="Main/SHOP/v/cards"]
+[node name="Card0" type="VBoxContainer" parent="Main/SHOP/v/cards" unique_id=1704845788]
 layout_mode = 2
 
-[node name="ButtonNumber" type="MarginContainer" parent="Main/SHOP/v/cards/Card0"]
+[node name="ButtonNumber" type="MarginContainer" parent="Main/SHOP/v/cards/Card0" unique_id=1464531845]
 layout_mode = 2
 theme_override_constants/margin_bottom = 12
 
-[node name="Number0" type="TextureRect" parent="Main/SHOP/v/cards/Card0/ButtonNumber"]
+[node name="Number0" type="TextureRect" parent="Main/SHOP/v/cards/Card0/ButtonNumber" unique_id=1318006634]
 custom_minimum_size = Vector2(5, 30)
 layout_mode = 2
 texture = SubResource("AtlasTexture_1r00n")
@@ -212,12 +212,12 @@ script = ExtResource("2_vu5h1")
 sprites = SubResource("SpriteFrames_7o4e8")
 autoPlay = true
 
-[node name="Card" type="Panel" parent="Main/SHOP/v/cards/Card0"]
-custom_minimum_size = Vector2(150, 200)
+[node name="Card" type="Panel" parent="Main/SHOP/v/cards/Card0" unique_id=1881450285]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_jbaes")
 
-[node name="v" type="VBoxContainer" parent="Main/SHOP/v/cards/Card0/Card"]
+[node name="v" type="VBoxContainer" parent="Main/SHOP/v/cards/Card0/Card" unique_id=982270305]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -227,45 +227,46 @@ grow_vertical = 2
 theme_override_constants/separation = 23
 alignment = 1
 
-[node name="ItemContainer" type="MarginContainer" parent="Main/SHOP/v/cards/Card0/Card/v"]
+[node name="ItemContainer" type="MarginContainer" parent="Main/SHOP/v/cards/Card0/Card/v" unique_id=1969656303]
+visible = false
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 theme_override_constants/margin_left = 40
 theme_override_constants/margin_right = 45
 
-[node name="Item0" type="TextureRect" parent="Main/SHOP/v/cards/Card0/Card/v/ItemContainer"]
+[node name="Item0" type="TextureRect" parent="Main/SHOP/v/cards/Card0/Card/v/ItemContainer" unique_id=495794638]
 layout_mode = 2
 texture = SubResource("AtlasTexture_cp7lj")
 expand_mode = 1
 
-[node name="DescriptionContainer" type="MarginContainer" parent="Main/SHOP/v/cards/Card0/Card/v"]
+[node name="DescriptionContainer" type="MarginContainer" parent="Main/SHOP/v/cards/Card0/Card/v" unique_id=5318576]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_right = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Main/SHOP/v/cards/Card0/Card/v/DescriptionContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Main/SHOP/v/cards/Card0/Card/v/DescriptionContainer" unique_id=1085786832]
 layout_mode = 2
 theme_override_constants/separation = 0
 alignment = 1
 
-[node name="Price0" type="Label" parent="Main/SHOP/v/cards/Card0/Card/v/DescriptionContainer/HBoxContainer"]
+[node name="Price0" type="Label" parent="Main/SHOP/v/cards/Card0/Card/v/DescriptionContainer/HBoxContainer" unique_id=2046167735]
 layout_mode = 2
 text = "10 "
 label_settings = SubResource("LabelSettings_qwjrc")
 
-[node name="Description0" type="Label" parent="Main/SHOP/v/cards/Card0/Card/v/DescriptionContainer/HBoxContainer"]
+[node name="Description0" type="Label" parent="Main/SHOP/v/cards/Card0/Card/v/DescriptionContainer/HBoxContainer" unique_id=1896928873]
 layout_mode = 2
 text = "~ +1 Shield"
 label_settings = SubResource("LabelSettings_vhofa")
 
-[node name="Card1" type="VBoxContainer" parent="Main/SHOP/v/cards"]
+[node name="Card1" type="VBoxContainer" parent="Main/SHOP/v/cards" unique_id=204635558]
 layout_mode = 2
 
-[node name="ButtonNumber" type="MarginContainer" parent="Main/SHOP/v/cards/Card1"]
+[node name="ButtonNumber" type="MarginContainer" parent="Main/SHOP/v/cards/Card1" unique_id=1841310340]
 layout_mode = 2
 theme_override_constants/margin_bottom = 12
 
-[node name="Number1" type="TextureRect" parent="Main/SHOP/v/cards/Card1/ButtonNumber"]
+[node name="Number1" type="TextureRect" parent="Main/SHOP/v/cards/Card1/ButtonNumber" unique_id=1198452493]
 custom_minimum_size = Vector2(5, 30)
 layout_mode = 2
 texture = SubResource("AtlasTexture_qn53e")
@@ -275,12 +276,12 @@ script = ExtResource("2_vu5h1")
 sprites = SubResource("SpriteFrames_goytd")
 autoPlay = true
 
-[node name="Card" type="Panel" parent="Main/SHOP/v/cards/Card1"]
-custom_minimum_size = Vector2(150, 200)
+[node name="Card" type="Panel" parent="Main/SHOP/v/cards/Card1" unique_id=1742193322]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_jbaes")
 
-[node name="v" type="VBoxContainer" parent="Main/SHOP/v/cards/Card1/Card"]
+[node name="v" type="VBoxContainer" parent="Main/SHOP/v/cards/Card1/Card" unique_id=2078379111]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -290,45 +291,46 @@ grow_vertical = 2
 theme_override_constants/separation = 23
 alignment = 1
 
-[node name="ItemContainer" type="MarginContainer" parent="Main/SHOP/v/cards/Card1/Card/v"]
+[node name="ItemContainer" type="MarginContainer" parent="Main/SHOP/v/cards/Card1/Card/v" unique_id=780313391]
+visible = false
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 theme_override_constants/margin_left = 40
 theme_override_constants/margin_right = 45
 
-[node name="Item1" type="TextureRect" parent="Main/SHOP/v/cards/Card1/Card/v/ItemContainer"]
+[node name="Item1" type="TextureRect" parent="Main/SHOP/v/cards/Card1/Card/v/ItemContainer" unique_id=1559143223]
 layout_mode = 2
 texture = SubResource("AtlasTexture_cp7lj")
 expand_mode = 1
 
-[node name="DescriptionContainer" type="MarginContainer" parent="Main/SHOP/v/cards/Card1/Card/v"]
+[node name="DescriptionContainer" type="MarginContainer" parent="Main/SHOP/v/cards/Card1/Card/v" unique_id=1752642527]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_right = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Main/SHOP/v/cards/Card1/Card/v/DescriptionContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Main/SHOP/v/cards/Card1/Card/v/DescriptionContainer" unique_id=1188521295]
 layout_mode = 2
 theme_override_constants/separation = 0
 alignment = 1
 
-[node name="Price1" type="Label" parent="Main/SHOP/v/cards/Card1/Card/v/DescriptionContainer/HBoxContainer"]
+[node name="Price1" type="Label" parent="Main/SHOP/v/cards/Card1/Card/v/DescriptionContainer/HBoxContainer" unique_id=169575551]
 layout_mode = 2
 text = "10 "
 label_settings = SubResource("LabelSettings_qwjrc")
 
-[node name="Description1" type="Label" parent="Main/SHOP/v/cards/Card1/Card/v/DescriptionContainer/HBoxContainer"]
+[node name="Description1" type="Label" parent="Main/SHOP/v/cards/Card1/Card/v/DescriptionContainer/HBoxContainer" unique_id=123600405]
 layout_mode = 2
 text = "~ +1 Shield"
 label_settings = SubResource("LabelSettings_vhofa")
 
-[node name="Card2" type="VBoxContainer" parent="Main/SHOP/v/cards"]
+[node name="Card2" type="VBoxContainer" parent="Main/SHOP/v/cards" unique_id=566959733]
 layout_mode = 2
 
-[node name="ButtonNumber" type="MarginContainer" parent="Main/SHOP/v/cards/Card2"]
+[node name="ButtonNumber" type="MarginContainer" parent="Main/SHOP/v/cards/Card2" unique_id=743800259]
 layout_mode = 2
 theme_override_constants/margin_bottom = 12
 
-[node name="Number2" type="TextureRect" parent="Main/SHOP/v/cards/Card2/ButtonNumber"]
+[node name="Number2" type="TextureRect" parent="Main/SHOP/v/cards/Card2/ButtonNumber" unique_id=894038734]
 custom_minimum_size = Vector2(5, 30)
 layout_mode = 2
 texture = SubResource("AtlasTexture_xya1u")
@@ -338,12 +340,12 @@ script = ExtResource("2_vu5h1")
 sprites = SubResource("SpriteFrames_knbfq")
 autoPlay = true
 
-[node name="Card" type="Panel" parent="Main/SHOP/v/cards/Card2"]
-custom_minimum_size = Vector2(150, 200)
+[node name="Card" type="Panel" parent="Main/SHOP/v/cards/Card2" unique_id=162856252]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_jbaes")
 
-[node name="v" type="VBoxContainer" parent="Main/SHOP/v/cards/Card2/Card"]
+[node name="v" type="VBoxContainer" parent="Main/SHOP/v/cards/Card2/Card" unique_id=196100275]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -353,38 +355,39 @@ grow_vertical = 2
 theme_override_constants/separation = 23
 alignment = 1
 
-[node name="ItemContainer" type="MarginContainer" parent="Main/SHOP/v/cards/Card2/Card/v"]
+[node name="ItemContainer" type="MarginContainer" parent="Main/SHOP/v/cards/Card2/Card/v" unique_id=1063423596]
+visible = false
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 theme_override_constants/margin_left = 40
 theme_override_constants/margin_right = 45
 
-[node name="Item2" type="TextureRect" parent="Main/SHOP/v/cards/Card2/Card/v/ItemContainer"]
+[node name="Item2" type="TextureRect" parent="Main/SHOP/v/cards/Card2/Card/v/ItemContainer" unique_id=647970479]
 layout_mode = 2
 texture = SubResource("AtlasTexture_cp7lj")
 expand_mode = 1
 
-[node name="DescriptionContainer" type="MarginContainer" parent="Main/SHOP/v/cards/Card2/Card/v"]
+[node name="DescriptionContainer" type="MarginContainer" parent="Main/SHOP/v/cards/Card2/Card/v" unique_id=846498356]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_right = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Main/SHOP/v/cards/Card2/Card/v/DescriptionContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Main/SHOP/v/cards/Card2/Card/v/DescriptionContainer" unique_id=736381003]
 layout_mode = 2
 theme_override_constants/separation = 0
 alignment = 1
 
-[node name="Price2" type="Label" parent="Main/SHOP/v/cards/Card2/Card/v/DescriptionContainer/HBoxContainer"]
+[node name="Price2" type="Label" parent="Main/SHOP/v/cards/Card2/Card/v/DescriptionContainer/HBoxContainer" unique_id=640578659]
 layout_mode = 2
 text = "10 "
 label_settings = SubResource("LabelSettings_qwjrc")
 
-[node name="Description2" type="Label" parent="Main/SHOP/v/cards/Card2/Card/v/DescriptionContainer/HBoxContainer"]
+[node name="Description2" type="Label" parent="Main/SHOP/v/cards/Card2/Card/v/DescriptionContainer/HBoxContainer" unique_id=306717714]
 layout_mode = 2
 text = "~ +1 Shield"
 label_settings = SubResource("LabelSettings_vhofa")
 
-[node name="Label" type="Label" parent="Main/SHOP/v"]
+[node name="Label" type="Label" parent="Main/SHOP/v" unique_id=890021203]
 visible = false
 layout_mode = 2
 text = "Refresh"

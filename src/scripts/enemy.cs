@@ -42,10 +42,10 @@ public partial class Enemy : CharacterBody2D
 	public int 						currentLetterIndex;	
 	
 
-    public override void _Ready() {
+	public override void _Ready() {
 		foreach (Node node in GetTree().GetNodesInGroup("player")) {
-            player = (Player) node;
-        }
+			player = (Player) node;
+		}
 		Globals = GetNode<Globals>("/root/Globals");
 		floatingText = GD.Load<PackedScene>("res://scenes/game/enemies/FloatingText.tscn");
 		prompt = GetNode<RichTextLabel>("TypingText");
@@ -65,9 +65,9 @@ public partial class Enemy : CharacterBody2D
 		// health based on difficulty
 		health = difficulty * healthUnit;
 		orbs.orbNumber = orbNumber + Globals.ExperienceAddOns; // orb number
-    }
+	}
 
-    public override void _PhysicsProcess(double delta) {
+	public override void _PhysicsProcess(double delta) {
 		// deal with slowdown
 		IsAttacking();
 		anim.SpeedScale = Globals.InSlowdown ? Globals.SlowdownRate : 1;

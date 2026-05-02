@@ -8,11 +8,15 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="Typo"
-run/main_scene="res://scenes/TitleScreen.tscn"
-config/features=PackedStringArray("4.3", "C#", "Forward Plus")
+run/main_scene="uid://dhyacm8wu0p4g"
+config/features=PackedStringArray("4.6", "C#", "Forward Plus")
 
 [autoload]
 
