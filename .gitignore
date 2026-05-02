@@ -1,7 +1,2 @@
 # Godot 4+ specific ignores
 .godot/
-
-data_Typo_windows_x86_64/
-Typo.console.exe
-Typo.exe
-Typo.pck

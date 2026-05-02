@@ -1,2 +1,1 @@
-# Typo
-a 2D isometric typing dungeon game
+Download the game at https://dymackenzie.itch.io/typo.
